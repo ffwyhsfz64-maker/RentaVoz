@@ -349,6 +349,27 @@ class SZh extends S {
   String get authErrRegDefault => '账户创建失败，请重试。';
 
   @override
+  String get forgotPassword => '忘记密码？';
+
+  @override
+  String get forgotPasswordTitle => '重置密码';
+
+  @override
+  String get forgotPasswordBody => '输入您的邮箱，我们将向您发送重置密码的链接。';
+
+  @override
+  String get forgotPasswordSend => '发送链接';
+
+  @override
+  String get forgotPasswordSent => '邮件已发送，请查看收件箱。';
+
+  @override
+  String get forgotPasswordErrNotFound => '该邮箱未注册。';
+
+  @override
+  String get forgotPasswordErrDefault => '发送失败，请重试。';
+
+  @override
   String get rentalTypeLabel => '租赁类型';
 
   @override

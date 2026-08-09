@@ -353,6 +353,27 @@ class SJa extends S {
   String get authErrRegDefault => 'アカウント作成に失敗しました。もう一度お試しください。';
 
   @override
+  String get forgotPassword => 'パスワードをお忘れですか？';
+
+  @override
+  String get forgotPasswordTitle => 'パスワードをリセット';
+
+  @override
+  String get forgotPasswordBody => 'メールアドレスを入力すると、パスワードリセット用のリンクをお送りします。';
+
+  @override
+  String get forgotPasswordSend => 'リンクを送る';
+
+  @override
+  String get forgotPasswordSent => 'メールを送信しました。受信ボックスをご確認ください。';
+
+  @override
+  String get forgotPasswordErrNotFound => 'そのメールアドレスのアカウントが見つかりません。';
+
+  @override
+  String get forgotPasswordErrDefault => 'メールの送信に失敗しました。もう一度お試しください。';
+
+  @override
   String get rentalTypeLabel => '賃貸タイプ';
 
   @override

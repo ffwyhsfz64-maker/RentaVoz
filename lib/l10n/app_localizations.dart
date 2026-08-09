@@ -769,6 +769,48 @@ abstract class S {
   /// **'Error al crear cuenta. Intenta de nuevo.'**
   String get authErrRegDefault;
 
+  /// No description provided for @forgotPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.'**
+  String get forgotPasswordBody;
+
+  /// No description provided for @forgotPasswordSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar enlace'**
+  String get forgotPasswordSend;
+
+  /// No description provided for @forgotPasswordSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo enviado. Revisa tu bandeja de entrada.'**
+  String get forgotPasswordSent;
+
+  /// No description provided for @forgotPasswordErrNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No existe una cuenta con ese correo.'**
+  String get forgotPasswordErrNotFound;
+
+  /// No description provided for @forgotPasswordErrDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo enviar el correo. Intenta de nuevo.'**
+  String get forgotPasswordErrDefault;
+
   /// No description provided for @rentalTypeLabel.
   ///
   /// In es, this message translates to:

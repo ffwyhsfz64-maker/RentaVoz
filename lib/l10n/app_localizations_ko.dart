@@ -353,6 +353,27 @@ class SKo extends S {
   String get authErrRegDefault => '계정 생성에 실패했습니다. 다시 시도해주세요.';
 
   @override
+  String get forgotPassword => '비밀번호를 잊으셨나요?';
+
+  @override
+  String get forgotPasswordTitle => '비밀번호 재설정';
+
+  @override
+  String get forgotPasswordBody => '이메일을 입력하면 비밀번호 재설정 링크를 보내드립니다.';
+
+  @override
+  String get forgotPasswordSend => '링크 보내기';
+
+  @override
+  String get forgotPasswordSent => '이메일을 전송했습니다. 받은 편지함을 확인해주세요.';
+
+  @override
+  String get forgotPasswordErrNotFound => '해당 이메일로 등록된 계정이 없습니다.';
+
+  @override
+  String get forgotPasswordErrDefault => '이메일 전송에 실패했습니다. 다시 시도해주세요.';
+
+  @override
   String get rentalTypeLabel => '임대 유형';
 
   @override

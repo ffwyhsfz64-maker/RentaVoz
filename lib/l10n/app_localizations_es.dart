@@ -356,6 +356,31 @@ class SEs extends S {
   String get authErrRegDefault => 'Error al crear cuenta. Intenta de nuevo.';
 
   @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordTitle => 'Restablecer contraseña';
+
+  @override
+  String get forgotPasswordBody =>
+      'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordSend => 'Enviar enlace';
+
+  @override
+  String get forgotPasswordSent =>
+      'Correo enviado. Revisa tu bandeja de entrada.';
+
+  @override
+  String get forgotPasswordErrNotFound =>
+      'No existe una cuenta con ese correo.';
+
+  @override
+  String get forgotPasswordErrDefault =>
+      'No se pudo enviar el correo. Intenta de nuevo.';
+
+  @override
   String get rentalTypeLabel => 'Tipo de arrendamiento';
 
   @override

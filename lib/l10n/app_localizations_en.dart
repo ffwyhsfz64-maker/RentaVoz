@@ -357,6 +357,29 @@ class SEn extends S {
   String get authErrRegDefault => 'Account creation failed. Please try again.';
 
   @override
+  String get forgotPassword => 'Forgot your password?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordBody =>
+      'Enter your email and we\'ll send you a link to reset your password.';
+
+  @override
+  String get forgotPasswordSend => 'Send link';
+
+  @override
+  String get forgotPasswordSent => 'Email sent. Check your inbox.';
+
+  @override
+  String get forgotPasswordErrNotFound => 'No account found with that email.';
+
+  @override
+  String get forgotPasswordErrDefault =>
+      'Could not send email. Please try again.';
+
+  @override
   String get rentalTypeLabel => 'Rental type';
 
   @override

@@ -64,6 +64,83 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _showForgotPassword(BuildContext context, S s) async {
+    final emailCtrl = TextEditingController(text: _emailCtrl.text.trim());
+    bool sending = false;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setStateDialog) => AlertDialog(
+          title: Text(s.forgotPasswordTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(s.forgotPasswordBody, style: const TextStyle(fontSize: 13)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  labelText: s.emailLabel,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(s.cancel),
+            ),
+            FilledButton(
+              onPressed: sending
+                  ? null
+                  : () async {
+                      final email = emailCtrl.text.trim();
+                      if (!email.contains('@')) return;
+                      setStateDialog(() => sending = true);
+                      try {
+                        await AuthService.sendPasswordReset(email);
+                        if (ctx.mounted) {
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(s.forgotPasswordSent),
+                              backgroundColor: const Color(0xFF2E7D32),
+                              duration: const Duration(seconds: 5),
+                            ),
+                          );
+                        }
+                      } on FirebaseAuthException catch (e) {
+                        setStateDialog(() => sending = false);
+                        if (ctx.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                e.code == 'user-not-found'
+                                    ? s.forgotPasswordErrNotFound
+                                    : s.forgotPasswordErrDefault,
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
+              child: sending
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : Text(s.forgotPasswordSend),
+            ),
+          ],
+        ),
+      ),
+    );
+    emailCtrl.dispose();
+  }
+
   String _authError(String code, S s) => switch (code) {
         'user-not-found' => s.authErrNotFound,
         'wrong-password' ||
@@ -156,7 +233,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         : Text(s.loginButton),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => _showForgotPassword(context, s),
+                    child: Text(s.forgotPassword, style: const TextStyle(fontSize: 13)),
+                  ),
+                ),
+                const SizedBox(height: 8),
 
                 OutlinedButton(
                   onPressed: () => Navigator.push(
