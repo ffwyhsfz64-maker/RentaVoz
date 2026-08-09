@@ -20,6 +20,7 @@ class Review {
   final String pros;
   final String cons;
   final List<String> photoUrls;
+  final String? comprobanteUrl;
   final DateTime createdAt;
 
   const Review({
@@ -42,8 +43,15 @@ class Review {
     required this.pros,
     required this.cons,
     required this.photoUrls,
+    this.comprobanteUrl,
     required this.createdAt,
   });
+
+  bool get isVerified {
+    if (comprobanteUrl == null) return false;
+    final threeMonthsAgo = DateTime.now().subtract(const Duration(days: 90));
+    return moveOutDate.isAfter(threeMonthsAgo);
+  }
 
   double get overallRating =>
       (landlordRating + conditionRating + locationRating + securityRating) / 4;
@@ -67,6 +75,7 @@ class Review {
         'pros': pros,
         'cons': cons,
         'photoUrls': photoUrls,
+        if (comprobanteUrl != null) 'comprobanteUrl': comprobanteUrl,
         'createdAt': Timestamp.fromDate(createdAt),
       };
 
@@ -90,6 +99,7 @@ class Review {
         pros: map['pros'] as String,
         cons: map['cons'] as String,
         photoUrls: List<String>.from(map['photoUrls'] as List),
+        comprobanteUrl: map['comprobanteUrl'] as String?,
         createdAt: _parseDate(map['createdAt']),
       );
 

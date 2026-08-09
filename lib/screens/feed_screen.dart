@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../data/dummy_reviews.dart';
 import '../models/review.dart';
 import '../services/review_service.dart';
 import '../widgets/review_card.dart';
 import 'review_detail_screen.dart';
+import 'settings_screen.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -23,15 +25,22 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: const Text('RentaVoz'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
             child: SearchBar(
-              hintText: 'Buscar por dirección o colonia…',
+              hintText: s.searchHint,
               leading: const Icon(Icons.search, size: 20),
               onChanged: (v) => setState(() => _search = v),
               elevation: const WidgetStatePropertyAll(1),
@@ -43,7 +52,6 @@ class _FeedScreenState extends State<FeedScreen> {
       body: StreamBuilder<List<Review>>(
         stream: ReviewService.feedStream(),
         builder: (context, snap) {
-          // Firestore에 데이터가 없으면 더미 데이터를 보여줌
           final reviews = _filter(
             (snap.data?.isEmpty ?? true) ? dummyReviews : snap.data!,
           );
@@ -64,7 +72,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   const Icon(Icons.search_off, size: 64, color: Colors.grey),
                   const SizedBox(height: 12),
                   Text(
-                    _search.isEmpty ? 'No hay reseñas aún' : 'Sin resultados para "$_search"',
+                    _search.isEmpty ? s.noReviewsYet : s.noResultsFor(_search),
                     style: const TextStyle(color: Colors.grey),
                   ),
                 ],

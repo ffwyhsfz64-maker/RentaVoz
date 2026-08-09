@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+import '../main.dart';
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  static const _langs = [
+    ('Español', 'es', '🇲🇽'),
+    ('English', 'en', '🇺🇸'),
+    ('한국어', 'ko', '🇰🇷'),
+    ('日本語', 'ja', '🇯🇵'),
+    ('中文', 'zh', '🇨🇳'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final s = S.of(context)!;
+    final currentCode = Localizations.localeOf(context).languageCode;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(s.settingsTitle)),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(s.languageLabel, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.grey)),
+          ),
+          ..._langs.map((lang) {
+            final (name, code, flag) = lang;
+            final selected = code == currentCode;
+            return ListTile(
+              leading: Text(flag, style: const TextStyle(fontSize: 24)),
+              title: Text(name),
+              trailing: selected ? const Icon(Icons.check_circle, color: Color(0xFF2E7D32)) : null,
+              selected: selected,
+              onTap: () {
+                RentaVozApp.of(context)?.setLocale(Locale(code));
+                Navigator.pop(context);
+              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}

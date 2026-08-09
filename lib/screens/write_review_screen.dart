@@ -1,13 +1,20 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/review.dart';
 import '../services/auth_service.dart';
 import '../services/review_service.dart';
+import '../services/storage_service.dart';
+import '../services/vision_service.dart';
 import '../widgets/address_field.dart';
 
 class WriteReviewScreen extends StatefulWidget {
-  const WriteReviewScreen({super.key});
+  const WriteReviewScreen({super.key, this.existingReview});
+
+  final Review? existingReview;
 
   @override
   State<WriteReviewScreen> createState() => _WriteReviewScreenState();
@@ -25,6 +32,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   DateTime? _moveInDate;
   DateTime? _moveOutDate;
 
+  bool get _isEditing => widget.existingReview != null;
+
   double _landlordRating = 3;
   double _conditionRating = 3;
   double _locationRating = 3;
@@ -34,6 +43,89 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   bool _avalRequired = false;
   bool _depositReturned = false;
   bool _utilitiesIncluded = false;
+  File? _comprobanteFile;
+  bool _comprobanteIsPdf = false;
+  ComprobanteValidationResult? _comprobanteValidation;
+  bool _uploading = false;
+  bool _validating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final r = widget.existingReview;
+    if (r != null) {
+      _address = r.address;
+      _lat = r.lat;
+      _lng = r.lng;
+      _rentCtrl.text = r.monthlyRent.toStringAsFixed(0);
+      _moveInDate = r.moveInDate;
+      _moveOutDate = r.moveOutDate;
+      _landlordRating = r.landlordRating;
+      _conditionRating = r.conditionRating;
+      _locationRating = r.locationRating;
+      _securityRating = r.securityRating;
+      _hadFormalContract = r.hadFormalContract;
+      _avalRequired = r.avalRequired;
+      _depositReturned = r.depositReturned;
+      _utilitiesIncluded = r.utilitiesIncluded;
+      _prosCtrl.text = r.pros;
+      _consCtrl.text = r.cons;
+    }
+  }
+
+  @override
+  void dispose() {
+    _rentCtrl.dispose();
+    _prosCtrl.dispose();
+    _consCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickComprobante() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'heic'],
+    );
+    if (result == null || result.files.single.path == null) return;
+
+    final path = result.files.single.path!;
+    final file = File(path);
+    final isPdf = path.toLowerCase().endsWith('.pdf');
+
+    setState(() {
+      _comprobanteFile = file;
+      _comprobanteIsPdf = isPdf;
+      _comprobanteValidation = null;
+    });
+
+    if (isPdf) {
+      setState(() {
+        _comprobanteValidation = const ComprobanteValidationResult(
+          isValid: true,
+          message: 'PDF adjunto (sin verificación de fecha)',
+        );
+      });
+      return;
+    }
+
+    setState(() => _validating = true);
+    final validation = await VisionService.validateComprobante(file);
+    if (mounted) {
+      setState(() {
+        _comprobanteValidation = validation;
+        _validating = false;
+      });
+      if (!validation.isValid) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(validation.message),
+            backgroundColor: Colors.orange,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _pickDate(bool isMoveIn) async {
     final picked = await showDatePicker(
@@ -81,22 +173,18 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   @override
-  void dispose() {
-    _rentCtrl.dispose();
-    _prosCtrl.dispose();
-    _consCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
+    final dateFmtLocale = locale == 'zh' || locale == 'ja' || locale == 'ko' ? 'en' : locale;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nueva reseña'),
+        title: Text(_isEditing ? s.editReview : s.newReview),
         actions: [
           TextButton(
-            onPressed: _submit,
-            child: const Text('Publicar'),
+            onPressed: _uploading ? null : _submit,
+            child: Text(_isEditing ? s.saveButton : s.publishAction),
           ),
         ],
       ),
@@ -105,10 +193,11 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // --- Dirección ---
-            Text('Dirección', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            // --- 주소 ---
+            Text(s.addressLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             AddressField(
+              initialValue: _address,
               onSelected: (result) => setState(() {
                 _address = result.address;
                 _lat = result.lat;
@@ -117,15 +206,15 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             ),
             const SizedBox(height: 24),
 
-            // --- Período y renta ---
-            Text('Período de arrendamiento', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            // --- 기간 및 임대료 ---
+            Text(s.periodLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.calendar_today, size: 16),
-                    label: Text(_moveInDate == null ? 'Entrada' : DateFormat('MMM yyyy', 'es').format(_moveInDate!)),
+                    label: Text(_moveInDate == null ? s.moveIn : DateFormat('MMM yyyy', dateFmtLocale).format(_moveInDate!)),
                     onPressed: () => _pickDate(true),
                   ),
                 ),
@@ -135,7 +224,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 Expanded(
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.calendar_today, size: 16),
-                    label: Text(_moveOutDate == null ? 'Salida' : DateFormat('MMM yyyy', 'es').format(_moveOutDate!)),
+                    label: Text(_moveOutDate == null ? s.moveOut : DateFormat('MMM yyyy', dateFmtLocale).format(_moveOutDate!)),
                     onPressed: () => _pickDate(false),
                   ),
                 ),
@@ -145,73 +234,154 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             TextFormField(
               controller: _rentCtrl,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Renta mensual (MXN)',
+              decoration: InputDecoration(
+                labelText: s.rentLabel,
                 prefixText: '\$ ',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
               ),
               validator: (v) => (v == null || v.isEmpty) ? 'Ingresa el monto' : null,
             ),
             const SizedBox(height: 24),
 
-            // --- Calificaciones ---
-            Text('Calificaciones', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            // --- 평점 ---
+            Text(s.ratingsLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            _ratingRow('Arrendador / Propietario', _landlordRating, (v) => setState(() => _landlordRating = v)),
-            _ratingRow('Estado del inmueble', _conditionRating, (v) => setState(() => _conditionRating = v)),
-            _ratingRow('Ubicación', _locationRating, (v) => setState(() => _locationRating = v)),
-            _ratingRow('Seguridad', _securityRating, (v) => setState(() => _securityRating = v)),
+            _ratingRow(s.landlordRating, _landlordRating, (v) => setState(() => _landlordRating = v)),
+            _ratingRow(s.conditionRating, _conditionRating, (v) => setState(() => _conditionRating = v)),
+            _ratingRow(s.locationRating, _locationRating, (v) => setState(() => _locationRating = v)),
+            _ratingRow(s.securityRating, _securityRating, (v) => setState(() => _securityRating = v)),
             const SizedBox(height: 24),
 
-            // --- Detalles del contrato ---
-            Text('Detalles del contrato', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            _switchRow('Contrato formal', _hadFormalContract, (v) => setState(() => _hadFormalContract = v)),
-            _switchRow('Requirió aval', _avalRequired, (v) => setState(() => _avalRequired = v)),
-            _switchRow('Depósito devuelto', _depositReturned, (v) => setState(() => _depositReturned = v)),
-            _switchRow('Servicios incluidos (agua/luz/gas)', _utilitiesIncluded, (v) => setState(() => _utilitiesIncluded = v)),
+            // --- 계약 세부사항 ---
+            Text(s.contractSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _switchRow(s.formalContract, _hadFormalContract, (v) => setState(() => _hadFormalContract = v)),
+            _switchRow(s.avalRequired, _avalRequired, (v) => setState(() => _avalRequired = v)),
+            _switchRow(s.depositReturned, _depositReturned, (v) => setState(() => _depositReturned = v)),
+            _switchRow(s.utilitiesIncluded, _utilitiesIncluded, (v) => setState(() => _utilitiesIncluded = v)),
             const SizedBox(height: 24),
 
-            // --- Pros / Contras ---
-            Text('Lo bueno y lo malo', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            // --- 장단점 ---
             TextFormField(
               controller: _prosCtrl,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: '¿Qué te gustó?',
-                prefixIcon: Icon(Icons.thumb_up_outlined, color: Color(0xFF2E7D32)),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: s.goodSection,
+                prefixIcon: const Icon(Icons.thumb_up_outlined, color: Color(0xFF2E7D32)),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _consCtrl,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: '¿Qué no te gustó?',
-                prefixIcon: Icon(Icons.thumb_down_outlined, color: Colors.red),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: s.badSection,
+                prefixIcon: const Icon(Icons.thumb_down_outlined, color: Colors.red),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 24),
 
-            // --- Fotos ---
-            Text('Fotos', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.add_photo_alternate_outlined),
-              label: const Text('Agregar fotos'),
-              onPressed: () {
-                // TODO: image_picker integration
-              },
+            // --- 납부 증명서 ---
+            Row(
+              children: [
+                Text(s.comprobanteSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(width: 8),
+                const Tooltip(
+                  message: 'Sube tu recibo de renta para verificar\nque realmente viviste en este lugar.\nTu información personal será protegida.',
+                  child: Icon(Icons.info_outline, size: 16, color: Colors.grey),
+                ),
+              ],
             ),
+            const SizedBox(height: 4),
+            Text(
+              s.comprobanteOptional,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            if (_comprobanteFile != null) ...[
+              _comprobanteIsPdf
+                  ? Container(
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withAlpha(15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.withAlpha(60)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.picture_as_pdf, color: Colors.red, size: 32),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: Text(
+                              _comprobanteFile!.path.split('/').last,
+                              style: const TextStyle(fontSize: 13),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(_comprobanteFile!, height: 160, width: double.infinity, fit: BoxFit.cover),
+                    ),
+              const SizedBox(height: 8),
+              if (_validating)
+                Row(
+                  children: [
+                    const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                    const SizedBox(width: 8),
+                    Text(s.analyzingDoc, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                  ],
+                )
+              else if (_comprobanteValidation != null)
+                Row(
+                  children: [
+                    Icon(
+                      _comprobanteValidation!.isValid ? Icons.check_circle : Icons.warning_amber_rounded,
+                      color: _comprobanteValidation!.isValid ? const Color(0xFF2E7D32) : Colors.orange,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        _comprobanteValidation!.message,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _comprobanteValidation!.isValid ? const Color(0xFF2E7D32) : Colors.orange,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => setState(() {
+                        _comprobanteFile = null;
+                        _comprobanteValidation = null;
+                      }),
+                      child: Text(s.removeDoc),
+                    ),
+                  ],
+                ),
+            ] else
+              OutlinedButton.icon(
+                icon: const Icon(Icons.upload_file_outlined),
+                label: Text(s.uploadComprobante),
+                onPressed: _pickComprobante,
+              ),
             const SizedBox(height: 32),
 
             FilledButton(
-              onPressed: _submit,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('Publicar reseña'),
+              onPressed: _uploading ? null : _submit,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: _uploading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(s.publishButton),
               ),
             ),
             const SizedBox(height: 32),
@@ -222,22 +392,32 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   Future<void> _submit() async {
+    final s = S.of(context)!;
     if (!_formKey.currentState!.validate()) return;
     if (_moveInDate == null || _moveOutDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona las fechas de entrada y salida')),
+        SnackBar(content: Text(s.selectDates)),
       );
       return;
     }
     if (_address.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una dirección de la lista')),
+        SnackBar(content: Text(s.selectAddress)),
       );
       return;
     }
+    setState(() => _uploading = true);
+    final reviewId = _isEditing ? widget.existingReview!.id : const Uuid().v4();
+    String? comprobanteUrl = _isEditing ? widget.existingReview!.comprobanteUrl : null;
+    try {
+      if (_comprobanteFile != null && (_comprobanteValidation?.isValid ?? false)) {
+        comprobanteUrl = await StorageService.uploadComprobante(reviewId, _comprobanteFile!);
+      }
+    } catch (_) {}
+
     final uid = AuthService.currentUser?.uid ?? 'anonymous';
     final review = Review(
-      id: const Uuid().v4(),
+      id: reviewId,
       userId: uid,
       address: _address,
       lat: _lat,
@@ -256,13 +436,14 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       pros: _prosCtrl.text.trim(),
       cons: _consCtrl.text.trim(),
       photoUrls: [],
-      createdAt: DateTime.now(),
+      comprobanteUrl: comprobanteUrl,
+      createdAt: _isEditing ? widget.existingReview!.createdAt : DateTime.now(),
     );
     try {
       await ReviewService.addReview(review);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('¡Reseña publicada!')),
+          SnackBar(content: Text(_isEditing ? s.reviewUpdated : s.reviewPublished)),
         );
         Navigator.pop(context);
       }
@@ -272,6 +453,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
           SnackBar(content: Text('Error al publicar: $e')),
         );
       }
+    } finally {
+      if (mounted) setState(() => _uploading = false);
     }
   }
 }

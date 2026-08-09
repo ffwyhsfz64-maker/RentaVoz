@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../data/dummy_reviews.dart';
 import '../models/review.dart';
@@ -58,15 +59,25 @@ class _MapScreenState extends State<MapScreen> {
         .toSet();
   }
 
+  Future<void> _zoom(double delta) async {
+    final ctrl = await _mapCtrl.future;
+    final current = await ctrl.getZoomLevel();
+    ctrl.animateCamera(CameraUpdate.newLatLngZoom(
+      _queretaro,
+      (current + delta).clamp(2.0, 21.0),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mapa de reseñas'),
+        title: Text(s.mapTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.my_location),
-            tooltip: 'Centrar en Querétaro',
+            tooltip: s.centerMap,
             onPressed: () async {
               final ctrl = await _mapCtrl.future;
               ctrl.animateCamera(CameraUpdate.newLatLngZoom(_queretaro, 13));
@@ -85,7 +96,7 @@ class _MapScreenState extends State<MapScreen> {
             onTap: (_) => setState(() => _selected = null),
           ),
 
-          // Leyenda
+          // 범례
           Positioned(
             top: 12,
             left: 12,
@@ -95,16 +106,16 @@ class _MapScreenState extends State<MapScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _LegendItem(color: Colors.green, label: '★ 4–5  Bueno'),
-                    _LegendItem(color: Colors.amber, label: '★ 3–4  Regular'),
-                    _LegendItem(color: Colors.red, label: '★ 1–3  Malo'),
+                    _LegendItem(color: Colors.green, label: s.legendGood),
+                    _LegendItem(color: Colors.amber, label: s.legendRegular),
+                    _LegendItem(color: Colors.red, label: s.legendBad),
                   ],
                 ),
               ),
             ),
           ),
 
-          // Contador
+          // 리뷰 수
           Positioned(
             top: 12,
             right: 12,
@@ -112,14 +123,35 @@ class _MapScreenState extends State<MapScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Text(
-                  '${_markers.length} reseñas',
+                  s.reviewCount(_markers.length),
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),
             ),
           ),
 
-          // Bottom sheet al seleccionar un pin
+          // +/- 줌 버튼
+          Positioned(
+            right: 12,
+            bottom: _selected != null ? 200 : 80,
+            child: Column(
+              children: [
+                FloatingActionButton.small(
+                  heroTag: 'zoom_in',
+                  onPressed: () => _zoom(1),
+                  child: const Icon(Icons.add),
+                ),
+                const SizedBox(height: 8),
+                FloatingActionButton.small(
+                  heroTag: 'zoom_out',
+                  onPressed: () => _zoom(-1),
+                  child: const Icon(Icons.remove),
+                ),
+              ],
+            ),
+          ),
+
+          // 선택된 리뷰 카드
           if (_selected != null)
             Positioned(
               bottom: 0,
@@ -130,7 +162,6 @@ class _MapScreenState extends State<MapScreen> {
                   padding: const EdgeInsets.all(8),
                   child: Column(
                     children: [
-                      // Cerrar
                       Align(
                         alignment: Alignment.centerRight,
                         child: IconButton(

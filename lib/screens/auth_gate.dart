@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
+import 'onboarding_screen.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -16,8 +18,37 @@ class AuthGate extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        return snap.data != null ? const HomeScreen() : const LoginScreen();
+        if (snap.data == null) return const LoginScreen();
+        return const _OnboardingGate();
       },
     );
+  }
+}
+
+class _OnboardingGate extends StatefulWidget {
+  const _OnboardingGate();
+
+  @override
+  State<_OnboardingGate> createState() => _OnboardingGateState();
+}
+
+class _OnboardingGateState extends State<_OnboardingGate> {
+  bool? _done;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((p) {
+      setState(() => _done = p.getBool('onboarding_done') ?? false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_done == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_done == false) {
+      return OnboardingScreen(onDone: () => setState(() => _done = true));
+    }
+    return const HomeScreen();
   }
 }

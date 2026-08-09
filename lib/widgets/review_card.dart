@@ -78,6 +78,7 @@ class ReviewCard extends StatelessWidget {
               Wrap(
                 spacing: 6,
                 children: [
+                  if (review.isVerified) _Badge(label: '✓ Documento adjunto', color: const Color(0xFF2E7D32), bold: true),
                   if (review.hadFormalContract) _Badge(label: 'Contrato formal', color: Colors.green),
                   if (review.avalRequired) _Badge(label: 'Requirió aval', color: Colors.orange),
                   if (!review.depositReturned) _Badge(label: 'Depósito no devuelto', color: Colors.red),
@@ -165,14 +166,15 @@ class _MiniRating extends StatelessWidget {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color});
+  const _Badge({required this.label, required this.color, this.bold = false});
   final String label;
   final Color color;
+  final bool bold;
 
   @override
   Widget build(BuildContext context) {
     return Chip(
-      label: Text(label, style: TextStyle(fontSize: 10, color: color)),
+      label: Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: bold ? FontWeight.bold : FontWeight.normal)),
       padding: EdgeInsets.zero,
       labelPadding: const EdgeInsets.symmetric(horizontal: 6),
       side: BorderSide(color: color.withAlpha(100)),

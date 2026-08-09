@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../home_screen.dart';
 import 'register_screen.dart';
@@ -37,8 +38,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
+        final s = S.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_authError(e.code))),
+          SnackBar(
+            content: Text(_authError(e.code, s)),
+            duration: const Duration(seconds: 4),
+          ),
         );
       }
     } finally {
@@ -46,16 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String _authError(String code) => switch (code) {
-        'user-not-found' => 'No existe una cuenta con ese correo.',
-        'wrong-password' || 'invalid-credential' => 'Contraseña incorrecta.',
-        'invalid-email' => 'Correo no válido.',
-        'too-many-requests' => 'Demasiados intentos. Intenta más tarde.',
-        _ => 'Error al iniciar sesión. Intenta de nuevo.',
+  String _authError(String code, S s) => switch (code) {
+        'user-not-found' => s.authErrNotFound,
+        'wrong-password' || 'invalid-credential' => s.authErrWrongPw,
+        'invalid-email' => s.authErrInvalidEmail,
+        'too-many-requests' => s.authErrTooMany,
+        _ => s.authErrDefault,
       };
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -78,35 +84,34 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Reseñas honestas de arrendamientos en México',
+                  s.appSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 40),
 
-                // Email
                 TextFormField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Correo electrónico',
-                    prefixIcon: Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(),
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    labelText: s.emailLabel,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Ingresa un correo válido' : null,
+                      (v == null || !v.contains('@')) ? s.emailInvalid : null,
                 ),
                 const SizedBox(height: 16),
 
-                // Password
                 TextFormField(
                   controller: _passCtrl,
                   obscureText: _obscure,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _login(),
                   decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: s.passwordLabel,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
@@ -115,11 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   validator: (v) =>
-                      (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
+                      (v == null || v.length < 6) ? s.passwordMinLength : null,
                 ),
                 const SizedBox(height: 24),
 
-                // Login button
                 FilledButton(
                   onPressed: _loading ? null : _login,
                   child: Padding(
@@ -130,20 +134,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : const Text('Iniciar sesión'),
+                        : Text(s.loginButton),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Register
                 OutlinedButton(
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const RegisterScreen()),
                   ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Text('Crear cuenta nueva'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: Text(s.createAccount),
                   ),
                 ),
               ],

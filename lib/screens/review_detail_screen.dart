@@ -1,18 +1,72 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../models/review.dart';
+import '../services/translation_service.dart';
 
-class ReviewDetailScreen extends StatelessWidget {
+class ReviewDetailScreen extends StatefulWidget {
   const ReviewDetailScreen({super.key, required this.review});
-
   final Review review;
 
   @override
+  State<ReviewDetailScreen> createState() => _ReviewDetailScreenState();
+}
+
+class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
+  String? _translatedPros;
+  String? _translatedCons;
+  bool _showTranslation = false;
+  bool _translating = false;
+  String? _translationError;
+
+  Future<void> _translate() async {
+    final targetLang = Localizations.localeOf(context).languageCode;
+    setState(() {
+      _translating = true;
+      _translationError = null;
+    });
+
+    try {
+      final texts = [
+        widget.review.pros.isNotEmpty ? widget.review.pros : ' ',
+        widget.review.cons.isNotEmpty ? widget.review.cons : ' ',
+      ];
+      final results = await TranslationService.translate(texts, targetLang);
+      setState(() {
+        _translatedPros = results[0].trim();
+        _translatedCons = results[1].trim();
+        _showTranslation = true;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      final s = S.of(context)!;
+      setState(() => _translationError = s.translationError);
+    } finally {
+      setState(() => _translating = false);
+    }
+  }
+
+  void _toggleTranslation() {
+    if (_showTranslation) {
+      setState(() => _showTranslation = false);
+    } else if (_translatedPros != null) {
+      setState(() => _showTranslation = true);
+    } else {
+      _translate();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
     final theme = Theme.of(context);
+    final review = widget.review;
+    final hasContent = review.pros.isNotEmpty || review.cons.isNotEmpty;
+    final currentLang = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalle de reseña'),
+        title: Text(s.detailTitle),
         actions: [
           IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
         ],
@@ -20,7 +74,7 @@ class ReviewDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Overall score hero
+          // 전체 평점 히어로
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -40,17 +94,17 @@ class ReviewDetailScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text('de 5.0', style: TextStyle(color: Colors.white70)),
+                    Text(s.overallOf5, style: const TextStyle(color: Colors.white70)),
                   ],
                 ),
                 const SizedBox(width: 20),
                 Expanded(
                   child: Column(
                     children: [
-                      _RatingBar(label: 'Arrendador', value: review.landlordRating),
-                      _RatingBar(label: 'Inmueble', value: review.conditionRating),
-                      _RatingBar(label: 'Ubicación', value: review.locationRating),
-                      _RatingBar(label: 'Seguridad', value: review.securityRating),
+                      _RatingBar(label: s.landlordRating, value: review.landlordRating),
+                      _RatingBar(label: s.conditionRating, value: review.conditionRating),
+                      _RatingBar(label: s.locationRating, value: review.locationRating),
+                      _RatingBar(label: s.securityRating, value: review.securityRating),
                     ],
                   ),
                 ),
@@ -59,9 +113,9 @@ class ReviewDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Address
+          // 주소
           _Section(
-            title: 'Dirección',
+            title: s.addressLabel,
             child: Row(
               children: [
                 const Icon(Icons.location_on_outlined, color: Color(0xFF2E7D32)),
@@ -71,80 +125,172 @@ class ReviewDetailScreen extends StatelessWidget {
             ),
           ),
 
-          // Período y renta
+          // 기간 및 임대료
           _Section(
-            title: 'Período y renta',
+            title: s.periodLabel,
             child: Row(
               children: [
-                Expanded(
-                  child: _InfoTile(
-                    icon: Icons.calendar_month_outlined,
-                    label: 'Entrada',
-                    value: _fmtDate(review.moveInDate),
-                  ),
-                ),
-                Expanded(
-                  child: _InfoTile(
-                    icon: Icons.calendar_month,
-                    label: 'Salida',
-                    value: _fmtDate(review.moveOutDate),
-                  ),
-                ),
-                Expanded(
-                  child: _InfoTile(
-                    icon: Icons.attach_money,
-                    label: 'Renta',
-                    value: '\$${review.monthlyRent.toStringAsFixed(0)}',
-                  ),
-                ),
+                Expanded(child: _InfoTile(icon: Icons.calendar_month_outlined, label: s.moveIn, value: _fmtDate(review.moveInDate))),
+                Expanded(child: _InfoTile(icon: Icons.calendar_month, label: s.moveOut, value: _fmtDate(review.moveOutDate))),
+                Expanded(child: _InfoTile(icon: Icons.attach_money, label: s.rent, value: '\$${review.monthlyRent.toStringAsFixed(0)}')),
               ],
             ),
           ),
 
-          // Contrato
+          // 계약
           _Section(
-            title: 'Detalles del contrato',
+            title: s.contractSection,
             child: Column(
               children: [
-                _BoolRow(label: 'Contrato formal', value: review.hadFormalContract),
-                _BoolRow(label: 'Requirió aval', value: review.avalRequired, invertColor: true),
-                _BoolRow(label: 'Depósito devuelto', value: review.depositReturned),
-                _BoolRow(label: 'Servicios incluidos', value: review.utilitiesIncluded),
+                _BoolRow(label: s.formalContract, value: review.hadFormalContract),
+                _BoolRow(label: s.avalRequired, value: review.avalRequired, invertColor: true),
+                _BoolRow(label: s.depositReturned, value: review.depositReturned),
+                _BoolRow(label: s.utilitiesIncluded, value: review.utilitiesIncluded),
               ],
             ),
           ),
 
-          // Pros
-          if (review.pros.isNotEmpty)
-            _Section(
-              title: '¿Qué gustó?',
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.thumb_up_outlined, size: 18, color: Color(0xFF2E7D32)),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(review.pros, style: theme.textTheme.bodyMedium)),
-                ],
+          // 장단점 + 번역 버튼
+          if (hasContent) ...[
+            // 번역 상태 배너
+            if (_showTranslation)
+              Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withAlpha(20),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.withAlpha(60)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.translate, size: 14, color: Colors.blue),
+                    const SizedBox(width: 6),
+                    Text(s.translationLabel, style: const TextStyle(fontSize: 12, color: Colors.blue)),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: _toggleTranslation,
+                      child: Text(s.showOriginal, style: const TextStyle(fontSize: 12, color: Colors.blue, decoration: TextDecoration.underline)),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-          // Cons
-          if (review.cons.isNotEmpty)
+            if (review.pros.isNotEmpty)
+              _Section(
+                title: s.goodSection,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.thumb_up_outlined, size: 18, color: Color(0xFF2E7D32)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _showTranslation && _translatedPros != null ? _translatedPros! : review.pros,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            if (review.cons.isNotEmpty)
+              _Section(
+                title: s.badSection,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.thumb_down_outlined, size: 18, color: Colors.red),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _showTranslation && _translatedCons != null ? _translatedCons! : review.cons,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // 번역 버튼 (번역 중 / 에러 / 기본)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: _translating
+                  ? Row(
+                      children: [
+                        const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                        const SizedBox(width: 8),
+                        Text(s.translating, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                      ],
+                    )
+                  : _translationError != null
+                      ? Row(
+                          children: [
+                            const Icon(Icons.error_outline, size: 16, color: Colors.orange),
+                            const SizedBox(width: 6),
+                            Expanded(child: Text(_translationError!, style: const TextStyle(fontSize: 12, color: Colors.orange))),
+                            TextButton(
+                              onPressed: _translate,
+                              child: Text(s.translateButton),
+                            ),
+                          ],
+                        )
+                      : !_showTranslation
+                          ? OutlinedButton.icon(
+                              icon: const Icon(Icons.translate, size: 16),
+                              label: Text(s.translateButton),
+                              onPressed: currentLang == 'es' ? null : _toggleTranslation,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                                side: const BorderSide(color: Colors.blue),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+            ),
+          ],
+
+          // 납부 증명서
+          if (review.isVerified) ...[
             _Section(
-              title: '¿Qué no gustó?',
-              child: Row(
+              title: s.comprobanteSection,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.thumb_down_outlined, size: 18, color: Colors.red),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(review.cons, style: theme.textTheme.bodyMedium)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2E7D32).withAlpha(20),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFF2E7D32).withAlpha(80)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.verified_outlined, size: 16, color: Color(0xFF2E7D32)),
+                        const SizedBox(width: 6),
+                        Text(s.badgeVerified, style: const TextStyle(color: Color(0xFF2E7D32), fontWeight: FontWeight.bold, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CachedNetworkImage(
+                      imageUrl: review.comprobanteUrl!,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const SizedBox(height: 120, child: Center(child: CircularProgressIndicator())),
+                      errorWidget: (context, url, err) => const SizedBox(height: 60, child: Center(child: Icon(Icons.broken_image_outlined, color: Colors.grey))),
+                    ),
+                  ),
                 ],
               ),
             ),
+          ],
 
           const SizedBox(height: 16),
           Text(
-            'Publicada el ${_fmtDateFull(review.createdAt)}',
+            s.publishedOn(_fmtDateFull(review.createdAt)),
             style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
             textAlign: TextAlign.center,
           ),
@@ -161,6 +307,8 @@ class ReviewDetailScreen extends StatelessWidget {
     return '${d.day} ${months[d.month - 1]} ${d.year}';
   }
 }
+
+// ─── 공통 위젯 ────────────────────────────────────────────────────
 
 class _Section extends StatelessWidget {
   const _Section({required this.title, required this.child});
@@ -195,10 +343,7 @@ class _RatingBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          SizedBox(
-            width: 70,
-            child: Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
-          ),
+          SizedBox(width: 70, child: Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11))),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),

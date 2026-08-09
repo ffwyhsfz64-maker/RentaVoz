@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../home_screen.dart';
 
@@ -39,8 +40,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
+        final s = S.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_authError(e.code))),
+          SnackBar(content: Text(_authError(e.code, s))),
         );
       }
     } finally {
@@ -48,17 +50,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  String _authError(String code) => switch (code) {
-        'email-already-in-use' => 'Ya existe una cuenta con ese correo.',
-        'invalid-email' => 'Correo no válido.',
-        'weak-password' => 'La contraseña es muy débil.',
-        _ => 'Error al crear cuenta. Intenta de nuevo.',
+  String _authError(String code, S s) => switch (code) {
+        'email-already-in-use' => s.authErrEmailInUse,
+        'invalid-email' => s.authErrInvalidEmail,
+        'weak-password' => s.authErrWeakPw,
+        _ => s.authErrRegDefault,
       };
 
   @override
   Widget build(BuildContext context) {
+    final s = S.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear cuenta')),
+      appBar: AppBar(title: Text(s.createAccount)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -72,13 +75,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Correo electrónico',
-                    prefixIcon: Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(),
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    labelText: s.emailLabel,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      (v == null || !v.contains('@')) ? 'Ingresa un correo válido' : null,
+                      (v == null || !v.contains('@')) ? s.emailInvalid : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -86,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: _obscure,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: s.passwordLabel,
                     prefixIcon: const Icon(Icons.lock_outlined),
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
@@ -95,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   validator: (v) =>
-                      (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
+                      (v == null || v.length < 6) ? s.passwordMinLength : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -103,13 +107,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   obscureText: _obscure,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _register(),
-                  decoration: const InputDecoration(
-                    labelText: 'Confirmar contraseña',
-                    prefixIcon: Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: s.confirmPasswordLabel,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (v) =>
-                      v != _passCtrl.text ? 'Las contraseñas no coinciden' : null,
+                      v != _passCtrl.text ? s.passwordMismatch : null,
                 ),
                 const SizedBox(height: 28),
                 FilledButton(
@@ -122,7 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : const Text('Registrarse'),
+                        : Text(s.registerButton),
                   ),
                 ),
               ],
