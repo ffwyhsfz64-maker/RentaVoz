@@ -18,7 +18,7 @@ class AuthGate extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        if (snap.data == null) return const LoginScreen();
+        if (snap.hasError || snap.data == null) return const LoginScreen();
         return const _OnboardingGate();
       },
     );
