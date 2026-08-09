@@ -10,4 +10,15 @@ class StorageService {
     await ref.putFile(file);
     return ref.getDownloadURL();
   }
+
+  static Future<List<String>> uploadPhotos(String reviewId, List<File> files) async {
+    final urls = <String>[];
+    for (var i = 0; i < files.length; i++) {
+      final ext = files[i].path.split('.').last;
+      final ref = _storage.ref('photos/$reviewId/$i.$ext');
+      await ref.putFile(files[i]);
+      urls.add(await ref.getDownloadURL());
+    }
+    return urls;
+  }
 }

@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _login({int retry = 0}) async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
@@ -37,6 +37,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on FirebaseAuthException catch (e) {
+      debugPrint('[Login] FirebaseAuthException code="${e.code}" msg="${e.message}"');
+      if (e.code == 'keychain-error' && retry == 0) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) _login(retry: 1);
+        return;
+      }
       if (mounted) {
         final s = S.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -46,6 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
+    } catch (e) {
+      debugPrint('[Login] Unexpected error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('오류: $e'), duration: const Duration(seconds: 6)),
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -53,10 +66,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _authError(String code, S s) => switch (code) {
         'user-not-found' => s.authErrNotFound,
-        'wrong-password' || 'invalid-credential' => s.authErrWrongPw,
+        'wrong-password' ||
+        'invalid-credential' ||
+        'INVALID_LOGIN_CREDENTIALS' ||
+        'invalid-login-credentials' =>
+          s.authErrWrongPw,
         'invalid-email' => s.authErrInvalidEmail,
         'too-many-requests' => s.authErrTooMany,
-        _ => s.authErrDefault,
+        'network-request-failed' => '네트워크 오류. 인터넷 연결을 확인해주세요.',
+        'keychain-error' => '다시 시도해주세요.',
+        _ => '${s.authErrDefault} (code: $code)',
       };
 
   @override

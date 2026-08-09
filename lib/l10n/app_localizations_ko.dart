@@ -351,4 +351,22 @@ class SKo extends S {
 
   @override
   String get authErrRegDefault => '계정 생성에 실패했습니다. 다시 시도해주세요.';
+
+  @override
+  String get rentalTypeLabel => '임대 유형';
+
+  @override
+  String get rentalTypeHouse => '집 전체';
+
+  @override
+  String get rentalTypeRoom => '방 하나';
+
+  @override
+  String get sharedBathroom => '화장실 공유';
+
+  @override
+  String get sharedKitchen => '부엌 공유';
+
+  @override
+  String get badgeRoom => '방 임대';
 }

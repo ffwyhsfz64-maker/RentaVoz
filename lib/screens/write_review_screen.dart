@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
@@ -39,10 +40,14 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   double _locationRating = 3;
   double _securityRating = 3;
 
+  String _rentalType = 'house';
+  bool _sharedBathroom = false;
+  bool _sharedKitchen = false;
   bool _hadFormalContract = false;
   bool _avalRequired = false;
   bool _depositReturned = false;
   bool _utilitiesIncluded = false;
+  final List<File> _photoFiles = [];
   File? _comprobanteFile;
   bool _comprobanteIsPdf = false;
   ComprobanteValidationResult? _comprobanteValidation;
@@ -64,14 +69,20 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       _conditionRating = r.conditionRating;
       _locationRating = r.locationRating;
       _securityRating = r.securityRating;
+      _rentalType = r.rentalType;
+      _sharedBathroom = r.sharedBathroom;
+      _sharedKitchen = r.sharedKitchen;
       _hadFormalContract = r.hadFormalContract;
       _avalRequired = r.avalRequired;
       _depositReturned = r.depositReturned;
       _utilitiesIncluded = r.utilitiesIncluded;
       _prosCtrl.text = r.pros;
       _consCtrl.text = r.cons;
+      _existingPhotoUrls = List<String>.from(r.photoUrls);
     }
   }
+
+  List<String> _existingPhotoUrls = [];
 
   @override
   void dispose() {
@@ -79,6 +90,24 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     _prosCtrl.dispose();
     _consCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickPhotos() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickMultiImage(imageQuality: 80);
+    if (picked.isEmpty) return;
+    final remaining = 5 - _existingPhotoUrls.length - _photoFiles.length;
+    final toAdd = picked.take(remaining).map((x) => File(x.path)).toList();
+    if (toAdd.isNotEmpty) setState(() => _photoFiles.addAll(toAdd));
+  }
+
+  Future<void> _pickPhotosFromCamera() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+    if (picked == null) return;
+    final total = _existingPhotoUrls.length + _photoFiles.length;
+    if (total >= 5) return;
+    setState(() => _photoFiles.add(File(picked.path)));
   }
 
   Future<void> _pickComprobante() async {
@@ -193,6 +222,20 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // --- 임대 유형 ---
+            Text(s.rentalTypeLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            SegmentedButton<String>(
+              segments: [
+                ButtonSegment(value: 'house', label: Text(s.rentalTypeHouse), icon: const Icon(Icons.home_outlined, size: 18)),
+                ButtonSegment(value: 'room', label: Text(s.rentalTypeRoom), icon: const Icon(Icons.door_front_door_outlined, size: 18)),
+              ],
+              selected: {_rentalType},
+              onSelectionChanged: (v) => setState(() => _rentalType = v.first),
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+            ),
+            const SizedBox(height: 24),
+
             // --- 주소 ---
             Text(s.addressLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
@@ -254,6 +297,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
 
             // --- 계약 세부사항 ---
             Text(s.contractSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            if (_rentalType == 'room') ...[
+              _switchRow(s.sharedBathroom, _sharedBathroom, (v) => setState(() => _sharedBathroom = v)),
+              _switchRow(s.sharedKitchen, _sharedKitchen, (v) => setState(() => _sharedKitchen = v)),
+            ],
             _switchRow(s.formalContract, _hadFormalContract, (v) => setState(() => _hadFormalContract = v)),
             _switchRow(s.avalRequired, _avalRequired, (v) => setState(() => _avalRequired = v)),
             _switchRow(s.depositReturned, _depositReturned, (v) => setState(() => _depositReturned = v)),
@@ -279,6 +326,48 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 prefixIcon: const Icon(Icons.thumb_down_outlined, color: Colors.red),
                 border: const OutlineInputBorder(),
               ),
+            ),
+            const SizedBox(height: 24),
+
+            // --- 사진 ---
+            Text(s.photosSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            if (_existingPhotoUrls.isNotEmpty || _photoFiles.isNotEmpty)
+              SizedBox(
+                height: 100,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    ..._existingPhotoUrls.map((url) => _PhotoThumb(
+                      child: Image.network(url, fit: BoxFit.cover),
+                      onRemove: () => setState(() => _existingPhotoUrls.remove(url)),
+                    )),
+                    ..._photoFiles.map((f) => _PhotoThumb(
+                      child: Image.file(f, fit: BoxFit.cover),
+                      onRemove: () => setState(() => _photoFiles.remove(f)),
+                    )),
+                  ],
+                ),
+              ),
+            if (_existingPhotoUrls.length + _photoFiles.length < 5)
+              Row(
+                children: [
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.photo_library_outlined, size: 16),
+                    label: Text(s.addPhotos),
+                    onPressed: _pickPhotos,
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.camera_alt_outlined, size: 16),
+                    label: const Text('Cámara'),
+                    onPressed: _pickPhotosFromCamera,
+                  ),
+                ],
+              ),
+            Text(
+              '${_existingPhotoUrls.length + _photoFiles.length}/5',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 24),
 
@@ -409,9 +498,14 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     setState(() => _uploading = true);
     final reviewId = _isEditing ? widget.existingReview!.id : const Uuid().v4();
     String? comprobanteUrl = _isEditing ? widget.existingReview!.comprobanteUrl : null;
+    List<String> photoUrls = List<String>.from(_existingPhotoUrls);
     try {
       if (_comprobanteFile != null && (_comprobanteValidation?.isValid ?? false)) {
         comprobanteUrl = await StorageService.uploadComprobante(reviewId, _comprobanteFile!);
+      }
+      if (_photoFiles.isNotEmpty) {
+        final newUrls = await StorageService.uploadPhotos(reviewId, _photoFiles);
+        photoUrls.addAll(newUrls);
       }
     } catch (_) {}
 
@@ -429,13 +523,16 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       conditionRating: _conditionRating,
       locationRating: _locationRating,
       securityRating: _securityRating,
+      rentalType: _rentalType,
+      sharedBathroom: _rentalType == 'room' ? _sharedBathroom : false,
+      sharedKitchen: _rentalType == 'room' ? _sharedKitchen : false,
       hadFormalContract: _hadFormalContract,
       avalRequired: _avalRequired,
       depositReturned: _depositReturned,
       utilitiesIncluded: _utilitiesIncluded,
       pros: _prosCtrl.text.trim(),
       cons: _consCtrl.text.trim(),
-      photoUrls: [],
+      photoUrls: photoUrls,
       comprobanteUrl: comprobanteUrl,
       createdAt: _isEditing ? widget.existingReview!.createdAt : DateTime.now(),
     );
@@ -456,5 +553,38 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     } finally {
       if (mounted) setState(() => _uploading = false);
     }
+  }
+}
+
+class _PhotoThumb extends StatelessWidget {
+  const _PhotoThumb({required this.child, required this.onRemove});
+  final Widget child;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          width: 100,
+          height: 100,
+          margin: const EdgeInsets.only(right: 8),
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: child,
+        ),
+        Positioned(
+          top: 2,
+          right: 10,
+          child: GestureDetector(
+            onTap: onRemove,
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.black54, shape: BoxShape.circle),
+              child: const Icon(Icons.close, size: 16, color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

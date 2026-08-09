@@ -768,6 +768,42 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Error al crear cuenta. Intenta de nuevo.'**
   String get authErrRegDefault;
+
+  /// No description provided for @rentalTypeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de arrendamiento'**
+  String get rentalTypeLabel;
+
+  /// No description provided for @rentalTypeHouse.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa completa'**
+  String get rentalTypeHouse;
+
+  /// No description provided for @rentalTypeRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuarto / Habitación'**
+  String get rentalTypeRoom;
+
+  /// No description provided for @sharedBathroom.
+  ///
+  /// In es, this message translates to:
+  /// **'Baño compartido'**
+  String get sharedBathroom;
+
+  /// No description provided for @sharedKitchen.
+  ///
+  /// In es, this message translates to:
+  /// **'Cocina compartida'**
+  String get sharedKitchen;
+
+  /// No description provided for @badgeRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuarto'**
+  String get badgeRoom;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

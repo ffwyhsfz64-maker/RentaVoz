@@ -37,10 +37,10 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
         _translatedCons = results[1].trim();
         _showTranslation = true;
       });
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       final s = S.of(context)!;
-      setState(() => _translationError = s.translationError);
+      setState(() => _translationError = '${s.translationError}\n($e)');
     } finally {
       setState(() => _translating = false);
     }
@@ -141,7 +141,33 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
           _Section(
             title: s.contractSection,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 임대 유형 뱃지
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        review.rentalType == 'room' ? Icons.door_front_door_outlined : Icons.home_outlined,
+                        size: 18,
+                        color: review.rentalType == 'room' ? Colors.purple : const Color(0xFF2E7D32),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        review.rentalType == 'room' ? s.rentalTypeRoom : s.rentalTypeHouse,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: review.rentalType == 'room' ? Colors.purple : const Color(0xFF2E7D32),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (review.rentalType == 'room') ...[
+                  _BoolRow(label: s.sharedBathroom, value: review.sharedBathroom, invertColor: true),
+                  _BoolRow(label: s.sharedKitchen, value: review.sharedKitchen, invertColor: true),
+                ],
                 _BoolRow(label: s.formalContract, value: review.hadFormalContract),
                 _BoolRow(label: s.avalRequired, value: review.avalRequired, invertColor: true),
                 _BoolRow(label: s.depositReturned, value: review.depositReturned),
@@ -249,6 +275,35 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             ),
           ],
 
+          // 사진
+          if (review.photoUrls.isNotEmpty) ...[
+            _Section(
+              title: s.photosSection,
+              child: SizedBox(
+                height: 180,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: review.photoUrls.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) => GestureDetector(
+                    onTap: () => _showPhoto(context, review.photoUrls, i),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl: review.photoUrls[i],
+                        width: 180,
+                        height: 180,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => const SizedBox(width: 180, child: Center(child: CircularProgressIndicator())),
+                        errorWidget: (_, __, ___) => const SizedBox(width: 180, child: Center(child: Icon(Icons.broken_image_outlined))),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+
           // 납부 증명서
           if (review.isVerified) ...[
             _Section(
@@ -296,6 +351,37 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
           ),
           const SizedBox(height: 24),
         ],
+      ),
+    );
+  }
+
+  void _showPhoto(BuildContext context, List<String> urls, int initial) {
+    final controller = PageController(initialPage: initial);
+    showDialog(
+      context: context,
+      builder: (_) => Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: controller,
+              itemCount: urls.length,
+              itemBuilder: (_, i) => InteractiveViewer(
+                child: Center(
+                  child: CachedNetworkImage(imageUrl: urls[i], fit: BoxFit.contain),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 40,
+              right: 16,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

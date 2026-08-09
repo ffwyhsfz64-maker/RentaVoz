@@ -110,5 +110,11 @@
   "authErrDefault": "ログインに失敗しました。もう一度お試しください。",
   "authErrEmailInUse": "そのメールアドレスは既に使用されています。",
   "authErrWeakPw": "パスワードが弱すぎます。",
-  "authErrRegDefault": "アカウント作成に失敗しました。もう一度お試しください。"
+  "authErrRegDefault": "アカウント作成に失敗しました。もう一度お試しください。",
+  "rentalTypeLabel": "賃貸タイプ",
+  "rentalTypeHouse": "一戸建て全体",
+  "rentalTypeRoom": "個室",
+  "sharedBathroom": "バス共用",
+  "sharedKitchen": "キッチン共用",
+  "badgeRoom": "個室"
 }

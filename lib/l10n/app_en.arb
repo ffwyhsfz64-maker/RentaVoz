@@ -110,5 +110,11 @@
   "authErrDefault": "Sign-in failed. Please try again.",
   "authErrEmailInUse": "An account already exists with that email.",
   "authErrWeakPw": "Password is too weak.",
-  "authErrRegDefault": "Account creation failed. Please try again."
+  "authErrRegDefault": "Account creation failed. Please try again.",
+  "rentalTypeLabel": "Rental type",
+  "rentalTypeHouse": "Full house",
+  "rentalTypeRoom": "Room",
+  "sharedBathroom": "Shared bathroom",
+  "sharedKitchen": "Shared kitchen",
+  "badgeRoom": "Room"
 }

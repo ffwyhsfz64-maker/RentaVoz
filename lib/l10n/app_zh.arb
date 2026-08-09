@@ -110,5 +110,11 @@
   "authErrDefault": "登录失败，请重试。",
   "authErrEmailInUse": "该邮箱已被注册。",
   "authErrWeakPw": "密码强度太弱。",
-  "authErrRegDefault": "账户创建失败，请重试。"
+  "authErrRegDefault": "账户创建失败，请重试。",
+  "rentalTypeLabel": "租赁类型",
+  "rentalTypeHouse": "整套房屋",
+  "rentalTypeRoom": "单间",
+  "sharedBathroom": "共用卫生间",
+  "sharedKitchen": "共用厨房",
+  "badgeRoom": "单间"
 }

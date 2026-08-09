@@ -347,4 +347,22 @@ class SZh extends S {
 
   @override
   String get authErrRegDefault => '账户创建失败，请重试。';
+
+  @override
+  String get rentalTypeLabel => '租赁类型';
+
+  @override
+  String get rentalTypeHouse => '整套房屋';
+
+  @override
+  String get rentalTypeRoom => '单间';
+
+  @override
+  String get sharedBathroom => '共用卫生间';
+
+  @override
+  String get sharedKitchen => '共用厨房';
+
+  @override
+  String get badgeRoom => '单间';
 }

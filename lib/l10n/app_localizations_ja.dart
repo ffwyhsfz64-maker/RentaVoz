@@ -351,4 +351,22 @@ class SJa extends S {
 
   @override
   String get authErrRegDefault => 'アカウント作成に失敗しました。もう一度お試しください。';
+
+  @override
+  String get rentalTypeLabel => '賃貸タイプ';
+
+  @override
+  String get rentalTypeHouse => '一戸建て全体';
+
+  @override
+  String get rentalTypeRoom => '個室';
+
+  @override
+  String get sharedBathroom => 'バス共用';
+
+  @override
+  String get sharedKitchen => 'キッチン共用';
+
+  @override
+  String get badgeRoom => '個室';
 }

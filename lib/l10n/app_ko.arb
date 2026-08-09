@@ -110,5 +110,11 @@
   "authErrDefault": "로그인에 실패했습니다. 다시 시도해주세요.",
   "authErrEmailInUse": "이미 해당 이메일로 등록된 계정이 있습니다.",
   "authErrWeakPw": "비밀번호가 너무 약합니다.",
-  "authErrRegDefault": "계정 생성에 실패했습니다. 다시 시도해주세요."
+  "authErrRegDefault": "계정 생성에 실패했습니다. 다시 시도해주세요.",
+  "rentalTypeLabel": "임대 유형",
+  "rentalTypeHouse": "집 전체",
+  "rentalTypeRoom": "방 하나",
+  "sharedBathroom": "화장실 공유",
+  "sharedKitchen": "부엌 공유",
+  "badgeRoom": "방 임대"
 }

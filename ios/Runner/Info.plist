@@ -66,6 +66,10 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>RentaVoz necesita acceso a tus fotos para adjuntarlas a tu reseña.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>RentaVoz necesita la cámara para tomar fotos del inmueble.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>RentaVoz necesita tu ubicación para autocompletar la dirección del inmueble que quieres reseñar.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

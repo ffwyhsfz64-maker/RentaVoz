@@ -355,4 +355,22 @@ class SEn extends S {
 
   @override
   String get authErrRegDefault => 'Account creation failed. Please try again.';
+
+  @override
+  String get rentalTypeLabel => 'Rental type';
+
+  @override
+  String get rentalTypeHouse => 'Full house';
+
+  @override
+  String get rentalTypeRoom => 'Room';
+
+  @override
+  String get sharedBathroom => 'Shared bathroom';
+
+  @override
+  String get sharedKitchen => 'Shared kitchen';
+
+  @override
+  String get badgeRoom => 'Room';
 }

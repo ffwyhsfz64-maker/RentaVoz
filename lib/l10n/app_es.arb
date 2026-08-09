@@ -131,5 +131,11 @@
   "authErrDefault": "Error al iniciar sesión. Intenta de nuevo.",
   "authErrEmailInUse": "Ya existe una cuenta con ese correo.",
   "authErrWeakPw": "La contraseña es muy débil.",
-  "authErrRegDefault": "Error al crear cuenta. Intenta de nuevo."
+  "authErrRegDefault": "Error al crear cuenta. Intenta de nuevo.",
+  "rentalTypeLabel": "Tipo de arrendamiento",
+  "rentalTypeHouse": "Casa completa",
+  "rentalTypeRoom": "Cuarto / Habitación",
+  "sharedBathroom": "Baño compartido",
+  "sharedKitchen": "Cocina compartida",
+  "badgeRoom": "Cuarto"
 }

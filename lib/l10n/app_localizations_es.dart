@@ -354,4 +354,22 @@ class SEs extends S {
 
   @override
   String get authErrRegDefault => 'Error al crear cuenta. Intenta de nuevo.';
+
+  @override
+  String get rentalTypeLabel => 'Tipo de arrendamiento';
+
+  @override
+  String get rentalTypeHouse => 'Casa completa';
+
+  @override
+  String get rentalTypeRoom => 'Cuarto / Habitación';
+
+  @override
+  String get sharedBathroom => 'Baño compartido';
+
+  @override
+  String get sharedKitchen => 'Cocina compartida';
+
+  @override
+  String get badgeRoom => 'Cuarto';
 }

@@ -13,6 +13,9 @@ class Review {
   final double conditionRating;
   final double locationRating;
   final double securityRating;
+  final String rentalType; // 'house' | 'room'
+  final bool sharedBathroom;
+  final bool sharedKitchen;
   final bool hadFormalContract;
   final bool avalRequired;
   final bool depositReturned;
@@ -36,6 +39,9 @@ class Review {
     required this.conditionRating,
     required this.locationRating,
     required this.securityRating,
+    this.rentalType = 'house',
+    this.sharedBathroom = false,
+    this.sharedKitchen = false,
     required this.hadFormalContract,
     required this.avalRequired,
     required this.depositReturned,
@@ -68,6 +74,9 @@ class Review {
         'conditionRating': conditionRating,
         'locationRating': locationRating,
         'securityRating': securityRating,
+        'rentalType': rentalType,
+        'sharedBathroom': sharedBathroom,
+        'sharedKitchen': sharedKitchen,
         'hadFormalContract': hadFormalContract,
         'avalRequired': avalRequired,
         'depositReturned': depositReturned,
@@ -92,6 +101,9 @@ class Review {
         conditionRating: (map['conditionRating'] as num).toDouble(),
         locationRating: (map['locationRating'] as num).toDouble(),
         securityRating: (map['securityRating'] as num).toDouble(),
+        rentalType: (map['rentalType'] as String?) ?? 'house',
+        sharedBathroom: (map['sharedBathroom'] as bool?) ?? false,
+        sharedKitchen: (map['sharedKitchen'] as bool?) ?? false,
         hadFormalContract: map['hadFormalContract'] as bool,
         avalRequired: map['avalRequired'] as bool,
         depositReturned: map['depositReturned'] as bool,

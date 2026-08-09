@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -75,16 +76,25 @@ class ReviewCard extends StatelessWidget {
               ],
 
               // Badges
-              Wrap(
-                spacing: 6,
-                children: [
-                  if (review.isVerified) _Badge(label: '✓ Documento adjunto', color: const Color(0xFF2E7D32), bold: true),
-                  if (review.hadFormalContract) _Badge(label: 'Contrato formal', color: Colors.green),
-                  if (review.avalRequired) _Badge(label: 'Requirió aval', color: Colors.orange),
-                  if (!review.depositReturned) _Badge(label: 'Depósito no devuelto', color: Colors.red),
-                  if (review.utilitiesIncluded) _Badge(label: 'Servicios incluidos', color: Colors.blue),
-                ],
-              ),
+              Builder(builder: (context) {
+                final s = S.of(context)!;
+                return Wrap(
+                  spacing: 6,
+                  children: [
+                    if (review.rentalType == 'room')
+                      _Badge(label: '🚪 ${s.badgeRoom}', color: Colors.purple),
+                    if (review.isVerified) _Badge(label: '✓ ${s.badgeVerified.replaceAll('✓ ', '')}', color: const Color(0xFF2E7D32), bold: true),
+                    if (review.hadFormalContract) _Badge(label: s.badgeFormalContract, color: Colors.green),
+                    if (review.avalRequired) _Badge(label: s.badgeAvalRequired, color: Colors.orange),
+                    if (!review.depositReturned) _Badge(label: s.badgeDepositNotReturned, color: Colors.red),
+                    if (review.utilitiesIncluded) _Badge(label: s.badgeUtilitiesIncluded, color: Colors.blue),
+                    if (review.rentalType == 'room' && review.sharedBathroom)
+                      _Badge(label: s.sharedBathroom, color: Colors.teal),
+                    if (review.rentalType == 'room' && review.sharedKitchen)
+                      _Badge(label: s.sharedKitchen, color: Colors.teal),
+                  ],
+                );
+              }),
 
               const SizedBox(height: 8),
 

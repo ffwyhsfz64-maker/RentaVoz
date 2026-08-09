@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'package:http/http.dart' as http;
 import '../config/api_keys.dart';
 
@@ -7,7 +8,6 @@ class TranslationService {
 
   /// [texts] 배열을 [targetLang]으로 번역해서 같은 순서의 문자열 배열 반환.
   static Future<List<String>> translate(List<String> texts, String targetLang) async {
-    // 빈 문자열은 API 호출 없이 그대로 반환
     if (texts.every((t) => t.trim().isEmpty)) return texts;
 
     final body = jsonEncode({
@@ -21,13 +21,14 @@ class TranslationService {
       uri,
       headers: {
         'Content-Type': 'application/json',
-        'x-ios-bundle-identifier': 'com.onuri.rentavoz',
+        'X-Ios-Bundle-Identifier': 'com.onuri.rentavoz',
       },
       body: body,
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Translation API error ${response.statusCode}: ${response.body}');
+      dev.log('Translation API ${response.statusCode}: ${response.body}', name: 'TranslationService');
+      throw Exception('${response.statusCode}: ${response.body}');
     }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
