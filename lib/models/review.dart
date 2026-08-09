@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Review {
   final String id;
   final String userId;
@@ -51,8 +53,8 @@ class Review {
         'address': address,
         'lat': lat,
         'lng': lng,
-        'moveInDate': moveInDate.toIso8601String(),
-        'moveOutDate': moveOutDate.toIso8601String(),
+        'moveInDate': Timestamp.fromDate(moveInDate),
+        'moveOutDate': Timestamp.fromDate(moveOutDate),
         'monthlyRent': monthlyRent,
         'landlordRating': landlordRating,
         'conditionRating': conditionRating,
@@ -65,7 +67,7 @@ class Review {
         'pros': pros,
         'cons': cons,
         'photoUrls': photoUrls,
-        'createdAt': createdAt.toIso8601String(),
+        'createdAt': Timestamp.fromDate(createdAt),
       };
 
   factory Review.fromMap(String id, Map<String, dynamic> map) => Review(
@@ -74,8 +76,8 @@ class Review {
         address: map['address'] as String,
         lat: (map['lat'] as num).toDouble(),
         lng: (map['lng'] as num).toDouble(),
-        moveInDate: DateTime.parse(map['moveInDate'] as String),
-        moveOutDate: DateTime.parse(map['moveOutDate'] as String),
+        moveInDate: _parseDate(map['moveInDate']),
+        moveOutDate: _parseDate(map['moveOutDate']),
         monthlyRent: (map['monthlyRent'] as num).toDouble(),
         landlordRating: (map['landlordRating'] as num).toDouble(),
         conditionRating: (map['conditionRating'] as num).toDouble(),
@@ -88,6 +90,12 @@ class Review {
         pros: map['pros'] as String,
         cons: map['cons'] as String,
         photoUrls: List<String>.from(map['photoUrls'] as List),
-        createdAt: DateTime.parse(map['createdAt'] as String),
+        createdAt: _parseDate(map['createdAt']),
       );
+
+  static DateTime _parseDate(dynamic v) {
+    if (v is Timestamp) return v.toDate();
+    if (v is String) return DateTime.parse(v);
+    return DateTime.now();
+  }
 }

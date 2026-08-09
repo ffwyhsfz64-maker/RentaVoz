@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "303391279511",
+    "project_id": "rentavoz",
+    "storage_bucket": "rentavoz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303391279511:android:7659bcc66ecf5ec8745cd2",
+        "android_client_info": {
+          "package_name": "com.onuri.rentavoz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAwqk0miDZ-Gq99R8lpPb1IlgU_xMqDtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

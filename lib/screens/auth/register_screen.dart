@@ -2,19 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../home_screen.dart';
-import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _pass2Ctrl = TextEditingController();
   bool _loading = false;
   bool _obscure = true;
 
@@ -22,17 +22,19 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
+    _pass2Ctrl.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
-      await AuthService.signInWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
+      await AuthService.registerWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
       if (mounted) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (_) => false,
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -47,16 +49,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   String _authError(String code) => switch (code) {
-        'user-not-found' => 'No existe una cuenta con ese correo.',
-        'wrong-password' || 'invalid-credential' => 'Contraseña incorrecta.',
+        'email-already-in-use' => 'Ya existe una cuenta con ese correo.',
         'invalid-email' => 'Correo no válido.',
-        'too-many-requests' => 'Demasiados intentos. Intenta más tarde.',
-        _ => 'Error al iniciar sesión. Intenta de nuevo.',
+        'weak-password' => 'La contraseña es muy débil.',
+        _ => 'Error al crear cuenta. Intenta de nuevo.',
       };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Crear cuenta')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -65,26 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 48),
-                const Icon(Icons.home_work_outlined, size: 72, color: Color(0xFF2E7D32)),
                 const SizedBox(height: 16),
-                Text(
-                  'RentaVoz',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2E7D32),
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Reseñas honestas de arrendamientos en México',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-
-                // Email
                 TextFormField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
@@ -98,13 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       (v == null || !v.contains('@')) ? 'Ingresa un correo válido' : null,
                 ),
                 const SizedBox(height: 16),
-
-                // Password
                 TextFormField(
                   controller: _passCtrl,
                   obscureText: _obscure,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _login(),
+                  textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
                     prefixIcon: const Icon(Icons.lock_outlined),
@@ -117,11 +97,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (v) =>
                       (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
                 ),
-                const SizedBox(height: 24),
-
-                // Login button
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _pass2Ctrl,
+                  obscureText: _obscure,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _register(),
+                  decoration: const InputDecoration(
+                    labelText: 'Confirmar contraseña',
+                    prefixIcon: Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) =>
+                      v != _passCtrl.text ? 'Las contraseñas no coinciden' : null,
+                ),
+                const SizedBox(height: 28),
                 FilledButton(
-                  onPressed: _loading ? null : _login,
+                  onPressed: _loading ? null : _register,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     child: _loading
@@ -130,20 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : const Text('Iniciar sesión'),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Register
-                OutlinedButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14),
-                    child: Text('Crear cuenta nueva'),
+                        : const Text('Registrarse'),
                   ),
                 ),
               ],

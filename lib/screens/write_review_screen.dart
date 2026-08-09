@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import '../models/review.dart';
+import '../services/auth_service.dart';
+import '../services/review_service.dart';
+import '../widgets/address_field.dart';
 
 class WriteReviewScreen extends StatefulWidget {
   const WriteReviewScreen({super.key});
@@ -10,8 +15,10 @@ class WriteReviewScreen extends StatefulWidget {
 
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _addressCtrl = TextEditingController();
   final _rentCtrl = TextEditingController();
+  String _address = '';
+  double _lat = 0;
+  double _lng = 0;
   final _prosCtrl = TextEditingController();
   final _consCtrl = TextEditingController();
 
@@ -75,7 +82,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
 
   @override
   void dispose() {
-    _addressCtrl.dispose();
     _rentCtrl.dispose();
     _prosCtrl.dispose();
     _consCtrl.dispose();
@@ -102,14 +108,12 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             // --- Dirección ---
             Text('Dirección', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            TextFormField(
-              controller: _addressCtrl,
-              decoration: const InputDecoration(
-                hintText: 'Ej. Calle Morelos 123, Col. Centro, Querétaro',
-                prefixIcon: Icon(Icons.location_on_outlined),
-                border: OutlineInputBorder(),
-              ),
-              validator: (v) => (v == null || v.isEmpty) ? 'Ingresa la dirección' : null,
+            AddressField(
+              onSelected: (result) => setState(() {
+                _address = result.address;
+                _lat = result.lat;
+                _lng = result.lng;
+              }),
             ),
             const SizedBox(height: 24),
 
@@ -217,7 +221,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     );
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (_moveInDate == null || _moveOutDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -225,10 +229,49 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       );
       return;
     }
-    // TODO: save to Firestore
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Reseña publicada (próximamente con Firebase)')),
+    if (_address.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una dirección de la lista')),
+      );
+      return;
+    }
+    final uid = AuthService.currentUser?.uid ?? 'anonymous';
+    final review = Review(
+      id: const Uuid().v4(),
+      userId: uid,
+      address: _address,
+      lat: _lat,
+      lng: _lng,
+      moveInDate: _moveInDate!,
+      moveOutDate: _moveOutDate!,
+      monthlyRent: double.tryParse(_rentCtrl.text) ?? 0,
+      landlordRating: _landlordRating,
+      conditionRating: _conditionRating,
+      locationRating: _locationRating,
+      securityRating: _securityRating,
+      hadFormalContract: _hadFormalContract,
+      avalRequired: _avalRequired,
+      depositReturned: _depositReturned,
+      utilitiesIncluded: _utilitiesIncluded,
+      pros: _prosCtrl.text.trim(),
+      cons: _consCtrl.text.trim(),
+      photoUrls: [],
+      createdAt: DateTime.now(),
     );
-    Navigator.pop(context);
+    try {
+      await ReviewService.addReview(review);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('¡Reseña publicada!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al publicar: $e')),
+        );
+      }
+    }
   }
 }

@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'screens/auth/login_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'firebase_options.dart';
+import 'screens/auth_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Firebase.initializeApp() will be added after FlutterFire CLI setup
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    initializeDateFormatting('es'),
+  ]);
   runApp(const RentaVozApp());
 }
 
@@ -25,7 +31,7 @@ class RentaVozApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
-      home: const LoginScreen(),
+      home: const AuthGate(),
     );
   }
 }

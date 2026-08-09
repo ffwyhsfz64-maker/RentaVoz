@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>RentaVoz necesita tu ubicación para autocompletar la dirección del inmueble que quieres reseñar.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>RentaVoz necesita tu ubicación para autocompletar la dirección del inmueble que quieres reseñar.</string>
 </dict>
 </plist>
