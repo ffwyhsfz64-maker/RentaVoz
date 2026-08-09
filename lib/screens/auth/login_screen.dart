@@ -64,6 +64,26 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _loginWithGoogle() async {
+    setState(() => _loading = true);
+    try {
+      await AuthService.signInWithGoogle();
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted && e.toString() != 'Exception: cancelled') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google 로그인 실패: $e'), duration: const Duration(seconds: 4)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   Future<void> _showForgotPassword(BuildContext context, S s) async {
     final emailCtrl = TextEditingController(text: _emailCtrl.text.trim());
     bool sending = false;
@@ -252,6 +272,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     child: Text(s.createAccount),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Expanded(child: Divider()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('o continúa con', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                    ),
+                    const Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                OutlinedButton.icon(
+                  onPressed: _loading ? null : _loginWithGoogle,
+                  icon: Image.asset('assets/google_logo.png', width: 20, height: 20,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 22),
+                  ),
+                  label: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text('Continuar con Google', style: TextStyle(fontSize: 15)),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.grey),
+                    foregroundColor: Colors.black87,
                   ),
                 ),
               ],
