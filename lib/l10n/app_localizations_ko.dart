@@ -408,4 +408,83 @@ class SKo extends S {
 
   @override
   String get badgeRoom => '방 임대';
+
+  @override
+  String get reportButton => '리뷰 신고';
+
+  @override
+  String get reportTitle => '이 리뷰를 신고하는 이유를 선택하세요';
+
+  @override
+  String get reportReasonFalse => '허위 또는 오해의 소지가 있는 정보';
+
+  @override
+  String get reportReasonSpam => '스팸 또는 광고';
+
+  @override
+  String get reportReasonInappropriate => '부적절하거나 불쾌한 내용';
+
+  @override
+  String get reportReasonOther => '기타';
+
+  @override
+  String get reportSubmit => '신고 제출';
+
+  @override
+  String get reportSuccess => '신고가 접수되었습니다. 검토 후 조치하겠습니다.';
+
+  @override
+  String get reportAlready => '이미 신고한 리뷰입니다.';
+
+  @override
+  String get reportOwnReview => '내 리뷰는 신고할 수 없습니다.';
+
+  @override
+  String get reportError => '신고 제출에 실패했습니다. 다시 시도해주세요.';
+
+  @override
+  String get tabProfile => '프로필';
+
+  @override
+  String get profileTitle => '내 프로필';
+
+  @override
+  String get profileGuest => '익명';
+
+  @override
+  String get profileEditNameTitle => '이름 편집';
+
+  @override
+  String get profileEditNameHint => '이름을 입력하세요';
+
+  @override
+  String get profileSave => '저장';
+
+  @override
+  String get profileSaveSuccess => '이름이 변경되었습니다';
+
+  @override
+  String get profileSaveError => '이름 변경에 실패했습니다';
+
+  @override
+  String get profileEmailLabel => '이메일';
+
+  @override
+  String profileMemberSince(String date) {
+    return '$date부터 이용 중';
+  }
+
+  @override
+  String profileReviewCount(int count) {
+    return '리뷰 $count개';
+  }
+
+  @override
+  String get profileAvgRating => '평균 별점';
+
+  @override
+  String get profileMyReviews => '내 리뷰';
+
+  @override
+  String get profileNoReviews => '아직 작성한 리뷰가 없습니다';
 }

@@ -414,4 +414,83 @@ class SEn extends S {
 
   @override
   String get badgeRoom => 'Room';
+
+  @override
+  String get reportButton => 'Report review';
+
+  @override
+  String get reportTitle => 'Why are you reporting this review?';
+
+  @override
+  String get reportReasonFalse => 'False or misleading information';
+
+  @override
+  String get reportReasonSpam => 'Spam or advertisement';
+
+  @override
+  String get reportReasonInappropriate => 'Inappropriate or offensive content';
+
+  @override
+  String get reportReasonOther => 'Other reason';
+
+  @override
+  String get reportSubmit => 'Submit report';
+
+  @override
+  String get reportSuccess => 'Report submitted. We\'ll review it soon.';
+
+  @override
+  String get reportAlready => 'You have already reported this review.';
+
+  @override
+  String get reportOwnReview => 'You cannot report your own review.';
+
+  @override
+  String get reportError => 'Failed to submit report. Please try again.';
+
+  @override
+  String get tabProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'My profile';
+
+  @override
+  String get profileGuest => 'Anonymous';
+
+  @override
+  String get profileEditNameTitle => 'Edit name';
+
+  @override
+  String get profileEditNameHint => 'Your name';
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileSaveSuccess => 'Name updated';
+
+  @override
+  String get profileSaveError => 'Failed to update name';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String profileReviewCount(int count) {
+    return '$count reviews';
+  }
+
+  @override
+  String get profileAvgRating => 'Avg. rating';
+
+  @override
+  String get profileMyReviews => 'My reviews';
+
+  @override
+  String get profileNoReviews => 'You haven\'t written any reviews yet';
 }

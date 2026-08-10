@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
+import '../services/report_service.dart';
 import '../services/translation_service.dart';
 
 class ReviewDetailScreen extends StatefulWidget {
@@ -69,6 +71,24 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
         title: Text(s.detailTitle),
         actions: [
           IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (v) {
+              if (v == 'report') _showReportSheet(s);
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: 'report',
+                child: Row(
+                  children: [
+                    const Icon(Icons.flag_outlined, size: 18, color: Colors.red),
+                    const SizedBox(width: 10),
+                    Text(s.reportButton, style: const TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       body: ListView(
@@ -284,7 +304,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: review.photoUrls.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, i) => const SizedBox(width: 8),
                   itemBuilder: (context, i) => GestureDetector(
                     onTap: () => _showPhoto(context, review.photoUrls, i),
                     child: ClipRRect(
@@ -294,8 +314,8 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                         width: 180,
                         height: 180,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => const SizedBox(width: 180, child: Center(child: CircularProgressIndicator())),
-                        errorWidget: (_, __, ___) => const SizedBox(width: 180, child: Center(child: Icon(Icons.broken_image_outlined))),
+                        placeholder: (ctx, url) => const SizedBox(width: 180, child: Center(child: CircularProgressIndicator())),
+                        errorWidget: (ctx, url, err) => const SizedBox(width: 180, child: Center(child: Icon(Icons.broken_image_outlined))),
                       ),
                     ),
                   ),
@@ -353,6 +373,95 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
         ],
       ),
     );
+  }
+
+  void _showReportSheet(S s) {
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUid == null) return;
+    if (widget.review.userId == currentUid) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reportOwnReview)));
+      return;
+    }
+
+    String? selected;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          final reasons = [
+            s.reportReasonFalse,
+            s.reportReasonSpam,
+            s.reportReasonInappropriate,
+            s.reportReasonOther,
+          ];
+          return Padding(
+            padding: EdgeInsets.only(
+              left: 20, right: 20, top: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.reportTitle, style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+                RadioGroup<String>(
+                  groupValue: selected,
+                  onChanged: (v) => setSheetState(() => selected = v),
+                  child: Column(
+                    children: reasons.map((r) => RadioListTile<String>(
+                      value: r,
+                      title: Text(r),
+                      contentPadding: EdgeInsets.zero,
+                      activeColor: const Color(0xFF2E7D32),
+                    )).toList(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
+                    onPressed: selected == null
+                        ? null
+                        : () async {
+                            Navigator.pop(ctx);
+                            await _submitReport(s, selected!);
+                          },
+                    child: Text(s.reportSubmit),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _submitReport(S s, String reason) async {
+    try {
+      final already = await ReportService.hasReported(widget.review.id);
+      if (!mounted) return;
+      if (already) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reportAlready)));
+        return;
+      }
+      await ReportService.submit(widget.review.id, reason);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.reportSuccess), backgroundColor: const Color(0xFF2E7D32)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.reportError), backgroundColor: Colors.red),
+      );
+    }
   }
 
   void _showPhoto(BuildContext context, List<String> urls, int initial) {

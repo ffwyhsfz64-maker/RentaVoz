@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../data/dummy_reviews.dart';
@@ -18,28 +19,106 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   String _search = '';
-  String _typeFilter = 'all'; // 'all' | 'house' | 'room'
+  String _typeFilter = 'all';
   _SortOption _sort = _SortOption.newest;
 
-  List<Review> _apply(List<Review> reviews) {
-    var list = reviews.where((r) {
-      if (_search.isNotEmpty && !r.address.toLowerCase().contains(_search.toLowerCase())) {
-        return false;
-      }
-      if (_typeFilter == 'house') return r.rentalType == 'house';
-      if (_typeFilter == 'room') return r.rentalType == 'room';
-      return true;
-    }).toList();
+  List<Review> _reviews = [];
+  DocumentSnapshot? _lastDoc;
+  bool _hasMore = true;
+  bool _loading = true;
+  bool _loadingMore = false;
 
-    switch (_sort) {
-      case _SortOption.newest:
-        list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      case _SortOption.highest:
-        list.sort((a, b) => b.overallRating.compareTo(a.overallRating));
-      case _SortOption.lowest:
-        list.sort((a, b) => a.overallRating.compareTo(b.overallRating));
+  final _scrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchInitial();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200) {
+      _fetchMore();
     }
-    return list;
+  }
+
+  (String?, String, bool) get _queryParams {
+    final rentalType = _typeFilter == 'all' ? null : _typeFilter;
+    final (field, desc) = switch (_sort) {
+      _SortOption.newest => ('createdAt', true),
+      _SortOption.highest => ('overallRating', true),
+      _SortOption.lowest => ('overallRating', false),
+    };
+    return (rentalType, field, desc);
+  }
+
+  Future<void> _fetchInitial() async {
+    setState(() { _loading = true; _reviews = []; _lastDoc = null; _hasMore = true; });
+    final (rentalType, field, desc) = _queryParams;
+    try {
+      final page = await ReviewService.fetchPage(
+        rentalType: rentalType,
+        orderField: field,
+        descending: desc,
+      );
+      if (!mounted) return;
+      setState(() {
+        _reviews = page.reviews.isEmpty ? dummyReviews : page.reviews;
+        _lastDoc = page.lastDoc;
+        _hasMore = page.reviews.length >= 15 && page.reviews.isNotEmpty;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() { _reviews = dummyReviews; _loading = false; _hasMore = false; });
+    }
+  }
+
+  Future<void> _fetchMore() async {
+    if (_loadingMore || !_hasMore || _lastDoc == null) return;
+    // 검색 중엔 추가 로드 안 함
+    if (_search.isNotEmpty) return;
+    setState(() => _loadingMore = true);
+    final (rentalType, field, desc) = _queryParams;
+    try {
+      final page = await ReviewService.fetchPage(
+        rentalType: rentalType,
+        orderField: field,
+        descending: desc,
+        after: _lastDoc,
+      );
+      if (!mounted) return;
+      setState(() {
+        _reviews.addAll(page.reviews);
+        _lastDoc = page.lastDoc;
+        _hasMore = page.reviews.length >= 15;
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadingMore = false);
+    }
+  }
+
+  void _applyFilter({String? type, _SortOption? sort}) {
+    setState(() {
+      if (type != null) _typeFilter = type;
+      if (sort != null) _sort = sort;
+    });
+    _fetchInitial();
+  }
+
+  List<Review> get _displayed {
+    if (_search.isEmpty) return _reviews;
+    final q = _search.toLowerCase();
+    return _reviews.where((r) => r.address.toLowerCase().contains(q)).toList();
   }
 
   void _showSortSheet(S s) {
@@ -53,19 +132,19 @@ class _FeedScreenState extends State<FeedScreen> {
               label: s.sortNewest,
               icon: Icons.access_time_outlined,
               selected: _sort == _SortOption.newest,
-              onTap: () { setState(() => _sort = _SortOption.newest); Navigator.pop(context); },
+              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.newest); },
             ),
             _SortTile(
               label: s.sortHighest,
               icon: Icons.arrow_upward,
               selected: _sort == _SortOption.highest,
-              onTap: () { setState(() => _sort = _SortOption.highest); Navigator.pop(context); },
+              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.highest); },
             ),
             _SortTile(
               label: s.sortLowest,
               icon: Icons.arrow_downward,
               selected: _sort == _SortOption.lowest,
-              onTap: () { setState(() => _sort = _SortOption.lowest); Navigator.pop(context); },
+              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.lowest); },
             ),
           ],
         ),
@@ -81,6 +160,7 @@ class _FeedScreenState extends State<FeedScreen> {
       _SortOption.highest => s.sortHighest,
       _SortOption.lowest => s.sortLowest,
     };
+    final displayed = _displayed;
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +175,6 @@ class _FeedScreenState extends State<FeedScreen> {
           preferredSize: const Size.fromHeight(104),
           child: Column(
             children: [
-              // 검색창
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
                 child: SearchBar(
@@ -106,14 +185,12 @@ class _FeedScreenState extends State<FeedScreen> {
                   padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12)),
                 ),
               ),
-              // 필터 칩 + 정렬 버튼
               SizedBox(
                 height: 44,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   children: [
-                    // 정렬 버튼
                     Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: ActionChip(
@@ -125,23 +202,22 @@ class _FeedScreenState extends State<FeedScreen> {
                             : null,
                       ),
                     ),
-                    // 타입 필터 칩
-                    _FilterChip(
+                    _FilterChipWidget(
                       label: s.filterAll,
                       selected: _typeFilter == 'all',
-                      onSelected: (_) => setState(() => _typeFilter = 'all'),
+                      onSelected: (_) => _applyFilter(type: 'all'),
                     ),
                     const SizedBox(width: 6),
-                    _FilterChip(
+                    _FilterChipWidget(
                       label: '🏠 ${s.filterHouse}',
                       selected: _typeFilter == 'house',
-                      onSelected: (_) => setState(() => _typeFilter = 'house'),
+                      onSelected: (_) => _applyFilter(type: 'house'),
                     ),
                     const SizedBox(width: 6),
-                    _FilterChip(
+                    _FilterChipWidget(
                       label: '🚪 ${s.filterRoom}',
                       selected: _typeFilter == 'room',
-                      onSelected: (_) => setState(() => _typeFilter = 'room'),
+                      onSelected: (_) => _applyFilter(type: 'room'),
                     ),
                   ],
                 ),
@@ -151,55 +227,51 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
         ),
       ),
-      body: StreamBuilder<List<Review>>(
-        stream: ReviewService.feedStream(),
-        builder: (context, snap) {
-          if (snap.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snap.hasError) {
-            return Center(child: Text('Error: ${snap.error}'));
-          }
-
-          final reviews = _apply(
-            (snap.data?.isEmpty ?? true) ? dummyReviews : snap.data!,
-          );
-
-          if (reviews.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                  const SizedBox(height: 12),
-                  Text(
-                    _search.isEmpty ? s.noReviewsYet : s.noResultsFor(_search),
-                    style: const TextStyle(color: Colors.grey),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : displayed.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                      const SizedBox(height: 12),
+                      Text(
+                        _search.isEmpty ? s.noReviewsYet : s.noResultsFor(_search),
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: reviews.length,
-            itemBuilder: (context, index) => ReviewCard(
-              review: reviews[index],
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: reviews[index])),
-              ),
-            ),
-          );
-        },
-      ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchInitial,
+                  child: ListView.builder(
+                    controller: _scrollCtrl,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemCount: displayed.length + (_hasMore && _search.isEmpty ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == displayed.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
+                      return ReviewCard(
+                        review: displayed[index],
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: displayed[index])),
+                        ),
+                      );
+                    },
+                  ),
+                ),
     );
   }
 }
 
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({required this.label, required this.selected, required this.onSelected});
+class _FilterChipWidget extends StatelessWidget {
+  const _FilterChipWidget({required this.label, required this.selected, required this.onSelected});
   final String label;
   final bool selected;
   final ValueChanged<bool> onSelected;

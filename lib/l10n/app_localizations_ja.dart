@@ -408,4 +408,83 @@ class SJa extends S {
 
   @override
   String get badgeRoom => '個室';
+
+  @override
+  String get reportButton => 'レビューを報告';
+
+  @override
+  String get reportTitle => 'このレビューを報告する理由を選んでください';
+
+  @override
+  String get reportReasonFalse => '虚偽または誤解を招く情報';
+
+  @override
+  String get reportReasonSpam => 'スパムまたは広告';
+
+  @override
+  String get reportReasonInappropriate => '不適切または不快なコンテンツ';
+
+  @override
+  String get reportReasonOther => 'その他';
+
+  @override
+  String get reportSubmit => '報告を送信';
+
+  @override
+  String get reportSuccess => '報告を受け付けました。確認後に対応します。';
+
+  @override
+  String get reportAlready => 'このレビューはすでに報告済みです。';
+
+  @override
+  String get reportOwnReview => '自分のレビューは報告できません。';
+
+  @override
+  String get reportError => '報告の送信に失敗しました。もう一度お試しください。';
+
+  @override
+  String get tabProfile => 'プロフィール';
+
+  @override
+  String get profileTitle => 'マイプロフィール';
+
+  @override
+  String get profileGuest => '匿名';
+
+  @override
+  String get profileEditNameTitle => '名前を編集';
+
+  @override
+  String get profileEditNameHint => 'お名前';
+
+  @override
+  String get profileSave => '保存';
+
+  @override
+  String get profileSaveSuccess => '名前を更新しました';
+
+  @override
+  String get profileSaveError => '名前の更新に失敗しました';
+
+  @override
+  String get profileEmailLabel => 'メール';
+
+  @override
+  String profileMemberSince(String date) {
+    return '$dateから利用中';
+  }
+
+  @override
+  String profileReviewCount(int count) {
+    return 'レビュー$count件';
+  }
+
+  @override
+  String get profileAvgRating => '平均評価';
+
+  @override
+  String get profileMyReviews => 'マイレビュー';
+
+  @override
+  String get profileNoReviews => 'まだレビューを書いていません';
 }

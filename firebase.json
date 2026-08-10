@@ -1,1 +1,36 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"rentavoz","appId":"1:303391279511:android:7659bcc66ecf5ec8745cd2","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"rentavoz","appId":"1:303391279511:ios:081a7105a6f5515d745cd2","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"rentavoz","configurations":{"android":"1:303391279511:android:7659bcc66ecf5ec8745cd2","ios":"1:303391279511:ios:081a7105a6f5515d745cd2"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "rentavoz",
+          "appId": "1:303391279511:android:7659bcc66ecf5ec8745cd2",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "rentavoz",
+          "appId": "1:303391279511:ios:081a7105a6f5515d745cd2",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "rentavoz",
+          "configurations": {
+            "android": "1:303391279511:android:7659bcc66ecf5ec8745cd2",
+            "ios": "1:303391279511:ios:081a7105a6f5515d745cd2"
+          }
+        }
+      }
+    }
+  }
+}

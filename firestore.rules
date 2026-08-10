@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── reviews ──────────────────────────────────────────────────────
+    match /reviews/{reviewId} {
+      // 누구나 읽기 가능 (피드, 지도)
+      allow read: if true;
+
+      // 로그인한 사용자만 작성 가능, userId는 본인 uid여야 함
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && isValidReview(request.resource.data);
+
+      // 본인 리뷰만 수정 가능, userId 변경 불가
+      allow update: if request.auth != null
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid
+        && isValidReview(request.resource.data);
+
+      // 본인 리뷰만 삭제 가능
+      allow delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // ── reports ──────────────────────────────────────────────────────
+    match /reports/{reportId} {
+      // 자신이 제출한 신고만 읽기 가능
+      allow read: if request.auth != null
+        && resource.data.reporterId == request.auth.uid;
+
+      // 로그인한 사용자만 신고 가능
+      // doc ID = {reviewId}_{uid} 형식이므로 중복 방지는 ID 레벨에서 처리
+      allow create: if request.auth != null
+        && request.resource.data.reporterId == request.auth.uid
+        && request.resource.data.reviewId is string
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0;
+
+      // 신고는 수정·삭제 불가
+      allow update, delete: if false;
+    }
+
+    // ── (기타 컬렉션 접근 차단) ────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// ── 유효성 검증 함수 ──────────────────────────────────────────────────
+function isValidReview(data) {
+  return data.userId is string
+    && data.address is string && data.address.size() > 0 && data.address.size() <= 300
+    && data.overallRating is number && data.overallRating >= 1 && data.overallRating <= 5
+    && data.landlordRating is number && data.landlordRating >= 1 && data.landlordRating <= 5
+    && data.conditionRating is number && data.conditionRating >= 1 && data.conditionRating <= 5
+    && data.locationRating is number && data.locationRating >= 1 && data.locationRating <= 5
+    && data.securityRating is number && data.securityRating >= 1 && data.securityRating <= 5
+    && data.rentalType in ['house', 'room']
+    && data.monthlyRent is number && data.monthlyRent >= 0
+    && data.createdAt is timestamp;
+}

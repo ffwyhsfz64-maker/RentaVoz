@@ -882,6 +882,156 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Cuarto'**
   String get badgeRoom;
+
+  /// No description provided for @reportButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar reseña'**
+  String get reportButton;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué reportas esta reseña?'**
+  String get reportTitle;
+
+  /// No description provided for @reportReasonFalse.
+  ///
+  /// In es, this message translates to:
+  /// **'Información falsa o engañosa'**
+  String get reportReasonFalse;
+
+  /// No description provided for @reportReasonSpam.
+  ///
+  /// In es, this message translates to:
+  /// **'Spam o publicidad'**
+  String get reportReasonSpam;
+
+  /// No description provided for @reportReasonInappropriate.
+  ///
+  /// In es, this message translates to:
+  /// **'Contenido inapropiado u ofensivo'**
+  String get reportReasonInappropriate;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro motivo'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar reporte'**
+  String get reportSubmit;
+
+  /// No description provided for @reportSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte enviado. Lo revisaremos pronto.'**
+  String get reportSuccess;
+
+  /// No description provided for @reportAlready.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya reportaste esta reseña anteriormente.'**
+  String get reportAlready;
+
+  /// No description provided for @reportOwnReview.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes reportar tu propia reseña.'**
+  String get reportOwnReview;
+
+  /// No description provided for @reportError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo enviar el reporte. Intenta de nuevo.'**
+  String get reportError;
+
+  /// No description provided for @tabProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get tabProfile;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi perfil'**
+  String get profileTitle;
+
+  /// No description provided for @profileGuest.
+  ///
+  /// In es, this message translates to:
+  /// **'Anónimo'**
+  String get profileGuest;
+
+  /// No description provided for @profileEditNameTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar nombre'**
+  String get profileEditNameTitle;
+
+  /// No description provided for @profileEditNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre'**
+  String get profileEditNameHint;
+
+  /// No description provided for @profileSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get profileSave;
+
+  /// No description provided for @profileSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre actualizado'**
+  String get profileSaveSuccess;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar el nombre'**
+  String get profileSaveError;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileMemberSince.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro desde {date}'**
+  String profileMemberSince(String date);
+
+  /// No description provided for @profileReviewCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} reseñas'**
+  String profileReviewCount(int count);
+
+  /// No description provided for @profileAvgRating.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio'**
+  String get profileAvgRating;
+
+  /// No description provided for @profileMyReviews.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis reseñas'**
+  String get profileMyReviews;
+
+  /// No description provided for @profileNoReviews.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no has escrito reseñas'**
+  String get profileNoReviews;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

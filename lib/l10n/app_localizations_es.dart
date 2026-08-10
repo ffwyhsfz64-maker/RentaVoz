@@ -415,4 +415,83 @@ class SEs extends S {
 
   @override
   String get badgeRoom => 'Cuarto';
+
+  @override
+  String get reportButton => 'Reportar reseña';
+
+  @override
+  String get reportTitle => '¿Por qué reportas esta reseña?';
+
+  @override
+  String get reportReasonFalse => 'Información falsa o engañosa';
+
+  @override
+  String get reportReasonSpam => 'Spam o publicidad';
+
+  @override
+  String get reportReasonInappropriate => 'Contenido inapropiado u ofensivo';
+
+  @override
+  String get reportReasonOther => 'Otro motivo';
+
+  @override
+  String get reportSubmit => 'Enviar reporte';
+
+  @override
+  String get reportSuccess => 'Reporte enviado. Lo revisaremos pronto.';
+
+  @override
+  String get reportAlready => 'Ya reportaste esta reseña anteriormente.';
+
+  @override
+  String get reportOwnReview => 'No puedes reportar tu propia reseña.';
+
+  @override
+  String get reportError => 'No se pudo enviar el reporte. Intenta de nuevo.';
+
+  @override
+  String get tabProfile => 'Perfil';
+
+  @override
+  String get profileTitle => 'Mi perfil';
+
+  @override
+  String get profileGuest => 'Anónimo';
+
+  @override
+  String get profileEditNameTitle => 'Editar nombre';
+
+  @override
+  String get profileEditNameHint => 'Tu nombre';
+
+  @override
+  String get profileSave => 'Guardar';
+
+  @override
+  String get profileSaveSuccess => 'Nombre actualizado';
+
+  @override
+  String get profileSaveError => 'No se pudo actualizar el nombre';
+
+  @override
+  String get profileEmailLabel => 'Correo';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'Miembro desde $date';
+  }
+
+  @override
+  String profileReviewCount(int count) {
+    return '$count reseñas';
+  }
+
+  @override
+  String get profileAvgRating => 'Promedio';
+
+  @override
+  String get profileMyReviews => 'Mis reseñas';
+
+  @override
+  String get profileNoReviews => 'Aún no has escrito reseñas';
 }

@@ -111,18 +111,18 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   Future<void> _pickComprobante() async {
-    final result = await FilePicker.platform.pickFiles(
+    final file = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'heic'],
     );
-    if (result == null || result.files.single.path == null) return;
+    if (file == null || file.path == null) return;
 
-    final path = result.files.single.path!;
-    final file = File(path);
+    final path = file.path!;
+    final picked = File(path);
     final isPdf = path.toLowerCase().endsWith('.pdf');
 
     setState(() {
-      _comprobanteFile = file;
+      _comprobanteFile = picked;
       _comprobanteIsPdf = isPdf;
       _comprobanteValidation = null;
     });
@@ -138,7 +138,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     }
 
     setState(() => _validating = true);
-    final validation = await VisionService.validateComprobante(file);
+    final validation = await VisionService.validateComprobante(picked);
     if (mounted) {
       setState(() {
         _comprobanteValidation = validation;
@@ -507,7 +507,13 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
         final newUrls = await StorageService.uploadPhotos(reviewId, _photoFiles);
         photoUrls.addAll(newUrls);
       }
-    } catch (_) {}
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('사진 업로드 실패: $e'), backgroundColor: Colors.orange),
+        );
+      }
+    }
 
     final uid = AuthService.currentUser?.uid ?? 'anonymous';
     final review = Review(

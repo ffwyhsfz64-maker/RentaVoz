@@ -404,4 +404,83 @@ class SZh extends S {
 
   @override
   String get badgeRoom => '单间';
+
+  @override
+  String get reportButton => '举报评论';
+
+  @override
+  String get reportTitle => '请选择举报此评论的原因';
+
+  @override
+  String get reportReasonFalse => '虚假或误导性信息';
+
+  @override
+  String get reportReasonSpam => '垃圾邮件或广告';
+
+  @override
+  String get reportReasonInappropriate => '不当或冒犯性内容';
+
+  @override
+  String get reportReasonOther => '其他原因';
+
+  @override
+  String get reportSubmit => '提交举报';
+
+  @override
+  String get reportSuccess => '举报已提交，我们将尽快审核。';
+
+  @override
+  String get reportAlready => '您已举报过此评论。';
+
+  @override
+  String get reportOwnReview => '不能举报自己的评论。';
+
+  @override
+  String get reportError => '提交举报失败，请重试。';
+
+  @override
+  String get tabProfile => '我的';
+
+  @override
+  String get profileTitle => '我的主页';
+
+  @override
+  String get profileGuest => '匿名';
+
+  @override
+  String get profileEditNameTitle => '编辑姓名';
+
+  @override
+  String get profileEditNameHint => '请输入您的姓名';
+
+  @override
+  String get profileSave => '保存';
+
+  @override
+  String get profileSaveSuccess => '姓名已更新';
+
+  @override
+  String get profileSaveError => '姓名更新失败';
+
+  @override
+  String get profileEmailLabel => '邮箱';
+
+  @override
+  String profileMemberSince(String date) {
+    return '$date加入';
+  }
+
+  @override
+  String profileReviewCount(int count) {
+    return '$count条评论';
+  }
+
+  @override
+  String get profileAvgRating => '平均评分';
+
+  @override
+  String get profileMyReviews => '我的评论';
+
+  @override
+  String get profileNoReviews => '您还没有写过评论';
 }

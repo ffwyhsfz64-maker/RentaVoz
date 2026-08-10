@@ -3,7 +3,7 @@ import '../l10n/app_localizations.dart';
 import 'feed_screen.dart';
 import 'map_screen.dart';
 import 'write_review_screen.dart';
-import 'my_reviews_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = const [
     FeedScreen(),
     MapScreen(),
-    MyReviewsScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         destinations: [
           NavigationDestination(icon: const Icon(Icons.feed_outlined), selectedIcon: const Icon(Icons.feed), label: s.tabHome),
           NavigationDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map), label: s.tabMap),
-          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: s.tabMyReviews),
+          NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: s.tabProfile),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
