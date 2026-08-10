@@ -23,6 +23,13 @@ service cloud.firestore {
         && resource.data.userId == request.auth.uid;
     }
 
+    // ── users/{uid}/bookmarks ────────────────────────────────────────
+    match /users/{uid}/bookmarks/{reviewId} {
+      // 본인 북마크만 읽기/쓰기/삭제 가능
+      allow read, write, delete: if request.auth != null
+        && request.auth.uid == uid;
+    }
+
     // ── reports ──────────────────────────────────────────────────────
     match /reports/{reportId} {
       // 자신이 제출한 신고만 읽기 가능
