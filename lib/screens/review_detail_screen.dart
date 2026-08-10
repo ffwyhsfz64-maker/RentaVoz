@@ -102,19 +102,36 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             icon: const Icon(Icons.more_vert),
             onSelected: (v) {
               if (v == 'report') _showReportSheet(s);
+              if (v == 'delete') _confirmDelete(s);
             },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'report',
-                child: Row(
-                  children: [
-                    const Icon(Icons.flag_outlined, size: 18, color: Colors.red),
-                    const SizedBox(width: 10),
-                    Text(s.reportButton, style: const TextStyle(color: Colors.red)),
-                  ],
+            itemBuilder: (_) {
+              final isOwner = FirebaseAuth.instance.currentUser?.uid == review.userId;
+              return [
+                if (isOwner) ...[
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                        const SizedBox(width: 10),
+                        Text(s.deleteReview, style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                ],
+                PopupMenuItem(
+                  value: 'report',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.flag_outlined, size: 18, color: Colors.red),
+                      const SizedBox(width: 10),
+                      Text(s.reportButton, style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ];
+            },
           ),
         ],
       ),
@@ -456,6 +473,29 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _confirmDelete(S s) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.deleteConfirmTitle),
+        content: Text(s.deleteConfirmBody),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(s.cancel)),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    await ReviewService.deleteReview(widget.review.id);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
+    Navigator.of(context).pop();
   }
 
   void _showReportSheet(S s) {
