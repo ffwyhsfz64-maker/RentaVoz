@@ -61,6 +61,7 @@ dependencies:
   flutter_native_splash: ^2.4.5
   share_plus: ^13.3.0
   package_info_plus: ^10.2.1
+  firebase_crashlytics: ^5.2.7
 
 dev_dependencies:
   flutter_test:
