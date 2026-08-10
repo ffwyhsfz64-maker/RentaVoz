@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
+import '../legal_screen.dart';
 import '../verify_email_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _pass2Ctrl = TextEditingController();
   bool _loading = false;
   bool _obscure = true;
+  bool _agreed = false;
 
   @override
   void dispose() {
@@ -29,6 +31,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
+    if (!_agreed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context)!.registerTermsRequired)),
+      );
+      return;
+    }
     setState(() => _loading = true);
     try {
       await AuthService.registerWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
@@ -51,12 +59,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void _openLegal(LegalType type) => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => LegalScreen(type: type)),
+      );
+
   String _authError(String code, S s) => switch (code) {
         'email-already-in-use' => s.authErrEmailInUse,
         'invalid-email' => s.authErrInvalidEmail,
         'weak-password' => s.authErrWeakPw,
         _ => s.authErrRegDefault,
       };
+
+  Widget _TermsCheckbox({required bool agreed, required ValueChanged<bool?> onChanged}) {
+    final s = S.of(context)!;
+    final color = const Color(0xFF2E7D32);
+    final linkStyle = TextStyle(
+      color: color,
+      decoration: TextDecoration.underline,
+      decorationColor: color,
+      fontSize: 12,
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Checkbox(
+          value: agreed,
+          onChanged: onChanged,
+          activeColor: color,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 11),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () => _openLegal(LegalType.privacy),
+                  child: Text(s.privacyPolicy, style: linkStyle),
+                ),
+                Text(' & ', style: Theme.of(context).textTheme.bodySmall),
+                GestureDetector(
+                  onTap: () => _openLegal(LegalType.terms),
+                  child: Text(s.termsOfService, style: linkStyle),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +171,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (v) =>
                       v != _passCtrl.text ? s.passwordMismatch : null,
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 20),
+                _TermsCheckbox(
+                  agreed: _agreed,
+                  onChanged: (v) => setState(() => _agreed = v ?? false),
+                ),
+                const SizedBox(height: 16),
                 FilledButton(
                   onPressed: _loading ? null : _register,
                   child: Padding(

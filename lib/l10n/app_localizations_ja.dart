@@ -562,4 +562,21 @@ class SJa extends S {
 
   @override
   String get sharePeriod => '期間';
+
+  @override
+  String get privacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get termsOfService => '利用規約';
+
+  @override
+  String get legalSection => '法的情報';
+
+  @override
+  String registerTermsConsent(String privacy, String terms) {
+    return '$privacyと$termsに同意します。';
+  }
+
+  @override
+  String get registerTermsRequired => '利用規約に同意する必要があります。';
 }

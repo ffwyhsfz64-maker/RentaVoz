@@ -558,4 +558,21 @@ class SZh extends S {
 
   @override
   String get sharePeriod => '租期';
+
+  @override
+  String get privacyPolicy => '隐私政策';
+
+  @override
+  String get termsOfService => '服务条款';
+
+  @override
+  String get legalSection => '法律信息';
+
+  @override
+  String registerTermsConsent(String privacy, String terms) {
+    return '我已阅读并同意$privacy和$terms。';
+  }
+
+  @override
+  String get registerTermsRequired => '您必须接受条款才能继续。';
 }

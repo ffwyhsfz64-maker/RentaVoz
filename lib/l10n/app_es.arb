@@ -233,5 +233,20 @@
   "shareReviewSubject": "Reseña en RentaVoz",
   "shareAppPromo": "Descarga RentaVoz y consulta reseñas honestas de arrendamientos en México.",
   "shareRent": "Renta",
-  "sharePeriod": "Período"
+  "sharePeriod": "Período",
+  "privacyPolicy": "Política de privacidad",
+  "termsOfService": "Términos de servicio",
+  "legalSection": "Legal",
+  "registerTermsConsent": "He leído y acepto la {privacy} y los {terms}.",
+  "@registerTermsConsent": {
+    "placeholders": {
+      "privacy": {
+        "type": "String"
+      },
+      "terms": {
+        "type": "String"
+      }
+    }
+  },
+  "registerTermsRequired": "Debes aceptar los términos para continuar."
 }

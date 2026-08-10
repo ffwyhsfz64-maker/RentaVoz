@@ -1170,6 +1170,36 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Período'**
   String get sharePeriod;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In es, this message translates to:
+  /// **'Términos de servicio'**
+  String get termsOfService;
+
+  /// No description provided for @legalSection.
+  ///
+  /// In es, this message translates to:
+  /// **'Legal'**
+  String get legalSection;
+
+  /// No description provided for @registerTermsConsent.
+  ///
+  /// In es, this message translates to:
+  /// **'He leído y acepto la {privacy} y los {terms}.'**
+  String registerTermsConsent(String privacy, String terms);
+
+  /// No description provided for @registerTermsRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes aceptar los términos para continuar.'**
+  String get registerTermsRequired;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

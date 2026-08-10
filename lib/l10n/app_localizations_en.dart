@@ -571,4 +571,21 @@ class SEn extends S {
 
   @override
   String get sharePeriod => 'Period';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get legalSection => 'Legal';
+
+  @override
+  String registerTermsConsent(String privacy, String terms) {
+    return 'I have read and agree to the $privacy and $terms.';
+  }
+
+  @override
+  String get registerTermsRequired => 'You must accept the terms to continue.';
 }

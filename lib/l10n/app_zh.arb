@@ -212,5 +212,20 @@
   "shareReviewSubject": "RentaVoz上的评论",
   "shareAppPromo": "下载RentaVoz，查看墨西哥租房真实评价。",
   "shareRent": "租金",
-  "sharePeriod": "租期"
+  "sharePeriod": "租期",
+  "privacyPolicy": "隐私政策",
+  "termsOfService": "服务条款",
+  "legalSection": "法律信息",
+  "registerTermsConsent": "我已阅读并同意{privacy}和{terms}。",
+  "@registerTermsConsent": {
+    "placeholders": {
+      "privacy": {
+        "type": "String"
+      },
+      "terms": {
+        "type": "String"
+      }
+    }
+  },
+  "registerTermsRequired": "您必须接受条款才能继续。"
 }

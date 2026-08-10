@@ -562,4 +562,21 @@ class SKo extends S {
 
   @override
   String get sharePeriod => '기간';
+
+  @override
+  String get privacyPolicy => '개인정보처리방침';
+
+  @override
+  String get termsOfService => '이용약관';
+
+  @override
+  String get legalSection => '법적 고지';
+
+  @override
+  String registerTermsConsent(String privacy, String terms) {
+    return '$privacy 및 $terms에 동의합니다.';
+  }
+
+  @override
+  String get registerTermsRequired => '약관에 동의해야 계속 진행할 수 있습니다.';
 }

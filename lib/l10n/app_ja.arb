@@ -212,5 +212,20 @@
   "shareReviewSubject": "RentaVozのレビュー",
   "shareAppPromo": "RentaVozアプリでメキシコの賃貸リアルレビューをチェック。",
   "shareRent": "家賃",
-  "sharePeriod": "期間"
+  "sharePeriod": "期間",
+  "privacyPolicy": "プライバシーポリシー",
+  "termsOfService": "利用規約",
+  "legalSection": "法的情報",
+  "registerTermsConsent": "{privacy}と{terms}に同意します。",
+  "@registerTermsConsent": {
+    "placeholders": {
+      "privacy": {
+        "type": "String"
+      },
+      "terms": {
+        "type": "String"
+      }
+    }
+  },
+  "registerTermsRequired": "利用規約に同意する必要があります。"
 }

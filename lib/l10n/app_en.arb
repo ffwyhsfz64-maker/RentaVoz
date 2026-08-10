@@ -212,5 +212,20 @@
   "shareReviewSubject": "Review on RentaVoz",
   "shareAppPromo": "Download RentaVoz and read honest rental reviews in Mexico.",
   "shareRent": "Rent",
-  "sharePeriod": "Period"
+  "sharePeriod": "Period",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "legalSection": "Legal",
+  "registerTermsConsent": "I have read and agree to the {privacy} and {terms}.",
+  "@registerTermsConsent": {
+    "placeholders": {
+      "privacy": {
+        "type": "String"
+      },
+      "terms": {
+        "type": "String"
+      }
+    }
+  },
+  "registerTermsRequired": "You must accept the terms to continue."
 }

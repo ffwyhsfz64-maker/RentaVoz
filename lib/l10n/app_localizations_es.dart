@@ -573,4 +573,22 @@ class SEs extends S {
 
   @override
   String get sharePeriod => 'Período';
+
+  @override
+  String get privacyPolicy => 'Política de privacidad';
+
+  @override
+  String get termsOfService => 'Términos de servicio';
+
+  @override
+  String get legalSection => 'Legal';
+
+  @override
+  String registerTermsConsent(String privacy, String terms) {
+    return 'He leído y acepto la $privacy y los $terms.';
+  }
+
+  @override
+  String get registerTermsRequired =>
+      'Debes aceptar los términos para continuar.';
 }
