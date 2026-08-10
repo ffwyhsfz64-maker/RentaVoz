@@ -558,4 +558,17 @@ class SEn extends S {
 
   @override
   String get profileNoSavedReviews => 'No saved reviews yet';
+
+  @override
+  String get shareReviewSubject => 'Review on RentaVoz';
+
+  @override
+  String get shareAppPromo =>
+      'Download RentaVoz and read honest rental reviews in Mexico.';
+
+  @override
+  String get shareRent => 'Rent';
+
+  @override
+  String get sharePeriod => 'Period';
 }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../services/report_service.dart';
@@ -51,6 +52,24 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
     }
   }
 
+  void _share(S s) {
+    final review = widget.review;
+    final stars = '⭐' * review.overallRating.round();
+    final buf = StringBuffer();
+    buf.writeln('$stars ${review.overallRating.toStringAsFixed(1)}/5.0');
+    buf.writeln('📍 ${review.address}');
+    buf.writeln();
+    if (review.pros.isNotEmpty) buf.writeln('👍 ${review.pros}');
+    if (review.cons.isNotEmpty) buf.writeln('👎 ${review.cons}');
+    buf.writeln();
+    buf.writeln('${s.shareRent}: \$${review.monthlyRent.toStringAsFixed(0)} MXN');
+    buf.writeln('${s.sharePeriod}: ${_fmtDate(review.moveInDate)} – ${_fmtDate(review.moveOutDate)}');
+    buf.writeln();
+    buf.write(s.shareAppPromo);
+
+    Share.share(buf.toString(), subject: s.shareReviewSubject);
+  }
+
   void _toggleTranslation() {
     if (_showTranslation) {
       setState(() => _showTranslation = false);
@@ -78,7 +97,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
               padding: const EdgeInsets.only(right: 4),
               child: BookmarkButton(reviewId: review.id, size: 24),
             ),
-          IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.share_outlined), onPressed: () => _share(s)),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
             onSelected: (v) {

@@ -229,5 +229,9 @@
   "bookmarkAdded": "Reseña guardada",
   "bookmarkRemoved": "Eliminada de guardados",
   "profileSavedReviews": "Guardados",
-  "profileNoSavedReviews": "No tienes reseñas guardadas"
+  "profileNoSavedReviews": "No tienes reseñas guardadas",
+  "shareReviewSubject": "Reseña en RentaVoz",
+  "shareAppPromo": "Descarga RentaVoz y consulta reseñas honestas de arrendamientos en México.",
+  "shareRent": "Renta",
+  "sharePeriod": "Período"
 }

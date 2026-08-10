@@ -208,5 +208,9 @@
   "bookmarkAdded": "저장되었습니다",
   "bookmarkRemoved": "저장이 해제되었습니다",
   "profileSavedReviews": "저장한 리뷰",
-  "profileNoSavedReviews": "저장한 리뷰가 없습니다"
+  "profileNoSavedReviews": "저장한 리뷰가 없습니다",
+  "shareReviewSubject": "RentaVoz 리뷰",
+  "shareAppPromo": "RentaVoz 앱에서 멕시코 임대 솔직 후기를 확인하세요.",
+  "shareRent": "월세",
+  "sharePeriod": "기간"
 }

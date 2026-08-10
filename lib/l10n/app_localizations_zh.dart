@@ -546,4 +546,16 @@ class SZh extends S {
 
   @override
   String get profileNoSavedReviews => '暂无收藏的评论';
+
+  @override
+  String get shareReviewSubject => 'RentaVoz上的评论';
+
+  @override
+  String get shareAppPromo => '下载RentaVoz，查看墨西哥租房真实评价。';
+
+  @override
+  String get shareRent => '租金';
+
+  @override
+  String get sharePeriod => '租期';
 }

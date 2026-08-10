@@ -208,5 +208,9 @@
   "bookmarkAdded": "保存しました",
   "bookmarkRemoved": "保存を解除しました",
   "profileSavedReviews": "保存済み",
-  "profileNoSavedReviews": "保存したレビューはありません"
+  "profileNoSavedReviews": "保存したレビューはありません",
+  "shareReviewSubject": "RentaVozのレビュー",
+  "shareAppPromo": "RentaVozアプリでメキシコの賃貸リアルレビューをチェック。",
+  "shareRent": "家賃",
+  "sharePeriod": "期間"
 }

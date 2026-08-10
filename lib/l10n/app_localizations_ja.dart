@@ -550,4 +550,16 @@ class SJa extends S {
 
   @override
   String get profileNoSavedReviews => '保存したレビューはありません';
+
+  @override
+  String get shareReviewSubject => 'RentaVozのレビュー';
+
+  @override
+  String get shareAppPromo => 'RentaVozアプリでメキシコの賃貸リアルレビューをチェック。';
+
+  @override
+  String get shareRent => '家賃';
+
+  @override
+  String get sharePeriod => '期間';
 }

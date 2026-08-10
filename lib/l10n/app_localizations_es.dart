@@ -560,4 +560,17 @@ class SEs extends S {
 
   @override
   String get profileNoSavedReviews => 'No tienes reseñas guardadas';
+
+  @override
+  String get shareReviewSubject => 'Reseña en RentaVoz';
+
+  @override
+  String get shareAppPromo =>
+      'Descarga RentaVoz y consulta reseñas honestas de arrendamientos en México.';
+
+  @override
+  String get shareRent => 'Renta';
+
+  @override
+  String get sharePeriod => 'Período';
 }

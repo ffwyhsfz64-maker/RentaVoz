@@ -1146,6 +1146,30 @@ abstract class S {
   /// In es, this message translates to:
   /// **'No tienes reseñas guardadas'**
   String get profileNoSavedReviews;
+
+  /// No description provided for @shareReviewSubject.
+  ///
+  /// In es, this message translates to:
+  /// **'Reseña en RentaVoz'**
+  String get shareReviewSubject;
+
+  /// No description provided for @shareAppPromo.
+  ///
+  /// In es, this message translates to:
+  /// **'Descarga RentaVoz y consulta reseñas honestas de arrendamientos en México.'**
+  String get shareAppPromo;
+
+  /// No description provided for @shareRent.
+  ///
+  /// In es, this message translates to:
+  /// **'Renta'**
+  String get shareRent;
+
+  /// No description provided for @sharePeriod.
+  ///
+  /// In es, this message translates to:
+  /// **'Período'**
+  String get sharePeriod;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

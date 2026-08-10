@@ -550,4 +550,16 @@ class SKo extends S {
 
   @override
   String get profileNoSavedReviews => '저장한 리뷰가 없습니다';
+
+  @override
+  String get shareReviewSubject => 'RentaVoz 리뷰';
+
+  @override
+  String get shareAppPromo => 'RentaVoz 앱에서 멕시코 임대 솔직 후기를 확인하세요.';
+
+  @override
+  String get shareRent => '월세';
+
+  @override
+  String get sharePeriod => '기간';
 }

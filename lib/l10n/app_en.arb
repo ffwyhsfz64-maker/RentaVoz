@@ -208,5 +208,9 @@
   "bookmarkAdded": "Review saved",
   "bookmarkRemoved": "Removed from saved",
   "profileSavedReviews": "Saved",
-  "profileNoSavedReviews": "No saved reviews yet"
+  "profileNoSavedReviews": "No saved reviews yet",
+  "shareReviewSubject": "Review on RentaVoz",
+  "shareAppPromo": "Download RentaVoz and read honest rental reviews in Mexico.",
+  "shareRent": "Rent",
+  "sharePeriod": "Period"
 }

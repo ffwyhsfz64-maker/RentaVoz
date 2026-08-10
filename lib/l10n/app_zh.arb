@@ -208,5 +208,9 @@
   "bookmarkAdded": "已收藏",
   "bookmarkRemoved": "已取消收藏",
   "profileSavedReviews": "已收藏",
-  "profileNoSavedReviews": "暂无收藏的评论"
+  "profileNoSavedReviews": "暂无收藏的评论",
+  "shareReviewSubject": "RentaVoz上的评论",
+  "shareAppPromo": "下载RentaVoz，查看墨西哥租房真实评价。",
+  "shareRent": "租金",
+  "sharePeriod": "租期"
 }
