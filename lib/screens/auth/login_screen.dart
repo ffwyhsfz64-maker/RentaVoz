@@ -86,6 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _showForgotPassword(BuildContext context, S s) async {
     final emailCtrl = TextEditingController(text: _emailCtrl.text.trim());
+    // async 작업 전에 미리 저장 — 다이얼로그 닫힌 후 context 무효화 방지
+    final messenger = ScaffoldMessenger.of(context);
     bool sending = false;
 
     await showDialog(
@@ -125,29 +127,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       setStateDialog(() => sending = true);
                       try {
                         await AuthService.sendPasswordReset(email);
-                        if (ctx.mounted) {
-                          Navigator.pop(ctx);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(s.forgotPasswordSent),
-                              backgroundColor: const Color(0xFF2E7D32),
-                              duration: const Duration(seconds: 5),
-                            ),
-                          );
-                        }
+                        if (ctx.mounted) Navigator.pop(ctx);
+                        messenger.showSnackBar(
+                          SnackBar(
+                            content: Text(s.forgotPasswordSent),
+                            backgroundColor: const Color(0xFF2E7D32),
+                            duration: const Duration(seconds: 5),
+                          ),
+                        );
                       } on FirebaseAuthException catch (e) {
+                        if (!ctx.mounted) return;
                         setStateDialog(() => sending = false);
-                        if (ctx.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                e.code == 'user-not-found'
-                                    ? s.forgotPasswordErrNotFound
-                                    : s.forgotPasswordErrDefault,
-                              ),
+                        messenger.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              e.code == 'user-not-found'
+                                  ? s.forgotPasswordErrNotFound
+                                  : s.forgotPasswordErrDefault,
                             ),
-                          );
-                        }
+                          ),
+                        );
                       }
                     },
               child: sending

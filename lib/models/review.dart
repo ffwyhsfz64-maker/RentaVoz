@@ -70,6 +70,7 @@ class Review {
         'moveInDate': Timestamp.fromDate(moveInDate),
         'moveOutDate': Timestamp.fromDate(moveOutDate),
         'monthlyRent': monthlyRent,
+        'overallRating': overallRating,
         'landlordRating': landlordRating,
         'conditionRating': conditionRating,
         'locationRating': locationRating,

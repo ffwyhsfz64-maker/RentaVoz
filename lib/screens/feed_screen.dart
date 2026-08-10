@@ -49,32 +49,49 @@ class _FeedScreenState extends State<FeedScreen> {
     }
   }
 
-  (String?, String, bool) get _queryParams {
-    final rentalType = _typeFilter == 'all' ? null : _typeFilter;
-    final (field, desc) = switch (_sort) {
-      _SortOption.newest => ('createdAt', true),
-      _SortOption.highest => ('overallRating', true),
-      _SortOption.lowest => ('overallRating', false),
-    };
-    return (rentalType, field, desc);
+  bool get _isRatingSort => _sort != _SortOption.newest;
+
+  String? get _rentalTypeFilter => _typeFilter == 'all' ? null : _typeFilter;
+
+  // 별점 정렬은 클라이언트에서 처리 (기존 Firestore 데이터에 overallRating 필드 없을 수 있음)
+  List<Review> _sortedReviews(List<Review> list) {
+    final sorted = List<Review>.from(list);
+    switch (_sort) {
+      case _SortOption.newest:
+        sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      case _SortOption.highest:
+        sorted.sort((a, b) => b.overallRating.compareTo(a.overallRating));
+      case _SortOption.lowest:
+        sorted.sort((a, b) => a.overallRating.compareTo(b.overallRating));
+    }
+    return sorted;
   }
 
   Future<void> _fetchInitial() async {
     setState(() { _loading = true; _reviews = []; _lastDoc = null; _hasMore = true; });
-    final (rentalType, field, desc) = _queryParams;
     try {
-      final page = await ReviewService.fetchPage(
-        rentalType: rentalType,
-        orderField: field,
-        descending: desc,
-      );
-      if (!mounted) return;
-      setState(() {
-        _reviews = page.reviews.isEmpty ? dummyReviews : page.reviews;
-        _lastDoc = page.lastDoc;
-        _hasMore = page.reviews.length >= 15 && page.reviews.isNotEmpty;
-        _loading = false;
-      });
+      if (_isRatingSort) {
+        // 별점 정렬: 전체 로드 후 클라이언트 정렬
+        final all = await ReviewService.fetchAll(rentalType: _rentalTypeFilter);
+        if (!mounted) return;
+        setState(() {
+          final base = all.isEmpty ? dummyReviews : all;
+          _reviews = _sortedReviews(base);
+          _lastDoc = null;
+          _hasMore = false;
+          _loading = false;
+        });
+      } else {
+        // 최신순: Firestore 페이지네이션
+        final page = await ReviewService.fetchPage(rentalType: _rentalTypeFilter);
+        if (!mounted) return;
+        setState(() {
+          _reviews = page.reviews.isEmpty ? dummyReviews : page.reviews;
+          _lastDoc = page.lastDoc;
+          _hasMore = page.reviews.length >= 15 && page.reviews.isNotEmpty;
+          _loading = false;
+        });
+      }
     } catch (_) {
       if (!mounted) return;
       setState(() { _reviews = dummyReviews; _loading = false; _hasMore = false; });
@@ -82,16 +99,12 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Future<void> _fetchMore() async {
-    if (_loadingMore || !_hasMore || _lastDoc == null) return;
-    // 검색 중엔 추가 로드 안 함
+    if (_loadingMore || !_hasMore || _lastDoc == null || _isRatingSort) return;
     if (_search.isNotEmpty) return;
     setState(() => _loadingMore = true);
-    final (rentalType, field, desc) = _queryParams;
     try {
       final page = await ReviewService.fetchPage(
-        rentalType: rentalType,
-        orderField: field,
-        descending: desc,
+        rentalType: _rentalTypeFilter,
         after: _lastDoc,
       );
       if (!mounted) return;

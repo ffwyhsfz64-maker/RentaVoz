@@ -28,6 +28,14 @@ class ReviewService {
     return (reviews: reviews, lastDoc: snap.docs.isEmpty ? null : snap.docs.last);
   }
 
+  static Future<List<Review>> fetchAll({String? rentalType}) async {
+    Query<Map<String, dynamic>> q = rentalType != null
+        ? _col.where('rentalType', isEqualTo: rentalType)
+        : _col;
+    final snap = await q.get();
+    return snap.docs.map((d) => Review.fromMap(d.id, d.data())).toList();
+  }
+
   static Stream<List<Review>> feedStream() => _col
       .orderBy('createdAt', descending: true)
       .limit(100)
