@@ -156,5 +156,12 @@
   "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
   "profileAvgRating": "平均評価",
   "profileMyReviews": "マイレビュー",
-  "profileNoReviews": "まだレビューを書いていません"
+  "profileNoReviews": "まだレビューを書いていません",
+  "addressReviewsTitle": "この住所のレビュー",
+  "addressReviewsCount": "合計{count}件のレビュー",
+  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsOther": "この住所の他のレビュー{count}件を見る",
+  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsNone": "この住所の他のレビューはありません",
+  "addressReviewsAvg": "総合平均"
 }

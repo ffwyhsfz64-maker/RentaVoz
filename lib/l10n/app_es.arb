@@ -177,5 +177,12 @@
   "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
   "profileAvgRating": "Promedio",
   "profileMyReviews": "Mis reseñas",
-  "profileNoReviews": "Aún no has escrito reseñas"
+  "profileNoReviews": "Aún no has escrito reseñas",
+  "addressReviewsTitle": "Reseñas en esta dirección",
+  "addressReviewsCount": "{count} reseñas en total",
+  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsOther": "Ver {count} reseñas más de esta dirección",
+  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsNone": "Sin más reseñas para esta dirección",
+  "addressReviewsAvg": "Promedio general"
 }

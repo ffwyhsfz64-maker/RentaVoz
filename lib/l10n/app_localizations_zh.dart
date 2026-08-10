@@ -483,4 +483,23 @@ class SZh extends S {
 
   @override
   String get profileNoReviews => '您还没有写过评论';
+
+  @override
+  String get addressReviewsTitle => '此地址的评论';
+
+  @override
+  String addressReviewsCount(int count) {
+    return '共$count条评论';
+  }
+
+  @override
+  String addressReviewsOther(int count) {
+    return '查看此地址的其他$count条评论';
+  }
+
+  @override
+  String get addressReviewsNone => '此地址暂无其他评论';
+
+  @override
+  String get addressReviewsAvg => '综合平均';
 }

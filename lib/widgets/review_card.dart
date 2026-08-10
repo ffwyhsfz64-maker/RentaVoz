@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
+import '../screens/address_reviews_screen.dart';
 
 class ReviewCard extends StatelessWidget {
   const ReviewCard({super.key, required this.review, this.onTap});
@@ -30,11 +31,27 @@ class ReviewCard extends StatelessWidget {
                   const Icon(Icons.location_on, size: 16, color: Color(0xFF2E7D32)),
                   const SizedBox(width: 4),
                   Expanded(
-                    child: Text(
-                      review.address,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    child: GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddressReviewsScreen(
+                            address: review.address,
+                            lat: review.lat,
+                            lng: review.lng,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        review.address,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                          decorationColor: const Color(0xFF2E7D32),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),

@@ -487,4 +487,23 @@ class SKo extends S {
 
   @override
   String get profileNoReviews => '아직 작성한 리뷰가 없습니다';
+
+  @override
+  String get addressReviewsTitle => '이 주소의 리뷰';
+
+  @override
+  String addressReviewsCount(int count) {
+    return '총 $count개의 리뷰';
+  }
+
+  @override
+  String addressReviewsOther(int count) {
+    return '이 주소의 다른 리뷰 $count개 보기';
+  }
+
+  @override
+  String get addressReviewsNone => '이 주소의 다른 리뷰가 없습니다';
+
+  @override
+  String get addressReviewsAvg => '전체 평균';
 }

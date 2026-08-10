@@ -156,5 +156,12 @@
   "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
   "profileAvgRating": "平均评分",
   "profileMyReviews": "我的评论",
-  "profileNoReviews": "您还没有写过评论"
+  "profileNoReviews": "您还没有写过评论",
+  "addressReviewsTitle": "此地址的评论",
+  "addressReviewsCount": "共{count}条评论",
+  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsOther": "查看此地址的其他{count}条评论",
+  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsNone": "此地址暂无其他评论",
+  "addressReviewsAvg": "综合平均"
 }

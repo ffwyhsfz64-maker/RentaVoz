@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../services/report_service.dart';
+import '../services/review_service.dart';
 import '../services/translation_service.dart';
+import 'address_reviews_screen.dart';
 
 class ReviewDetailScreen extends StatefulWidget {
   const ReviewDetailScreen({super.key, required this.review});
@@ -363,7 +365,63 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             ),
           ],
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
+
+          // 같은 주소 리뷰 배너
+          FutureBuilder<List<Review>>(
+            future: ReviewService.fetchSameLocation(
+              address: review.address,
+              lat: review.lat,
+              lng: review.lng,
+              excludeId: review.id,
+            ),
+            builder: (context, snap) {
+              final others = snap.data ?? [];
+              if (others.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AddressReviewsScreen(
+                        address: review.address,
+                        lat: review.lat,
+                        lng: review.lng,
+                        excludeId: review.id,
+                      ),
+                    ),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2E7D32).withAlpha(15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF2E7D32).withAlpha(60)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.home_work_outlined, color: Color(0xFF2E7D32), size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            s.addressReviewsOther(others.length),
+                            style: const TextStyle(
+                              color: Color(0xFF2E7D32),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right, color: Color(0xFF2E7D32)),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+
           Text(
             s.publishedOn(_fmtDateFull(review.createdAt)),
             style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),

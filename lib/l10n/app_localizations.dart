@@ -1032,6 +1032,36 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Aún no has escrito reseñas'**
   String get profileNoReviews;
+
+  /// No description provided for @addressReviewsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reseñas en esta dirección'**
+  String get addressReviewsTitle;
+
+  /// No description provided for @addressReviewsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} reseñas en total'**
+  String addressReviewsCount(int count);
+
+  /// No description provided for @addressReviewsOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver {count} reseñas más de esta dirección'**
+  String addressReviewsOther(int count);
+
+  /// No description provided for @addressReviewsNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin más reseñas para esta dirección'**
+  String get addressReviewsNone;
+
+  /// No description provided for @addressReviewsAvg.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio general'**
+  String get addressReviewsAvg;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

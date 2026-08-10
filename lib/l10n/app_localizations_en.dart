@@ -493,4 +493,23 @@ class SEn extends S {
 
   @override
   String get profileNoReviews => 'You haven\'t written any reviews yet';
+
+  @override
+  String get addressReviewsTitle => 'Reviews for this address';
+
+  @override
+  String addressReviewsCount(int count) {
+    return '$count reviews total';
+  }
+
+  @override
+  String addressReviewsOther(int count) {
+    return 'See $count more reviews for this address';
+  }
+
+  @override
+  String get addressReviewsNone => 'No other reviews for this address';
+
+  @override
+  String get addressReviewsAvg => 'Overall average';
 }

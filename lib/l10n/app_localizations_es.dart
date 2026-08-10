@@ -494,4 +494,23 @@ class SEs extends S {
 
   @override
   String get profileNoReviews => 'Aún no has escrito reseñas';
+
+  @override
+  String get addressReviewsTitle => 'Reseñas en esta dirección';
+
+  @override
+  String addressReviewsCount(int count) {
+    return '$count reseñas en total';
+  }
+
+  @override
+  String addressReviewsOther(int count) {
+    return 'Ver $count reseñas más de esta dirección';
+  }
+
+  @override
+  String get addressReviewsNone => 'Sin más reseñas para esta dirección';
+
+  @override
+  String get addressReviewsAvg => 'Promedio general';
 }

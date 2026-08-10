@@ -487,4 +487,23 @@ class SJa extends S {
 
   @override
   String get profileNoReviews => 'まだレビューを書いていません';
+
+  @override
+  String get addressReviewsTitle => 'この住所のレビュー';
+
+  @override
+  String addressReviewsCount(int count) {
+    return '合計$count件のレビュー';
+  }
+
+  @override
+  String addressReviewsOther(int count) {
+    return 'この住所の他のレビュー$count件を見る';
+  }
+
+  @override
+  String get addressReviewsNone => 'この住所の他のレビューはありません';
+
+  @override
+  String get addressReviewsAvg => '総合平均';
 }

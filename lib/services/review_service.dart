@@ -28,6 +28,39 @@ class ReviewService {
     return (reviews: reviews, lastDoc: snap.docs.isEmpty ? null : snap.docs.last);
   }
 
+  // 같은 주소 문자열 + 100m 반경 리뷰를 합쳐서 반환 (excludeId 제외)
+  static Future<List<Review>> fetchSameLocation({
+    required String address,
+    required double lat,
+    required double lng,
+    String? excludeId,
+  }) async {
+    const delta = 0.001; // ~111m
+
+    final results = await Future.wait([
+      // 1) 주소 문자열 일치
+      _col.where('address', isEqualTo: address).get(),
+      // 2) 위도 범위 (Firestore 단일 range 쿼리), 경도는 클라이언트 필터
+      _col
+          .where('lat', isGreaterThanOrEqualTo: lat - delta)
+          .where('lat', isLessThanOrEqualTo: lat + delta)
+          .get(),
+    ]);
+
+    final seen = <String>{};
+    final reviews = <Review>[];
+    for (final snap in results) {
+      for (final doc in snap.docs) {
+        final r = Review.fromMap(doc.id, doc.data());
+        if (r.id == excludeId) continue;
+        if ((r.lng - lng).abs() > delta) continue; // 경도 필터
+        if (seen.add(r.id)) reviews.add(r);
+      }
+    }
+    reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return reviews;
+  }
+
   static Future<List<Review>> fetchAll({String? rentalType}) async {
     Query<Map<String, dynamic>> q = rentalType != null
         ? _col.where('rentalType', isEqualTo: rentalType)

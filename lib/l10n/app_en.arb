@@ -156,5 +156,12 @@
   "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
   "profileAvgRating": "Avg. rating",
   "profileMyReviews": "My reviews",
-  "profileNoReviews": "You haven't written any reviews yet"
+  "profileNoReviews": "You haven't written any reviews yet",
+  "addressReviewsTitle": "Reviews for this address",
+  "addressReviewsCount": "{count} reviews total",
+  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsOther": "See {count} more reviews for this address",
+  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "addressReviewsNone": "No other reviews for this address",
+  "addressReviewsAvg": "Overall average"
 }
