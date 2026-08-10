@@ -227,5 +227,10 @@
       }
     }
   },
-  "registerTermsRequired": "You must accept the terms to continue."
+  "registerTermsRequired": "You must accept the terms to continue.",
+  "appVersion": "Version",
+  "appAbout": "About",
+  "appAboutDesc": "RentaVoz is a platform where tenants share honest rental reviews in Mexico.",
+  "appContact": "Contact",
+  "appOpenSource": "Open-source licenses"
 }

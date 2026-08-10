@@ -579,4 +579,19 @@ class SJa extends S {
 
   @override
   String get registerTermsRequired => '利用規約に同意する必要があります。';
+
+  @override
+  String get appVersion => 'バージョン';
+
+  @override
+  String get appAbout => 'アプリについて';
+
+  @override
+  String get appAboutDesc => 'RentaVozはメキシコの賃貸リアルレビューを共有するプラットフォームです。';
+
+  @override
+  String get appContact => 'お問い合わせ';
+
+  @override
+  String get appOpenSource => 'オープンソースライセンス';
 }

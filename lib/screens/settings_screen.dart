@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../main.dart';
+import 'about_screen.dart';
 import 'legal_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -70,6 +71,15 @@ class SettingsScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const LegalScreen(type: LegalType.terms)),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(s.appAbout),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AboutScreen()),
             ),
           ),
         ],

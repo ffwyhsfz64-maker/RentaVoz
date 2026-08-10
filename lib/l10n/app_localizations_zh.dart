@@ -575,4 +575,19 @@ class SZh extends S {
 
   @override
   String get registerTermsRequired => '您必须接受条款才能继续。';
+
+  @override
+  String get appVersion => '版本';
+
+  @override
+  String get appAbout => '关于';
+
+  @override
+  String get appAboutDesc => 'RentaVoz是一个分享墨西哥租房真实评价的平台。';
+
+  @override
+  String get appContact => '联系我们';
+
+  @override
+  String get appOpenSource => '开源许可证';
 }

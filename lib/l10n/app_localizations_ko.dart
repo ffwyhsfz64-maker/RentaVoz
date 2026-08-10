@@ -579,4 +579,19 @@ class SKo extends S {
 
   @override
   String get registerTermsRequired => '약관에 동의해야 계속 진행할 수 있습니다.';
+
+  @override
+  String get appVersion => '버전';
+
+  @override
+  String get appAbout => '앱 정보';
+
+  @override
+  String get appAboutDesc => 'RentaVoz는 멕시코 임대 솔직 후기를 공유하는 플랫폼입니다.';
+
+  @override
+  String get appContact => '문의';
+
+  @override
+  String get appOpenSource => '오픈소스 라이선스';
 }

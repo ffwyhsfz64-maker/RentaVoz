@@ -591,4 +591,20 @@ class SEs extends S {
   @override
   String get registerTermsRequired =>
       'Debes aceptar los términos para continuar.';
+
+  @override
+  String get appVersion => 'Versión';
+
+  @override
+  String get appAbout => 'Acerca de';
+
+  @override
+  String get appAboutDesc =>
+      'RentaVoz es una plataforma donde inquilinos comparten reseñas honestas de arrendamientos en México.';
+
+  @override
+  String get appContact => 'Contacto';
+
+  @override
+  String get appOpenSource => 'Licencias de código abierto';
 }

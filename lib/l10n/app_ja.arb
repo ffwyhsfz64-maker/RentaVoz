@@ -227,5 +227,10 @@
       }
     }
   },
-  "registerTermsRequired": "利用規約に同意する必要があります。"
+  "registerTermsRequired": "利用規約に同意する必要があります。",
+  "appVersion": "バージョン",
+  "appAbout": "アプリについて",
+  "appAboutDesc": "RentaVozはメキシコの賃貸リアルレビューを共有するプラットフォームです。",
+  "appContact": "お問い合わせ",
+  "appOpenSource": "オープンソースライセンス"
 }

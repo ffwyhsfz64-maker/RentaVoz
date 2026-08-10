@@ -227,5 +227,10 @@
       }
     }
   },
-  "registerTermsRequired": "您必须接受条款才能继续。"
+  "registerTermsRequired": "您必须接受条款才能继续。",
+  "appVersion": "版本",
+  "appAbout": "关于",
+  "appAboutDesc": "RentaVoz是一个分享墨西哥租房真实评价的平台。",
+  "appContact": "联系我们",
+  "appOpenSource": "开源许可证"
 }

@@ -588,4 +588,20 @@ class SEn extends S {
 
   @override
   String get registerTermsRequired => 'You must accept the terms to continue.';
+
+  @override
+  String get appVersion => 'Version';
+
+  @override
+  String get appAbout => 'About';
+
+  @override
+  String get appAboutDesc =>
+      'RentaVoz is a platform where tenants share honest rental reviews in Mexico.';
+
+  @override
+  String get appContact => 'Contact';
+
+  @override
+  String get appOpenSource => 'Open-source licenses';
 }

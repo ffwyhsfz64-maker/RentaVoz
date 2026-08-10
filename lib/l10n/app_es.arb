@@ -248,5 +248,10 @@
       }
     }
   },
-  "registerTermsRequired": "Debes aceptar los términos para continuar."
+  "registerTermsRequired": "Debes aceptar los términos para continuar.",
+  "appVersion": "Versión",
+  "appAbout": "Acerca de",
+  "appAboutDesc": "RentaVoz es una plataforma donde inquilinos comparten reseñas honestas de arrendamientos en México.",
+  "appContact": "Contacto",
+  "appOpenSource": "Licencias de código abierto"
 }

@@ -1200,6 +1200,36 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Debes aceptar los términos para continuar.'**
   String get registerTermsRequired;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get appVersion;
+
+  /// No description provided for @appAbout.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca de'**
+  String get appAbout;
+
+  /// No description provided for @appAboutDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'RentaVoz es una plataforma donde inquilinos comparten reseñas honestas de arrendamientos en México.'**
+  String get appAboutDesc;
+
+  /// No description provided for @appContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto'**
+  String get appContact;
+
+  /// No description provided for @appOpenSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencias de código abierto'**
+  String get appOpenSource;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
