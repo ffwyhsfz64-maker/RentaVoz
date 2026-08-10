@@ -528,4 +528,22 @@ class SZh extends S {
 
   @override
   String get verifyEmailLogout => '退出登录并返回';
+
+  @override
+  String get bookmarkAdd => '收藏评论';
+
+  @override
+  String get bookmarkRemove => '取消收藏';
+
+  @override
+  String get bookmarkAdded => '已收藏';
+
+  @override
+  String get bookmarkRemoved => '已取消收藏';
+
+  @override
+  String get profileSavedReviews => '已收藏';
+
+  @override
+  String get profileNoSavedReviews => '暂无收藏的评论';
 }

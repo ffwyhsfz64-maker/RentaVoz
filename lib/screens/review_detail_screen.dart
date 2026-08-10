@@ -7,6 +7,7 @@ import '../services/report_service.dart';
 import '../services/review_service.dart';
 import '../services/translation_service.dart';
 import 'address_reviews_screen.dart';
+import '../widgets/bookmark_button.dart';
 
 class ReviewDetailScreen extends StatefulWidget {
   const ReviewDetailScreen({super.key, required this.review});
@@ -72,6 +73,11 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
       appBar: AppBar(
         title: Text(s.detailTitle),
         actions: [
+          if (FirebaseAuth.instance.currentUser != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: BookmarkButton(reviewId: review.id, size: 24),
+            ),
           IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {}),
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),

@@ -532,4 +532,22 @@ class SKo extends S {
 
   @override
   String get verifyEmailLogout => '로그아웃하고 돌아가기';
+
+  @override
+  String get bookmarkAdd => '리뷰 저장';
+
+  @override
+  String get bookmarkRemove => '저장 해제';
+
+  @override
+  String get bookmarkAdded => '저장되었습니다';
+
+  @override
+  String get bookmarkRemoved => '저장이 해제되었습니다';
+
+  @override
+  String get profileSavedReviews => '저장한 리뷰';
+
+  @override
+  String get profileNoSavedReviews => '저장한 리뷰가 없습니다';
 }

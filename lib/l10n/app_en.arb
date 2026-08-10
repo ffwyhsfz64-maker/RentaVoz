@@ -202,5 +202,11 @@
   "verifyEmailContinue": "I verified, continue",
   "verifyEmailNotYet": "Email not verified yet. Please check your inbox.",
   "verifyEmailRequired": "You must verify your email to post reviews.",
-  "verifyEmailLogout": "Sign out and go back"
+  "verifyEmailLogout": "Sign out and go back",
+  "bookmarkAdd": "Save review",
+  "bookmarkRemove": "Remove from saved",
+  "bookmarkAdded": "Review saved",
+  "bookmarkRemoved": "Removed from saved",
+  "profileSavedReviews": "Saved",
+  "profileNoSavedReviews": "No saved reviews yet"
 }

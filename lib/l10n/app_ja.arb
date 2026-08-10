@@ -202,5 +202,11 @@
   "verifyEmailContinue": "確認済み、続ける",
   "verifyEmailNotYet": "まだ確認が検出されていません。メールをご確認ください。",
   "verifyEmailRequired": "レビューを投稿するにはメールアドレスの確認が必要です。",
-  "verifyEmailLogout": "サインアウトして戻る"
+  "verifyEmailLogout": "サインアウトして戻る",
+  "bookmarkAdd": "レビューを保存",
+  "bookmarkRemove": "保存を解除",
+  "bookmarkAdded": "保存しました",
+  "bookmarkRemoved": "保存を解除しました",
+  "profileSavedReviews": "保存済み",
+  "profileNoSavedReviews": "保存したレビューはありません"
 }

@@ -223,5 +223,11 @@
   "verifyEmailContinue": "Ya verifiqué, continuar",
   "verifyEmailNotYet": "Aún no hemos detectado la verificación. Por favor revisa tu correo.",
   "verifyEmailRequired": "Debes verificar tu correo electrónico para publicar reseñas.",
-  "verifyEmailLogout": "Cerrar sesión y volver"
+  "verifyEmailLogout": "Cerrar sesión y volver",
+  "bookmarkAdd": "Guardar reseña",
+  "bookmarkRemove": "Quitar de guardados",
+  "bookmarkAdded": "Reseña guardada",
+  "bookmarkRemoved": "Eliminada de guardados",
+  "profileSavedReviews": "Guardados",
+  "profileNoSavedReviews": "No tienes reseñas guardadas"
 }

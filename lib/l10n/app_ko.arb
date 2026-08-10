@@ -202,5 +202,11 @@
   "verifyEmailContinue": "인증 완료, 계속하기",
   "verifyEmailNotYet": "아직 인증이 확인되지 않았습니다. 이메일을 확인해주세요.",
   "verifyEmailRequired": "리뷰를 작성하려면 이메일 인증이 필요합니다.",
-  "verifyEmailLogout": "로그아웃하고 돌아가기"
+  "verifyEmailLogout": "로그아웃하고 돌아가기",
+  "bookmarkAdd": "리뷰 저장",
+  "bookmarkRemove": "저장 해제",
+  "bookmarkAdded": "저장되었습니다",
+  "bookmarkRemoved": "저장이 해제되었습니다",
+  "profileSavedReviews": "저장한 리뷰",
+  "profileNoSavedReviews": "저장한 리뷰가 없습니다"
 }

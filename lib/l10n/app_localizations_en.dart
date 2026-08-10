@@ -540,4 +540,22 @@ class SEn extends S {
 
   @override
   String get verifyEmailLogout => 'Sign out and go back';
+
+  @override
+  String get bookmarkAdd => 'Save review';
+
+  @override
+  String get bookmarkRemove => 'Remove from saved';
+
+  @override
+  String get bookmarkAdded => 'Review saved';
+
+  @override
+  String get bookmarkRemoved => 'Removed from saved';
+
+  @override
+  String get profileSavedReviews => 'Saved';
+
+  @override
+  String get profileNoSavedReviews => 'No saved reviews yet';
 }

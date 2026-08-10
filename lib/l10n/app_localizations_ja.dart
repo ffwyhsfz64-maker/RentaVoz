@@ -532,4 +532,22 @@ class SJa extends S {
 
   @override
   String get verifyEmailLogout => 'サインアウトして戻る';
+
+  @override
+  String get bookmarkAdd => 'レビューを保存';
+
+  @override
+  String get bookmarkRemove => '保存を解除';
+
+  @override
+  String get bookmarkAdded => '保存しました';
+
+  @override
+  String get bookmarkRemoved => '保存を解除しました';
+
+  @override
+  String get profileSavedReviews => '保存済み';
+
+  @override
+  String get profileNoSavedReviews => '保存したレビューはありません';
 }

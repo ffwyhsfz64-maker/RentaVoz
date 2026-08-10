@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../screens/address_reviews_screen.dart';
+import 'bookmark_button.dart';
 
 class ReviewCard extends StatelessWidget {
   const ReviewCard({super.key, required this.review, this.onTap});
@@ -24,7 +26,7 @@ class ReviewCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Address + rating
+              // Address + rating + bookmark
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,6 +58,10 @@ class ReviewCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   _StarChip(rating: overall),
+                  if (FirebaseAuth.instance.currentUser != null) ...[
+                    const SizedBox(width: 4),
+                    BookmarkButton(reviewId: review.id, size: 20),
+                  ],
                 ],
               ),
               const SizedBox(height: 10),

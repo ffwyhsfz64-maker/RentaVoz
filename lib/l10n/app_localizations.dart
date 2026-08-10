@@ -1110,6 +1110,42 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Cerrar sesión y volver'**
   String get verifyEmailLogout;
+
+  /// No description provided for @bookmarkAdd.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar reseña'**
+  String get bookmarkAdd;
+
+  /// No description provided for @bookmarkRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar de guardados'**
+  String get bookmarkRemove;
+
+  /// No description provided for @bookmarkAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Reseña guardada'**
+  String get bookmarkAdded;
+
+  /// No description provided for @bookmarkRemoved.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminada de guardados'**
+  String get bookmarkRemoved;
+
+  /// No description provided for @profileSavedReviews.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardados'**
+  String get profileSavedReviews;
+
+  /// No description provided for @profileNoSavedReviews.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes reseñas guardadas'**
+  String get profileNoSavedReviews;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

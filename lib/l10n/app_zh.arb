@@ -202,5 +202,11 @@
   "verifyEmailContinue": "已验证，继续",
   "verifyEmailNotYet": "尚未检测到验证，请查看您的邮件。",
   "verifyEmailRequired": "发布评论需要先验证邮箱。",
-  "verifyEmailLogout": "退出登录并返回"
+  "verifyEmailLogout": "退出登录并返回",
+  "bookmarkAdd": "收藏评论",
+  "bookmarkRemove": "取消收藏",
+  "bookmarkAdded": "已收藏",
+  "bookmarkRemoved": "已取消收藏",
+  "profileSavedReviews": "已收藏",
+  "profileNoSavedReviews": "暂无收藏的评论"
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../services/auth_service.dart';
+import '../services/bookmark_service.dart';
 import '../services/review_service.dart';
 import '../widgets/review_card.dart';
 import 'review_detail_screen.dart';
@@ -18,13 +19,21 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
   String? _displayName;
 
   @override
   void initState() {
     super.initState();
     _displayName = AuthService.currentUser?.displayName;
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   void _showEditNameDialog(S s) {
@@ -170,93 +179,192 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: StreamBuilder<List<Review>>(
         stream: ReviewService.userReviewsStream(user.uid),
         builder: (context, snap) {
-          final reviews = snap.data ?? [];
-          final avgRating = reviews.isEmpty
+          final myReviews = snap.data ?? [];
+          final avgRating = myReviews.isEmpty
               ? 0.0
-              : reviews.map((r) => r.overallRating).reduce((a, b) => a + b) / reviews.length;
+              : myReviews.map((r) => r.overallRating).reduce((a, b) => a + b) / myReviews.length;
 
-          return CustomScrollView(
-            slivers: [
+          return NestedScrollView(
+            headerSliverBuilder: (_, __) => [
               SliverToBoxAdapter(
                 child: _ProfileHeader(
                   user: user,
                   displayName: _displayName,
-                  reviewCount: reviews.length,
+                  reviewCount: myReviews.length,
                   avgRating: avgRating,
                   onEditName: () => _showEditNameDialog(s),
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-                  child: Text(
-                    s.profileMyReviews,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabBarDelegate(
+                  TabBar(
+                    controller: _tabController,
+                    tabs: [
+                      Tab(text: s.profileMyReviews),
+                      Tab(text: s.profileSavedReviews),
+                    ],
                   ),
                 ),
               ),
-              if (snap.connectionState == ConnectionState.waiting)
-                const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
-              else if (reviews.isEmpty)
-                SliverFillRemaining(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.rate_review_outlined, size: 64, color: Colors.grey),
-                        const SizedBox(height: 12),
-                        Text(s.profileNoReviews, style: const TextStyle(color: Colors.grey)),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, i) => Dismissible(
-                      key: Key(reviews[i].id),
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        color: Colors.red,
-                        child: const Icon(Icons.delete_outline, color: Colors.white),
-                      ),
-                      confirmDismiss: (_) => showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(s.deleteConfirmTitle),
-                          content: Text(s.deleteConfirmBody),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(s.cancel)),
-                            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(s.delete)),
-                          ],
-                        ),
-                      ),
-                      onDismissed: (_) async {
-                        await ReviewService.deleteReview(reviews[i].id);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
-                        }
-                      },
-                      child: GestureDetector(
-                        onLongPress: () => _showActions(context, s, reviews[i]),
-                        child: ReviewCard(
-                          review: reviews[i],
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: reviews[i])),
-                          ),
-                        ),
-                      ),
-                    ),
-                    childCount: reviews.length,
-                  ),
-                ),
             ],
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                // ── 내 리뷰 탭 ─────────────────────────────────
+                snap.connectionState == ConnectionState.waiting
+                    ? const Center(child: CircularProgressIndicator())
+                    : myReviews.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.rate_review_outlined, size: 64, color: Colors.grey),
+                                const SizedBox(height: 12),
+                                Text(s.profileNoReviews, style: const TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.only(top: 4, bottom: 16),
+                            itemCount: myReviews.length,
+                            itemBuilder: (ctx, i) => Dismissible(
+                              key: Key(myReviews[i].id),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                color: Colors.red,
+                                child: const Icon(Icons.delete_outline, color: Colors.white),
+                              ),
+                              confirmDismiss: (_) => showDialog<bool>(
+                                context: context,
+                                builder: (c) => AlertDialog(
+                                  title: Text(s.deleteConfirmTitle),
+                                  content: Text(s.deleteConfirmBody),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(c, false), child: Text(s.cancel)),
+                                    FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(s.delete)),
+                                  ],
+                                ),
+                              ),
+                              onDismissed: (_) async {
+                                await ReviewService.deleteReview(myReviews[i].id);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
+                                }
+                              },
+                              child: GestureDetector(
+                                onLongPress: () => _showActions(context, s, myReviews[i]),
+                                child: ReviewCard(
+                                  review: myReviews[i],
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: myReviews[i])),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                // ── 저장한 리뷰 탭 ─────────────────────────────
+                _SavedReviewsTab(uid: user.uid),
+              ],
+            ),
           );
         },
       ),
+    );
+  }
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  const _TabBarDelegate(this.tabBar);
+  final TabBar tabBar;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_TabBarDelegate old) => false;
+}
+
+class _SavedReviewsTab extends StatefulWidget {
+  const _SavedReviewsTab({required this.uid});
+  final String uid;
+
+  @override
+  State<_SavedReviewsTab> createState() => _SavedReviewsTabState();
+}
+
+class _SavedReviewsTabState extends State<_SavedReviewsTab>
+    with AutomaticKeepAliveClientMixin {
+  late Future<List<Review>> _future;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = BookmarkService.fetchBookmarkedReviews(widget.uid);
+  }
+
+  void _reload() => setState(() {
+        _future = BookmarkService.fetchBookmarkedReviews(widget.uid);
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    final s = S.of(context)!;
+    return FutureBuilder<List<Review>>(
+      future: _future,
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final reviews = snap.data ?? [];
+        if (reviews.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.bookmark_outline, size: 64, color: Colors.grey),
+                const SizedBox(height: 12),
+                Text(s.profileNoSavedReviews, style: const TextStyle(color: Colors.grey)),
+              ],
+            ),
+          );
+        }
+        return RefreshIndicator(
+          onRefresh: () async => _reload(),
+          child: ListView.builder(
+            padding: const EdgeInsets.only(top: 4, bottom: 16),
+            itemCount: reviews.length,
+            itemBuilder: (_, i) => ReviewCard(
+              review: reviews[i],
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: reviews[i])),
+                );
+                _reload();
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -542,4 +542,22 @@ class SEs extends S {
 
   @override
   String get verifyEmailLogout => 'Cerrar sesión y volver';
+
+  @override
+  String get bookmarkAdd => 'Guardar reseña';
+
+  @override
+  String get bookmarkRemove => 'Quitar de guardados';
+
+  @override
+  String get bookmarkAdded => 'Reseña guardada';
+
+  @override
+  String get bookmarkRemoved => 'Eliminada de guardados';
+
+  @override
+  String get profileSavedReviews => 'Guardados';
+
+  @override
+  String get profileNoSavedReviews => 'No tienes reseñas guardadas';
 }
