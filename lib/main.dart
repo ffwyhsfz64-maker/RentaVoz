@@ -10,6 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'screens/auth_gate.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,7 @@ void main() async {
     return true;
   };
 
+  await NotificationService.init();
   FlutterNativeSplash.remove();
   runApp(const RentaVozApp());
 }
