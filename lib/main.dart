@@ -6,6 +6,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../l10n/app_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,11 +96,17 @@ class _RentaVozAppState extends State<RentaVozApp> {
         colorSchemeSeed: const Color(0xFF2E7D32),
         useMaterial3: true,
         brightness: Brightness.light,
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+          ThemeData(brightness: Brightness.light).textTheme,
+        ),
       ),
       darkTheme: ThemeData(
         colorSchemeSeed: const Color(0xFF2E7D32),
         useMaterial3: true,
         brightness: Brightness.dark,
+        textTheme: GoogleFonts.plusJakartaSansTextTheme(
+          ThemeData(brightness: Brightness.dark).textTheme,
+        ),
       ),
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),

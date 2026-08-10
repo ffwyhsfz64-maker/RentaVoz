@@ -309,7 +309,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   const _SearchBarDelegate({required this.child});
   final Widget child;
 
-  static const _height = 102.0; // searchbar(56) + chips(42) + padding(4)
+  static const _height = 114.0; // searchbar(56) + top/bottom padding(12) + chips(42) + bottom(4)
 
   @override
   double get minExtent => _height;

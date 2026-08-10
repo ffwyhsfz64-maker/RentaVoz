@@ -246,7 +246,6 @@ class _GradientPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initial = address.isNotEmpty ? address[0].toUpperCase() : '?';
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -256,10 +255,7 @@ class _GradientPlaceholder extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Text(
-          initial,
-          style: const TextStyle(color: Colors.white38, fontSize: 72, fontWeight: FontWeight.bold),
-        ),
+        child: Icon(Icons.home_outlined, size: 56, color: Colors.white24),
       ),
     );
   }

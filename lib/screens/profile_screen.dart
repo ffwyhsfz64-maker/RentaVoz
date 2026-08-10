@@ -252,10 +252,19 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                 delegate: _TabBarDelegate(
                   TabBar(
                     controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      color: const Color(0xFF2E7D32).withAlpha(20),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelColor: const Color(0xFF2E7D32),
+                    unselectedLabelColor: Colors.grey,
+                    labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                    dividerColor: Colors.transparent,
                     tabs: [
                       Tab(text: s.profileMyReviews),
                       Tab(text: s.profileSavedReviews),
-                      Tab(icon: const Icon(Icons.notifications_none, size: 20)),
+                      const Tab(icon: Icon(Icons.notifications_none_rounded, size: 20)),
                     ],
                   ),
                 ),

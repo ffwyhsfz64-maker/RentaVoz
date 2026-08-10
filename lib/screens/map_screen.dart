@@ -22,6 +22,7 @@ class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _mapCtrl = Completer();
   Set<Marker> _markers = {};
   Review? _selected;
+  Review? _lastSelected; // 애니메이션 아웃 중에도 카드 유지
   StreamSubscription? _sub;
   int _totalCount = 0;
 
@@ -77,7 +78,7 @@ class _MapScreenState extends State<MapScreen> {
                         ? BitmapDescriptor.hueYellow
                         : BitmapDescriptor.hueRed,
               ),
-              onTap: () => setState(() => _selected = r),
+              onTap: () => setState(() { _selected = r; _lastSelected = r; }),
             ))
         .toSet();
   }
@@ -121,92 +122,114 @@ class _MapScreenState extends State<MapScreen> {
             onTap: (_) => setState(() => _selected = null),
           ),
 
-          // 범례
+          // 범례 — 가로 pill 형태
           Positioned(
             top: 12,
             left: 12,
-            child: Card(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                color: Colors.white.withAlpha(230),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    _LegendItem(color: Colors.green, label: s.legendGood),
-                    _LegendItem(color: Colors.amber, label: s.legendRegular),
-                    _LegendItem(color: Colors.red, label: s.legendBad),
+                    _LegendDot(color: Colors.green, label: s.legendGood.split(' ').last),
+                    const SizedBox(width: 10),
+                    _LegendDot(color: Colors.amber, label: s.legendRegular.split(' ').last),
+                    const SizedBox(width: 10),
+                    _LegendDot(color: Colors.red, label: s.legendBad.split(' ').last),
                   ],
                 ),
               ),
             ),
           ),
 
-          // 리뷰 수
+          // 리뷰 수 badge
           Positioned(
             top: 12,
             right: 12,
-            child: Card(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Text(
-                  s.reviewCount(_totalCount),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E7D32),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6, offset: const Offset(0, 2))],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.rate_review_rounded, size: 13, color: Colors.white),
+                  const SizedBox(width: 5),
+                  Text(
+                    s.reviewCount(_totalCount),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                ],
               ),
             ),
           ),
 
-          // +/- 줌 버튼
+          // +/- 줌 버튼 — 세련된 카드 스타일
           Positioned(
             right: 12,
             bottom: _selected != null ? 200 : 80,
-            child: Column(
-              children: [
-                FloatingActionButton.small(
-                  heroTag: 'zoom_in',
-                  onPressed: () => _zoom(1),
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(height: 8),
-                FloatingActionButton.small(
-                  heroTag: 'zoom_out',
-                  onPressed: () => _zoom(-1),
-                  child: const Icon(Icons.remove),
-                ),
-              ],
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8, offset: const Offset(0, 3))],
+              ),
+              child: Column(
+                children: [
+                  _ZoomButton(icon: Icons.add_rounded, heroTag: 'zoom_in', onTap: () => _zoom(1)),
+                  Container(height: 1, color: Colors.grey[200]),
+                  _ZoomButton(icon: Icons.remove_rounded, heroTag: 'zoom_out', onTap: () => _zoom(-1)),
+                ],
+              ),
             ),
           ),
 
-          // 선택된 리뷰 카드
-          if (_selected != null)
-            Positioned(
-              bottom: 0,
+          // 선택된 리뷰 카드 — 슬라이드업
+          if (_lastSelected != null)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOutCubic,
+              bottom: _selected != null ? 0 : -300,
               left: 0,
               right: 0,
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: const CircleAvatar(
-                            radius: 14,
-                            child: Icon(Icons.close, size: 16),
-                          ),
-                          onPressed: () => setState(() => _selected = null),
-                        ),
-                      ),
                       ReviewCard(
-                        review: _selected!,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ReviewDetailScreen(review: _selected!),
+                        review: _lastSelected!,
+                        onTap: () {
+                          if (_selected == null) return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ReviewDetailScreen(review: _lastSelected!),
+                            ),
+                          );
+                        },
+                      ),
+                      Positioned(
+                        top: -14,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => setState(() => _selected = null),
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+                            ),
+                            child: const Icon(Icons.close_rounded, size: 16, color: Colors.black54),
                           ),
                         ),
                       ),
@@ -221,27 +244,41 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-class _LegendItem extends StatelessWidget {
-  const _LegendItem({required this.color, required this.label});
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.label});
   final Color color;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 10,
-            height: 10,
-            decoration:
-                BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 11)),
-        ],
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black87)),
+      ],
+    );
+  }
+}
+
+class _ZoomButton extends StatelessWidget {
+  const _ZoomButton({required this.icon, required this.heroTag, required this.onTap});
+  final IconData icon;
+  final String heroTag;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Icon(icon, size: 20, color: Colors.black87),
       ),
     );
   }
