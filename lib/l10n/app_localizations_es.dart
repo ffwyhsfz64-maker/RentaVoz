@@ -381,6 +381,24 @@ class SEs extends S {
       'No se pudo enviar el correo. Intenta de nuevo.';
 
   @override
+  String get filterAll => 'Todos';
+
+  @override
+  String get filterHouse => 'Casa';
+
+  @override
+  String get filterRoom => 'Cuarto';
+
+  @override
+  String get sortNewest => 'Más recientes';
+
+  @override
+  String get sortHighest => 'Mejor calificados';
+
+  @override
+  String get sortLowest => 'Peor calificados';
+
+  @override
   String get rentalTypeLabel => 'Tipo de arrendamiento';
 
   @override

@@ -811,6 +811,42 @@ abstract class S {
   /// **'No se pudo enviar el correo. Intenta de nuevo.'**
   String get forgotPasswordErrDefault;
 
+  /// No description provided for @filterAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get filterAll;
+
+  /// No description provided for @filterHouse.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa'**
+  String get filterHouse;
+
+  /// No description provided for @filterRoom.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuarto'**
+  String get filterRoom;
+
+  /// No description provided for @sortNewest.
+  ///
+  /// In es, this message translates to:
+  /// **'Más recientes'**
+  String get sortNewest;
+
+  /// No description provided for @sortHighest.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejor calificados'**
+  String get sortHighest;
+
+  /// No description provided for @sortLowest.
+  ///
+  /// In es, this message translates to:
+  /// **'Peor calificados'**
+  String get sortLowest;
+
   /// No description provided for @rentalTypeLabel.
   ///
   /// In es, this message translates to:

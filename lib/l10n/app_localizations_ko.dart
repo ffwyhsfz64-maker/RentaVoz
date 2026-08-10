@@ -374,6 +374,24 @@ class SKo extends S {
   String get forgotPasswordErrDefault => '이메일 전송에 실패했습니다. 다시 시도해주세요.';
 
   @override
+  String get filterAll => '전체';
+
+  @override
+  String get filterHouse => '집';
+
+  @override
+  String get filterRoom => '방';
+
+  @override
+  String get sortNewest => '최신순';
+
+  @override
+  String get sortHighest => '평점 높은순';
+
+  @override
+  String get sortLowest => '평점 낮은순';
+
+  @override
   String get rentalTypeLabel => '임대 유형';
 
   @override

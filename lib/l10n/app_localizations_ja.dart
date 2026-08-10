@@ -374,6 +374,24 @@ class SJa extends S {
   String get forgotPasswordErrDefault => 'メールの送信に失敗しました。もう一度お試しください。';
 
   @override
+  String get filterAll => 'すべて';
+
+  @override
+  String get filterHouse => '一戸建て';
+
+  @override
+  String get filterRoom => '個室';
+
+  @override
+  String get sortNewest => '新着順';
+
+  @override
+  String get sortHighest => '評価が高い順';
+
+  @override
+  String get sortLowest => '評価が低い順';
+
+  @override
   String get rentalTypeLabel => '賃貸タイプ';
 
   @override

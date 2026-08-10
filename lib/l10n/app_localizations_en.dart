@@ -380,6 +380,24 @@ class SEn extends S {
       'Could not send email. Please try again.';
 
   @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterHouse => 'House';
+
+  @override
+  String get filterRoom => 'Room';
+
+  @override
+  String get sortNewest => 'Newest';
+
+  @override
+  String get sortHighest => 'Top rated';
+
+  @override
+  String get sortLowest => 'Lowest rated';
+
+  @override
   String get rentalTypeLabel => 'Rental type';
 
   @override

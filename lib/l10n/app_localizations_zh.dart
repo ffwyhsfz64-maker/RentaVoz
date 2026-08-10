@@ -370,6 +370,24 @@ class SZh extends S {
   String get forgotPasswordErrDefault => '发送失败，请重试。';
 
   @override
+  String get filterAll => '全部';
+
+  @override
+  String get filterHouse => '整套';
+
+  @override
+  String get filterRoom => '单间';
+
+  @override
+  String get sortNewest => '最新';
+
+  @override
+  String get sortHighest => '评分最高';
+
+  @override
+  String get sortLowest => '评分最低';
+
+  @override
   String get rentalTypeLabel => '租赁类型';
 
   @override
