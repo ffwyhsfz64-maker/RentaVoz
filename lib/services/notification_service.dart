@@ -7,26 +7,35 @@ class NotificationService {
   static final _messaging = FirebaseMessaging.instance;
 
   static Future<void> init() async {
-    // 알림 권한 요청
-    await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    try {
+      // 알림 권한 요청
+      await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
-    // FCM 토큰 저장 (Firestore users/{uid}/fcmTokens)
-    await _saveToken();
+      // FCM 토큰 저장 (Firestore users/{uid}/fcmTokens)
+      await _saveToken();
 
-    // 토큰 갱신 시 재저장
-    _messaging.onTokenRefresh.listen(_storeToken);
+      // 토큰 갱신 시 재저장
+      _messaging.onTokenRefresh.listen(_storeToken);
 
-    // 포어그라운드 메시지 수신 설정
-    FirebaseMessaging.onMessage.listen(_handleForeground);
+      // 포어그라운드 메시지 수신 설정
+      FirebaseMessaging.onMessage.listen(_handleForeground);
+    } catch (e) {
+      // 시뮬레이터 등 APNS 미지원 환경에서도 앱이 정상 실행되도록
+      debugPrint('[FCM] 초기화 건너뜀: $e');
+    }
   }
 
   static Future<void> _saveToken() async {
-    final token = await _messaging.getToken();
-    if (token != null) await _storeToken(token);
+    try {
+      final token = await _messaging.getToken();
+      if (token != null) await _storeToken(token);
+    } catch (e) {
+      debugPrint('[FCM] 토큰 저장 실패: $e');
+    }
   }
 
   static Future<void> _storeToken(String token) async {
