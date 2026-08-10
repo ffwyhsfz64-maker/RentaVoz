@@ -25,6 +25,11 @@ class AuthService {
   static Future<void> updateDisplayName(String name) =>
       _auth.currentUser!.updateDisplayName(name);
 
+  static Future<void> sendEmailVerification() =>
+      _auth.currentUser!.sendEmailVerification();
+
+  static Future<void> reloadUser() => _auth.currentUser!.reload();
+
   static Future<UserCredential> signInWithGoogle() async {
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) throw Exception('cancelled');

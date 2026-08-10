@@ -151,17 +151,56 @@
   "profileSaveError": "姓名更新失败",
   "profileEmailLabel": "邮箱",
   "profileMemberSince": "{date}加入",
-  "@profileMemberSince": { "placeholders": { "date": { "type": "String" } } },
+  "@profileMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "profileReviewCount": "{count}条评论",
-  "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
+  "@profileReviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "profileAvgRating": "平均评分",
   "profileMyReviews": "我的评论",
   "profileNoReviews": "您还没有写过评论",
   "addressReviewsTitle": "此地址的评论",
   "addressReviewsCount": "共{count}条评论",
-  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsOther": "查看此地址的其他{count}条评论",
-  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsOther": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsNone": "此地址暂无其他评论",
-  "addressReviewsAvg": "综合平均"
+  "addressReviewsAvg": "综合平均",
+  "verifyEmailTitle": "验证邮箱",
+  "verifyEmailBody": "我们已向{email}发送了验证链接，请查看收件箱。",
+  "@verifyEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailResend": "重新发送验证邮件",
+  "verifyEmailResent": "验证邮件已重新发送，请查看收件箱。",
+  "verifyEmailContinue": "已验证，继续",
+  "verifyEmailNotYet": "尚未检测到验证，请查看您的邮件。",
+  "verifyEmailRequired": "发布评论需要先验证邮箱。",
+  "verifyEmailLogout": "退出登录并返回"
 }

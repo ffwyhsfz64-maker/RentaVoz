@@ -151,17 +151,56 @@
   "profileSaveError": "Failed to update name",
   "profileEmailLabel": "Email",
   "profileMemberSince": "Member since {date}",
-  "@profileMemberSince": { "placeholders": { "date": { "type": "String" } } },
+  "@profileMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "profileReviewCount": "{count} reviews",
-  "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
+  "@profileReviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "profileAvgRating": "Avg. rating",
   "profileMyReviews": "My reviews",
   "profileNoReviews": "You haven't written any reviews yet",
   "addressReviewsTitle": "Reviews for this address",
   "addressReviewsCount": "{count} reviews total",
-  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsOther": "See {count} more reviews for this address",
-  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsOther": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsNone": "No other reviews for this address",
-  "addressReviewsAvg": "Overall average"
+  "addressReviewsAvg": "Overall average",
+  "verifyEmailTitle": "Verify your email",
+  "verifyEmailBody": "We sent a verification link to {email}. Check your inbox.",
+  "@verifyEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailResend": "Resend email",
+  "verifyEmailResent": "Email resent. Check your inbox.",
+  "verifyEmailContinue": "I verified, continue",
+  "verifyEmailNotYet": "Email not verified yet. Please check your inbox.",
+  "verifyEmailRequired": "You must verify your email to post reviews.",
+  "verifyEmailLogout": "Sign out and go back"
 }

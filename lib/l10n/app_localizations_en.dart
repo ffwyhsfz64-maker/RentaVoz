@@ -512,4 +512,32 @@ class SEn extends S {
 
   @override
   String get addressReviewsAvg => 'Overall average';
+
+  @override
+  String get verifyEmailTitle => 'Verify your email';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'We sent a verification link to $email. Check your inbox.';
+  }
+
+  @override
+  String get verifyEmailResend => 'Resend email';
+
+  @override
+  String get verifyEmailResent => 'Email resent. Check your inbox.';
+
+  @override
+  String get verifyEmailContinue => 'I verified, continue';
+
+  @override
+  String get verifyEmailNotYet =>
+      'Email not verified yet. Please check your inbox.';
+
+  @override
+  String get verifyEmailRequired =>
+      'You must verify your email to post reviews.';
+
+  @override
+  String get verifyEmailLogout => 'Sign out and go back';
 }

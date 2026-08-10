@@ -506,4 +506,30 @@ class SJa extends S {
 
   @override
   String get addressReviewsAvg => '総合平均';
+
+  @override
+  String get verifyEmailTitle => 'メールアドレスの確認';
+
+  @override
+  String verifyEmailBody(String email) {
+    return '$emailに確認リンクを送りました。受信箱をご確認ください。';
+  }
+
+  @override
+  String get verifyEmailResend => '確認メールを再送';
+
+  @override
+  String get verifyEmailResent => '確認メールを再送しました。受信箱をご確認ください。';
+
+  @override
+  String get verifyEmailContinue => '確認済み、続ける';
+
+  @override
+  String get verifyEmailNotYet => 'まだ確認が検出されていません。メールをご確認ください。';
+
+  @override
+  String get verifyEmailRequired => 'レビューを投稿するにはメールアドレスの確認が必要です。';
+
+  @override
+  String get verifyEmailLogout => 'サインアウトして戻る';
 }

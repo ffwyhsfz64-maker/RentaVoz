@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../home_screen.dart';
+import '../verify_email_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -30,10 +31,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
-      await AuthService.signInWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
+      final cred = await AuthService.signInWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
       if (mounted) {
+        final isGoogle = cred.user?.providerData.any((p) => p.providerId == 'google.com') ?? false;
+        final verified = cred.user?.emailVerified ?? false;
+        final dest = (!isGoogle && !verified) ? const VerifyEmailScreen() : const HomeScreen();
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => dest),
         );
       }
     } on FirebaseAuthException catch (e) {

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
+import 'verify_email_screen.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -19,6 +20,9 @@ class AuthGate extends StatelessWidget {
           );
         }
         if (snap.hasError || snap.data == null) return const LoginScreen();
+        final user = snap.data!;
+        final isGoogle = user.providerData.any((p) => p.providerId == 'google.com');
+        if (!isGoogle && !user.emailVerified) return const VerifyEmailScreen();
         return const _OnboardingGate();
       },
     );

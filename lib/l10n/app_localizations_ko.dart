@@ -506,4 +506,30 @@ class SKo extends S {
 
   @override
   String get addressReviewsAvg => '전체 평균';
+
+  @override
+  String get verifyEmailTitle => '이메일 인증';
+
+  @override
+  String verifyEmailBody(String email) {
+    return '$email으로 인증 링크를 보냈습니다. 받은편지함을 확인해주세요.';
+  }
+
+  @override
+  String get verifyEmailResend => '인증 메일 재발송';
+
+  @override
+  String get verifyEmailResent => '인증 메일을 재발송했습니다. 받은편지함을 확인해주세요.';
+
+  @override
+  String get verifyEmailContinue => '인증 완료, 계속하기';
+
+  @override
+  String get verifyEmailNotYet => '아직 인증이 확인되지 않았습니다. 이메일을 확인해주세요.';
+
+  @override
+  String get verifyEmailRequired => '리뷰를 작성하려면 이메일 인증이 필요합니다.';
+
+  @override
+  String get verifyEmailLogout => '로그아웃하고 돌아가기';
 }

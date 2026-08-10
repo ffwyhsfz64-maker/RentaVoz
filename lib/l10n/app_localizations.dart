@@ -1062,6 +1062,54 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Promedio general'**
   String get addressReviewsAvg;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Verifica tu correo'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos un enlace de verificación a {email}. Revisa tu bandeja de entrada.'**
+  String verifyEmailBody(String email);
+
+  /// No description provided for @verifyEmailResend.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar correo'**
+  String get verifyEmailResend;
+
+  /// No description provided for @verifyEmailResent.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo reenviado. Revisa tu bandeja de entrada.'**
+  String get verifyEmailResent;
+
+  /// No description provided for @verifyEmailContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya verifiqué, continuar'**
+  String get verifyEmailContinue;
+
+  /// No description provided for @verifyEmailNotYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hemos detectado la verificación. Por favor revisa tu correo.'**
+  String get verifyEmailNotYet;
+
+  /// No description provided for @verifyEmailRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Debes verificar tu correo electrónico para publicar reseñas.'**
+  String get verifyEmailRequired;
+
+  /// No description provided for @verifyEmailLogout.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión y volver'**
+  String get verifyEmailLogout;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

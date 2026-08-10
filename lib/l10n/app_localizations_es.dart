@@ -513,4 +513,33 @@ class SEs extends S {
 
   @override
   String get addressReviewsAvg => 'Promedio general';
+
+  @override
+  String get verifyEmailTitle => 'Verifica tu correo';
+
+  @override
+  String verifyEmailBody(String email) {
+    return 'Enviamos un enlace de verificación a $email. Revisa tu bandeja de entrada.';
+  }
+
+  @override
+  String get verifyEmailResend => 'Reenviar correo';
+
+  @override
+  String get verifyEmailResent =>
+      'Correo reenviado. Revisa tu bandeja de entrada.';
+
+  @override
+  String get verifyEmailContinue => 'Ya verifiqué, continuar';
+
+  @override
+  String get verifyEmailNotYet =>
+      'Aún no hemos detectado la verificación. Por favor revisa tu correo.';
+
+  @override
+  String get verifyEmailRequired =>
+      'Debes verificar tu correo electrónico para publicar reseñas.';
+
+  @override
+  String get verifyEmailLogout => 'Cerrar sesión y volver';
 }

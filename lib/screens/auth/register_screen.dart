@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
-import '../home_screen.dart';
+import '../verify_email_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -32,9 +32,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _loading = true);
     try {
       await AuthService.registerWithEmail(_emailCtrl.text.trim(), _passCtrl.text);
+      await AuthService.sendEmailVerification();
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => const VerifyEmailScreen()),
           (_) => false,
         );
       }

@@ -502,4 +502,30 @@ class SZh extends S {
 
   @override
   String get addressReviewsAvg => '综合平均';
+
+  @override
+  String get verifyEmailTitle => '验证邮箱';
+
+  @override
+  String verifyEmailBody(String email) {
+    return '我们已向$email发送了验证链接，请查看收件箱。';
+  }
+
+  @override
+  String get verifyEmailResend => '重新发送验证邮件';
+
+  @override
+  String get verifyEmailResent => '验证邮件已重新发送，请查看收件箱。';
+
+  @override
+  String get verifyEmailContinue => '已验证，继续';
+
+  @override
+  String get verifyEmailNotYet => '尚未检测到验证，请查看您的邮件。';
+
+  @override
+  String get verifyEmailRequired => '发布评论需要先验证邮箱。';
+
+  @override
+  String get verifyEmailLogout => '退出登录并返回';
 }

@@ -151,17 +151,56 @@
   "profileSaveError": "이름 변경에 실패했습니다",
   "profileEmailLabel": "이메일",
   "profileMemberSince": "{date}부터 이용 중",
-  "@profileMemberSince": { "placeholders": { "date": { "type": "String" } } },
+  "@profileMemberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "profileReviewCount": "리뷰 {count}개",
-  "@profileReviewCount": { "placeholders": { "count": { "type": "int" } } },
+  "@profileReviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "profileAvgRating": "평균 별점",
   "profileMyReviews": "내 리뷰",
   "profileNoReviews": "아직 작성한 리뷰가 없습니다",
   "addressReviewsTitle": "이 주소의 리뷰",
   "addressReviewsCount": "총 {count}개의 리뷰",
-  "@addressReviewsCount": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsOther": "이 주소의 다른 리뷰 {count}개 보기",
-  "@addressReviewsOther": { "placeholders": { "count": { "type": "int" } } },
+  "@addressReviewsOther": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "addressReviewsNone": "이 주소의 다른 리뷰가 없습니다",
-  "addressReviewsAvg": "전체 평균"
+  "addressReviewsAvg": "전체 평균",
+  "verifyEmailTitle": "이메일 인증",
+  "verifyEmailBody": "{email}으로 인증 링크를 보냈습니다. 받은편지함을 확인해주세요.",
+  "@verifyEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailResend": "인증 메일 재발송",
+  "verifyEmailResent": "인증 메일을 재발송했습니다. 받은편지함을 확인해주세요.",
+  "verifyEmailContinue": "인증 완료, 계속하기",
+  "verifyEmailNotYet": "아직 인증이 확인되지 않았습니다. 이메일을 확인해주세요.",
+  "verifyEmailRequired": "리뷰를 작성하려면 이메일 인증이 필요합니다.",
+  "verifyEmailLogout": "로그아웃하고 돌아가기"
 }
