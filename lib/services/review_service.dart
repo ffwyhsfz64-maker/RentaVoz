@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../models/review.dart';
 
 typedef FeedPage = ({List<Review> reviews, DocumentSnapshot? lastDoc});
@@ -84,8 +85,17 @@ class ReviewService {
         return reviews;
       });
 
-  static Future<void> addReview(Review review) =>
-      _col.doc(review.id).set(review.toMap());
+  static Future<void> addReview(Review review) async {
+    await _col.doc(review.id).set(review.toMap());
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'review_published',
+      parameters: {
+        'rental_type': review.rentalType,
+        'overall_rating': review.overallRating,
+        'is_verified': review.isVerified,
+      },
+    );
+  }
 
   static Future<void> deleteReview(String reviewId) =>
       _col.doc(reviewId).delete();

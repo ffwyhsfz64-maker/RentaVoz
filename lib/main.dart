@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +92,9 @@ class _RentaVozAppState extends State<RentaVozApp> {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
       home: const AuthGate(),
     );
   }
