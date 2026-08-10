@@ -590,4 +590,34 @@ class SZh extends S {
 
   @override
   String get appOpenSource => '开源许可证';
+
+  @override
+  String get changePhoto => '更换头像';
+
+  @override
+  String get photoUploadSuccess => '照片已更新';
+
+  @override
+  String get photoUploadError => '无法更新照片';
+
+  @override
+  String get followAddress => '关注地址';
+
+  @override
+  String get unfollowAddress => '取消关注';
+
+  @override
+  String get followedSuccess => '已关注此地址';
+
+  @override
+  String get unfollowedSuccess => '已取消关注';
+
+  @override
+  String get followedAddresses => '已关注的地址';
+
+  @override
+  String get noFollowedAddresses => '暂未关注任何地址';
+
+  @override
+  String get followedAddressesHint => '从评价页面关注地址，即可获得新评价通知';
 }

@@ -92,7 +92,7 @@ class ReviewService {
       parameters: {
         'rental_type': review.rentalType,
         'overall_rating': review.overallRating,
-        'is_verified': review.isVerified,
+        'is_verified': review.isVerified ? 1 : 0,
       },
     );
   }

@@ -594,4 +594,34 @@ class SKo extends S {
 
   @override
   String get appOpenSource => '오픈소스 라이선스';
+
+  @override
+  String get changePhoto => '프로필 사진 변경';
+
+  @override
+  String get photoUploadSuccess => '사진이 업데이트되었습니다';
+
+  @override
+  String get photoUploadError => '사진을 업데이트할 수 없습니다';
+
+  @override
+  String get followAddress => '주소 팔로우';
+
+  @override
+  String get unfollowAddress => '팔로우 취소';
+
+  @override
+  String get followedSuccess => '이 주소를 팔로우합니다';
+
+  @override
+  String get unfollowedSuccess => '팔로우를 취소했습니다';
+
+  @override
+  String get followedAddresses => '팔로우한 주소';
+
+  @override
+  String get noFollowedAddresses => '팔로우한 주소가 없습니다';
+
+  @override
+  String get followedAddressesHint => '리뷰에서 주소를 팔로우하면 새 리뷰 알림을 받을 수 있습니다';
 }

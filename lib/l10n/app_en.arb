@@ -232,5 +232,15 @@
   "appAbout": "About",
   "appAboutDesc": "RentaVoz is a platform where tenants share honest rental reviews in Mexico.",
   "appContact": "Contact",
-  "appOpenSource": "Open-source licenses"
+  "appOpenSource": "Open-source licenses",
+  "changePhoto": "Change profile photo",
+  "photoUploadSuccess": "Photo updated",
+  "photoUploadError": "Could not update photo",
+  "followAddress": "Follow address",
+  "unfollowAddress": "Unfollow",
+  "followedSuccess": "Now following this address",
+  "unfollowedSuccess": "Unfollowed",
+  "followedAddresses": "Followed addresses",
+  "noFollowedAddresses": "You are not following any addresses yet",
+  "followedAddressesHint": "Follow an address from a review to get notified"
 }

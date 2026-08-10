@@ -232,5 +232,15 @@
   "appAbout": "アプリについて",
   "appAboutDesc": "RentaVozはメキシコの賃貸リアルレビューを共有するプラットフォームです。",
   "appContact": "お問い合わせ",
-  "appOpenSource": "オープンソースライセンス"
+  "appOpenSource": "オープンソースライセンス",
+  "changePhoto": "プロフィール写真を変更",
+  "photoUploadSuccess": "写真を更新しました",
+  "photoUploadError": "写真を更新できませんでした",
+  "followAddress": "住所をフォロー",
+  "unfollowAddress": "フォロー解除",
+  "followedSuccess": "この住所をフォローしました",
+  "unfollowedSuccess": "フォローを解除しました",
+  "followedAddresses": "フォロー中の住所",
+  "noFollowedAddresses": "フォロー中の住所はありません",
+  "followedAddressesHint": "レビューから住所をフォローして通知を受け取る"
 }

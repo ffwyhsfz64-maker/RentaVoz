@@ -232,5 +232,15 @@
   "appAbout": "关于",
   "appAboutDesc": "RentaVoz是一个分享墨西哥租房真实评价的平台。",
   "appContact": "联系我们",
-  "appOpenSource": "开源许可证"
+  "appOpenSource": "开源许可证",
+  "changePhoto": "更换头像",
+  "photoUploadSuccess": "照片已更新",
+  "photoUploadError": "无法更新照片",
+  "followAddress": "关注地址",
+  "unfollowAddress": "取消关注",
+  "followedSuccess": "已关注此地址",
+  "unfollowedSuccess": "已取消关注",
+  "followedAddresses": "已关注的地址",
+  "noFollowedAddresses": "暂未关注任何地址",
+  "followedAddressesHint": "从评价页面关注地址，即可获得新评价通知"
 }

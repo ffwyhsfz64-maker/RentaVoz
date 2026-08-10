@@ -11,6 +11,13 @@ class StorageService {
     return ref.getDownloadURL();
   }
 
+  static Future<String> uploadAvatar(String uid, File file) async {
+    final ext = file.path.split('.').last;
+    final ref = _storage.ref('avatars/$uid.$ext');
+    await ref.putFile(file);
+    return ref.getDownloadURL();
+  }
+
   static Future<List<String>> uploadPhotos(String reviewId, List<File> files) async {
     final urls = <String>[];
     for (var i = 0; i < files.length; i++) {

@@ -50,10 +50,8 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   bool get _isRatingSort => _sort != _SortOption.newest;
-
   String? get _rentalTypeFilter => _typeFilter == 'all' ? null : _typeFilter;
 
-  // 별점 정렬은 클라이언트에서 처리 (기존 Firestore 데이터에 overallRating 필드 없을 수 있음)
   List<Review> _sortedReviews(List<Review> list) {
     final sorted = List<Review>.from(list);
     switch (_sort) {
@@ -71,7 +69,6 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() { _loading = true; _reviews = []; _lastDoc = null; _hasMore = true; });
     try {
       if (_isRatingSort) {
-        // 별점 정렬: 전체 로드 후 클라이언트 정렬
         final all = await ReviewService.fetchAll(rentalType: _rentalTypeFilter);
         if (!mounted) return;
         setState(() {
@@ -82,7 +79,6 @@ class _FeedScreenState extends State<FeedScreen> {
           _loading = false;
         });
       } else {
-        // 최신순: Firestore 페이지네이션
         final page = await ReviewService.fetchPage(rentalType: _rentalTypeFilter);
         if (!mounted) return;
         setState(() {
@@ -103,10 +99,7 @@ class _FeedScreenState extends State<FeedScreen> {
     if (_search.isNotEmpty) return;
     setState(() => _loadingMore = true);
     try {
-      final page = await ReviewService.fetchPage(
-        rentalType: _rentalTypeFilter,
-        after: _lastDoc,
-      );
+      final page = await ReviewService.fetchPage(rentalType: _rentalTypeFilter, after: _lastDoc);
       if (!mounted) return;
       setState(() {
         _reviews.addAll(page.reviews);
@@ -137,28 +130,21 @@ class _FeedScreenState extends State<FeedScreen> {
   void _showSortSheet(S s) {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (_) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SortTile(
-              label: s.sortNewest,
-              icon: Icons.access_time_outlined,
-              selected: _sort == _SortOption.newest,
-              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.newest); },
-            ),
-            _SortTile(
-              label: s.sortHighest,
-              icon: Icons.arrow_upward,
-              selected: _sort == _SortOption.highest,
-              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.highest); },
-            ),
-            _SortTile(
-              label: s.sortLowest,
-              icon: Icons.arrow_downward,
-              selected: _sort == _SortOption.lowest,
-              onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.lowest); },
-            ),
+            const SizedBox(height: 8),
+            Container(width: 36, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: 12),
+            _SortTile(label: s.sortNewest, icon: Icons.access_time_outlined, selected: _sort == _SortOption.newest,
+                onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.newest); }),
+            _SortTile(label: s.sortHighest, icon: Icons.arrow_upward, selected: _sort == _SortOption.highest,
+                onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.highest); }),
+            _SortTile(label: s.sortLowest, icon: Icons.arrow_downward, selected: _sort == _SortOption.lowest,
+                onTap: () { Navigator.pop(context); _applyFilter(sort: _SortOption.lowest); }),
+            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -174,113 +160,167 @@ class _FeedScreenState extends State<FeedScreen> {
       _SortOption.lowest => s.sortLowest,
     };
     final displayed = _displayed;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('RentaVoz'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(104),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
-                child: SearchBar(
-                  hintText: s.searchHint,
-                  leading: const Icon(Icons.search, size: 20),
-                  onChanged: (v) => setState(() => _search = v),
-                  elevation: const WidgetStatePropertyAll(1),
-                  padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12)),
-                ),
+      body: CustomScrollView(
+        controller: _scrollCtrl,
+        slivers: [
+          // ── Brand SliverAppBar ────────────────────────────────
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            centerTitle: false,
+            title: RichText(
+              text: const TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Renta',
+                    style: TextStyle(
+                      color: Color(0xFF2E7D32),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Voz',
+                    style: TextStyle(
+                      color: Color(0xFF1B5E20),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 44,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings_outlined),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
+              ),
+            ],
+          ),
+
+          // ── Pinned search + filters ───────────────────────────
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _SearchBarDelegate(
+              child: ColoredBox(
+                color: theme.scaffoldBackgroundColor,
+                child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: ActionChip(
-                        avatar: const Icon(Icons.sort, size: 16),
-                        label: Text(sortLabel, style: const TextStyle(fontSize: 12)),
-                        onPressed: () => _showSortSheet(s),
-                        backgroundColor: _sort != _SortOption.newest
-                            ? Theme.of(context).colorScheme.primaryContainer
-                            : null,
+                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+                      child: SearchBar(
+                        hintText: s.searchHint,
+                        leading: const Icon(Icons.search, size: 20),
+                        onChanged: (v) => setState(() => _search = v),
+                        elevation: const WidgetStatePropertyAll(1.5),
+                        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 12)),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
                       ),
                     ),
-                    _FilterChipWidget(
-                      label: s.filterAll,
-                      selected: _typeFilter == 'all',
-                      onSelected: (_) => _applyFilter(type: 'all'),
+                    SizedBox(
+                      height: 42,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ActionChip(
+                              avatar: const Icon(Icons.sort, size: 15),
+                              label: Text(sortLabel, style: const TextStyle(fontSize: 12)),
+                              onPressed: () => _showSortSheet(s),
+                              backgroundColor: _sort != _SortOption.newest
+                                  ? theme.colorScheme.primaryContainer
+                                  : null,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            ),
+                          ),
+                          _FilterChipWidget(label: s.filterAll, selected: _typeFilter == 'all', onSelected: (_) => _applyFilter(type: 'all')),
+                          const SizedBox(width: 6),
+                          _FilterChipWidget(label: '🏠 ${s.filterHouse}', selected: _typeFilter == 'house', onSelected: (_) => _applyFilter(type: 'house')),
+                          const SizedBox(width: 6),
+                          _FilterChipWidget(label: '🚪 ${s.filterRoom}', selected: _typeFilter == 'room', onSelected: (_) => _applyFilter(type: 'room')),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 6),
-                    _FilterChipWidget(
-                      label: '🏠 ${s.filterHouse}',
-                      selected: _typeFilter == 'house',
-                      onSelected: (_) => _applyFilter(type: 'house'),
-                    ),
-                    const SizedBox(width: 6),
-                    _FilterChipWidget(
-                      label: '🚪 ${s.filterRoom}',
-                      selected: _typeFilter == 'room',
-                      onSelected: (_) => _applyFilter(type: 'room'),
+                    const SizedBox(height: 4),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // ── Content ───────────────────────────────────────────
+          if (_loading)
+            const SliverFillRemaining(child: Center(child: CircularProgressIndicator()))
+          else if (displayed.isEmpty)
+            SliverFillRemaining(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                    const SizedBox(height: 12),
+                    Text(
+                      _search.isEmpty ? s.noReviewsYet : s.noResultsFor(_search),
+                      style: TextStyle(color: Colors.grey[500]),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 4),
-            ],
-          ),
-        ),
+            )
+          else ...[
+            SliverPadding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              sliver: SliverList.builder(
+                itemCount: displayed.length + (_hasMore && _search.isEmpty ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == displayed.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  return ReviewCard(
+                    review: displayed[index],
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: displayed[index])),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ],
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : displayed.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                      const SizedBox(height: 12),
-                      Text(
-                        _search.isEmpty ? s.noReviewsYet : s.noResultsFor(_search),
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: _fetchInitial,
-                  child: ListView.builder(
-                    controller: _scrollCtrl,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: displayed.length + (_hasMore && _search.isEmpty ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == displayed.length) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-                      return ReviewCard(
-                        review: displayed[index],
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: displayed[index])),
-                        ),
-                      );
-                    },
-                  ),
-                ),
     );
   }
+}
+
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  const _SearchBarDelegate({required this.child});
+  final Widget child;
+
+  static const _height = 102.0; // searchbar(56) + chips(42) + padding(4)
+
+  @override
+  double get minExtent => _height;
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
+
+  @override
+  bool shouldRebuild(_SearchBarDelegate old) => old.child != child;
 }
 
 class _FilterChipWidget extends StatelessWidget {
@@ -298,6 +338,7 @@ class _FilterChipWidget extends StatelessWidget {
       showCheckmark: false,
       selectedColor: Theme.of(context).colorScheme.primaryContainer,
       padding: const EdgeInsets.symmetric(horizontal: 4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 }

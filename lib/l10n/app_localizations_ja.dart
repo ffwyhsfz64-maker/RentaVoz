@@ -594,4 +594,34 @@ class SJa extends S {
 
   @override
   String get appOpenSource => 'オープンソースライセンス';
+
+  @override
+  String get changePhoto => 'プロフィール写真を変更';
+
+  @override
+  String get photoUploadSuccess => '写真を更新しました';
+
+  @override
+  String get photoUploadError => '写真を更新できませんでした';
+
+  @override
+  String get followAddress => '住所をフォロー';
+
+  @override
+  String get unfollowAddress => 'フォロー解除';
+
+  @override
+  String get followedSuccess => 'この住所をフォローしました';
+
+  @override
+  String get unfollowedSuccess => 'フォローを解除しました';
+
+  @override
+  String get followedAddresses => 'フォロー中の住所';
+
+  @override
+  String get noFollowedAddresses => 'フォロー中の住所はありません';
+
+  @override
+  String get followedAddressesHint => 'レビューから住所をフォローして通知を受け取る';
 }

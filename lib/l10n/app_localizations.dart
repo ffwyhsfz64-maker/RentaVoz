@@ -1230,6 +1230,66 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Licencias de código abierto'**
   String get appOpenSource;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar foto de perfil'**
+  String get changePhoto;
+
+  /// No description provided for @photoUploadSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto actualizada'**
+  String get photoUploadSuccess;
+
+  /// No description provided for @photoUploadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la foto'**
+  String get photoUploadError;
+
+  /// No description provided for @followAddress.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir dirección'**
+  String get followAddress;
+
+  /// No description provided for @unfollowAddress.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejar de seguir'**
+  String get unfollowAddress;
+
+  /// No description provided for @followedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora sigues esta dirección'**
+  String get followedSuccess;
+
+  /// No description provided for @unfollowedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya no sigues esta dirección'**
+  String get unfollowedSuccess;
+
+  /// No description provided for @followedAddresses.
+  ///
+  /// In es, this message translates to:
+  /// **'Direcciones seguidas'**
+  String get followedAddresses;
+
+  /// No description provided for @noFollowedAddresses.
+  ///
+  /// In es, this message translates to:
+  /// **'No sigues ninguna dirección aún'**
+  String get noFollowedAddresses;
+
+  /// No description provided for @followedAddressesHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue una dirección desde las reseñas para recibir notificaciones'**
+  String get followedAddressesHint;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

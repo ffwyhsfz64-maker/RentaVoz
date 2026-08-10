@@ -136,8 +136,16 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.zero,
         children: [
+          // ── Photo carousel (if available) ───────────────────────
+          if (review.photoUrls.isNotEmpty)
+            _PhotoCarousel(urls: review.photoUrls),
+
+          Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
           // 전체 평점 히어로
           Container(
             padding: const EdgeInsets.all(20),
@@ -470,6 +478,9 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
+
+          ]), // end Column
+          ), // end Padding
         ],
       ),
     );
@@ -628,6 +639,89 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
 
 // ─── 공통 위젯 ────────────────────────────────────────────────────
 
+class _PhotoCarousel extends StatefulWidget {
+  const _PhotoCarousel({required this.urls});
+  final List<String> urls;
+
+  @override
+  State<_PhotoCarousel> createState() => _PhotoCarouselState();
+}
+
+class _PhotoCarouselState extends State<_PhotoCarousel> {
+  int _page = 0;
+
+  void _showFull(BuildContext context, int initial) {
+    final controller = PageController(initialPage: initial);
+    showDialog(
+      context: context,
+      builder: (_) => Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: controller,
+              itemCount: widget.urls.length,
+              itemBuilder: (_, i) => InteractiveViewer(
+                child: Center(child: CachedNetworkImage(imageUrl: widget.urls[i], fit: BoxFit.contain)),
+              ),
+            ),
+            Positioned(
+              top: 40, right: 16,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 260,
+      child: Stack(
+        children: [
+          PageView.builder(
+            itemCount: widget.urls.length,
+            onPageChanged: (i) => setState(() => _page = i),
+            itemBuilder: (_, i) => GestureDetector(
+              onTap: () => _showFull(context, i),
+              child: CachedNetworkImage(
+                imageUrl: widget.urls[i],
+                fit: BoxFit.cover,
+                width: double.infinity,
+                placeholder: (_, __) => const Center(child: CircularProgressIndicator()),
+                errorWidget: (_, __, ___) => const Center(child: Icon(Icons.broken_image_outlined, size: 48, color: Colors.grey)),
+              ),
+            ),
+          ),
+          if (widget.urls.length > 1)
+            Positioned(
+              bottom: 12,
+              left: 0, right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(widget.urls.length, (i) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: _page == i ? 16 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: _page == i ? Colors.white : Colors.white54,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                )),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class _Section extends StatelessWidget {
   const _Section({required this.title, required this.child});
   final String title;
@@ -640,10 +734,25 @@ class _Section extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: const Color(0xFF2E7D32).withAlpha(18),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF2E7D32),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
           child,
-          const Divider(height: 24),
+          const SizedBox(height: 8),
         ],
       ),
     );

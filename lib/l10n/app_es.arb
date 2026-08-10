@@ -253,5 +253,15 @@
   "appAbout": "Acerca de",
   "appAboutDesc": "RentaVoz es una plataforma donde inquilinos comparten reseñas honestas de arrendamientos en México.",
   "appContact": "Contacto",
-  "appOpenSource": "Licencias de código abierto"
+  "appOpenSource": "Licencias de código abierto",
+  "changePhoto": "Cambiar foto de perfil",
+  "photoUploadSuccess": "Foto actualizada",
+  "photoUploadError": "No se pudo actualizar la foto",
+  "followAddress": "Seguir dirección",
+  "unfollowAddress": "Dejar de seguir",
+  "followedSuccess": "Ahora sigues esta dirección",
+  "unfollowedSuccess": "Ya no sigues esta dirección",
+  "followedAddresses": "Direcciones seguidas",
+  "noFollowedAddresses": "No sigues ninguna dirección aún",
+  "followedAddressesHint": "Sigue una dirección desde las reseñas para recibir notificaciones"
 }

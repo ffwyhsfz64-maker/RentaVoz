@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../data/dummy_reviews.dart';
+import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../services/review_service.dart';
 import '../widgets/review_card.dart';
 import 'review_detail_screen.dart';
 
 const _queretaro = LatLng(20.5888, -100.3899);
+const _clusterManagerId = ClusterManagerId('reviews');
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -22,13 +23,35 @@ class _MapScreenState extends State<MapScreen> {
   Set<Marker> _markers = {};
   Review? _selected;
   StreamSubscription? _sub;
+  int _totalCount = 0;
+
+  late final Set<ClusterManager> _clusterManagers = {
+    ClusterManager(
+      clusterManagerId: _clusterManagerId,
+      onClusterTap: (Cluster cluster) async {
+        final ctrl = await _mapCtrl.future;
+        if (cluster.bounds != null) {
+          ctrl.animateCamera(
+            CameraUpdate.newLatLngBounds(cluster.bounds!, 60),
+          );
+        } else {
+          final zoom = await ctrl.getZoomLevel();
+          ctrl.animateCamera(
+            CameraUpdate.newLatLngZoom(cluster.position, zoom + 2),
+          );
+        }
+      },
+    ),
+  };
 
   @override
   void initState() {
     super.initState();
     _sub = ReviewService.feedStream().listen((reviews) {
       final all = reviews.isEmpty ? dummyReviews : reviews;
+      if (!mounted) return;
       setState(() {
+        _totalCount = all.where((r) => r.lat != 0 && r.lng != 0).length;
         _markers = _buildMarkers(all);
       });
     });
@@ -46,7 +69,7 @@ class _MapScreenState extends State<MapScreen> {
         .map((r) => Marker(
               markerId: MarkerId(r.id),
               position: LatLng(r.lat, r.lng),
-              infoWindow: InfoWindow(title: r.address),
+              clusterManagerId: _clusterManagerId,
               icon: BitmapDescriptor.defaultMarkerWithHue(
                 r.overallRating >= 4
                     ? BitmapDescriptor.hueGreen
@@ -88,8 +111,10 @@ class _MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           GoogleMap(
-            initialCameraPosition: const CameraPosition(target: _queretaro, zoom: 13),
+            initialCameraPosition:
+                const CameraPosition(target: _queretaro, zoom: 13),
             markers: _markers,
+            clusterManagers: _clusterManagers,
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
             onMapCreated: (ctrl) => _mapCtrl.complete(ctrl),
@@ -102,7 +127,8 @@ class _MapScreenState extends State<MapScreen> {
             left: 12,
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -121,10 +147,12 @@ class _MapScreenState extends State<MapScreen> {
             right: 12,
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Text(
-                  s.reviewCount(_markers.length),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  s.reviewCount(_totalCount),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),
             ),
@@ -177,7 +205,8 @@ class _MapScreenState extends State<MapScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ReviewDetailScreen(review: _selected!),
+                            builder: (_) =>
+                                ReviewDetailScreen(review: _selected!),
                           ),
                         ),
                       ),
@@ -204,7 +233,12 @@ class _LegendItem extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(width: 10, height: 10, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+            width: 10,
+            height: 10,
+            decoration:
+                BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
           const SizedBox(width: 6),
           Text(label, style: const TextStyle(fontSize: 11)),
         ],

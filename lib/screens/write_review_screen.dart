@@ -223,7 +223,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             // --- 임대 유형 ---
-            Text(s.rentalTypeLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.rentalTypeLabel),
             const SizedBox(height: 8),
             SegmentedButton<String>(
               segments: [
@@ -237,7 +237,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             const SizedBox(height: 24),
 
             // --- 주소 ---
-            Text(s.addressLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.addressLabel),
             const SizedBox(height: 8),
             AddressField(
               initialValue: _address,
@@ -250,7 +250,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             const SizedBox(height: 24),
 
             // --- 기간 및 임대료 ---
-            Text(s.periodLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.periodLabel),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -287,7 +287,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             const SizedBox(height: 24),
 
             // --- 평점 ---
-            Text(s.ratingsLabel, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.ratingsLabel),
             const SizedBox(height: 8),
             _ratingRow(s.landlordRating, _landlordRating, (v) => setState(() => _landlordRating = v)),
             _ratingRow(s.conditionRating, _conditionRating, (v) => setState(() => _conditionRating = v)),
@@ -296,7 +296,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             const SizedBox(height: 24),
 
             // --- 계약 세부사항 ---
-            Text(s.contractSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.contractSection),
             if (_rentalType == 'room') ...[
               _switchRow(s.sharedBathroom, _sharedBathroom, (v) => setState(() => _sharedBathroom = v)),
               _switchRow(s.sharedKitchen, _sharedKitchen, (v) => setState(() => _sharedKitchen = v)),
@@ -330,7 +330,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             const SizedBox(height: 24),
 
             // --- 사진 ---
-            Text(s.photosSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            _SectionHeader(label: s.photosSection),
             const SizedBox(height: 8),
             if (_existingPhotoUrls.isNotEmpty || _photoFiles.isNotEmpty)
               SizedBox(
@@ -374,7 +374,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             // --- 납부 증명서 ---
             Row(
               children: [
-                Text(s.comprobanteSection, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                _SectionHeader(label: s.comprobanteSection),
                 const SizedBox(width: 8),
                 const Tooltip(
                   message: 'Sube tu recibo de renta para verificar\nque realmente viviste en este lugar.\nTu información personal será protegida.',
@@ -559,6 +559,34 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     } finally {
       if (mounted) setState(() => _uploading = false);
     }
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2E7D32).withAlpha(18),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF2E7D32),
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    );
   }
 }
 

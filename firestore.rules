@@ -25,8 +25,19 @@ service cloud.firestore {
 
     // ── users/{uid}/bookmarks ────────────────────────────────────────
     match /users/{uid}/bookmarks/{reviewId} {
-      // 본인 북마크만 읽기/쓰기/삭제 가능
       allow read, write, delete: if request.auth != null
+        && request.auth.uid == uid;
+    }
+
+    // ── users/{uid}/follows ──────────────────────────────────────────
+    match /users/{uid}/follows/{addressId} {
+      allow read, write, delete: if request.auth != null
+        && request.auth.uid == uid;
+    }
+
+    // ── users/{uid}/fcmTokens ────────────────────────────────────────
+    match /users/{uid}/fcmTokens/{tokenId} {
+      allow read, write: if request.auth != null
         && request.auth.uid == uid;
     }
 

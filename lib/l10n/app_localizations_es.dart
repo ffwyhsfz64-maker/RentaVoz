@@ -607,4 +607,35 @@ class SEs extends S {
 
   @override
   String get appOpenSource => 'Licencias de código abierto';
+
+  @override
+  String get changePhoto => 'Cambiar foto de perfil';
+
+  @override
+  String get photoUploadSuccess => 'Foto actualizada';
+
+  @override
+  String get photoUploadError => 'No se pudo actualizar la foto';
+
+  @override
+  String get followAddress => 'Seguir dirección';
+
+  @override
+  String get unfollowAddress => 'Dejar de seguir';
+
+  @override
+  String get followedSuccess => 'Ahora sigues esta dirección';
+
+  @override
+  String get unfollowedSuccess => 'Ya no sigues esta dirección';
+
+  @override
+  String get followedAddresses => 'Direcciones seguidas';
+
+  @override
+  String get noFollowedAddresses => 'No sigues ninguna dirección aún';
+
+  @override
+  String get followedAddressesHint =>
+      'Sigue una dirección desde las reseñas para recibir notificaciones';
 }

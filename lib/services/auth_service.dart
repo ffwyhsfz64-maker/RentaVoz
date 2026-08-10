@@ -30,6 +30,9 @@ class AuthService {
 
   static Future<void> reloadUser() => _auth.currentUser!.reload();
 
+  static Future<void> updatePhotoURL(String url) =>
+      _auth.currentUser!.updatePhotoURL(url);
+
   static Future<UserCredential> signInWithGoogle() async {
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) throw Exception('cancelled');

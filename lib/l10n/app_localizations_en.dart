@@ -604,4 +604,35 @@ class SEn extends S {
 
   @override
   String get appOpenSource => 'Open-source licenses';
+
+  @override
+  String get changePhoto => 'Change profile photo';
+
+  @override
+  String get photoUploadSuccess => 'Photo updated';
+
+  @override
+  String get photoUploadError => 'Could not update photo';
+
+  @override
+  String get followAddress => 'Follow address';
+
+  @override
+  String get unfollowAddress => 'Unfollow';
+
+  @override
+  String get followedSuccess => 'Now following this address';
+
+  @override
+  String get unfollowedSuccess => 'Unfollowed';
+
+  @override
+  String get followedAddresses => 'Followed addresses';
+
+  @override
+  String get noFollowedAddresses => 'You are not following any addresses yet';
+
+  @override
+  String get followedAddressesHint =>
+      'Follow an address from a review to get notified';
 }

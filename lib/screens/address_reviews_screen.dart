@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
+import '../services/follow_service.dart';
 import '../services/review_service.dart';
 import '../widgets/review_card.dart';
 import 'review_detail_screen.dart';
@@ -25,6 +27,9 @@ class AddressReviewsScreen extends StatefulWidget {
 
 class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
   late Future<List<Review>> _future;
+  bool _following = false;
+  bool _followLoading = false;
+  final bool _isLoggedIn = FirebaseAuth.instance.currentUser != null;
 
   @override
   void initState() {
@@ -35,6 +40,29 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
       lng: widget.lng,
       excludeId: widget.excludeId,
     );
+    if (_isLoggedIn) _loadFollowState();
+  }
+
+  Future<void> _loadFollowState() async {
+    final following = await FollowService.isFollowing(widget.address);
+    if (mounted) setState(() => _following = following);
+  }
+
+  Future<void> _toggleFollow(S s) async {
+    if (!_isLoggedIn) return;
+    setState(() => _followLoading = true);
+    final nowFollowing = await FollowService.toggle(widget.address);
+    if (!mounted) return;
+    setState(() {
+      _following = nowFollowing;
+      _followLoading = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(nowFollowing ? s.followedSuccess : s.unfollowedSuccess),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -42,7 +70,29 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
     final s = S.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(s.addressReviewsTitle)),
+      appBar: AppBar(
+        title: Text(s.addressReviewsTitle),
+        actions: [
+          if (_isLoggedIn)
+            _followLoading
+                ? const Padding(
+                    padding: EdgeInsets.all(14),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  )
+                : IconButton(
+                    icon: Icon(
+                      _following ? Icons.notifications_active : Icons.notifications_none,
+                      color: _following ? const Color(0xFF2E7D32) : null,
+                    ),
+                    tooltip: _following ? s.unfollowAddress : s.followAddress,
+                    onPressed: () => _toggleFollow(s),
+                  ),
+        ],
+      ),
       body: FutureBuilder<List<Review>>(
         future: _future,
         builder: (context, snap) {
@@ -63,7 +113,6 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
             );
           }
 
-          // 집계 통계 계산
           final count = reviews.length;
           final avgOverall = reviews.map((r) => r.overallRating).reduce((a, b) => a + b) / count;
           final avgLandlord = reviews.map((r) => r.landlordRating).reduce((a, b) => a + b) / count;
@@ -73,7 +122,6 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
 
           return CustomScrollView(
             slivers: [
-              // 주소 + 통계 헤더
               SliverToBoxAdapter(
                 child: Container(
                   margin: const EdgeInsets.all(16),
@@ -93,7 +141,8 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
                           Expanded(
                             child: Text(
                               widget.address,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                  color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -101,7 +150,6 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          // 전체 평점
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -121,7 +169,6 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
                             ],
                           ),
                           const SizedBox(width: 20),
-                          // 항목별 평점 바
                           Expanded(
                             child: Column(
                               children: [
@@ -138,15 +185,14 @@ class _AddressReviewsScreenState extends State<AddressReviewsScreen> {
                   ),
                 ),
               ),
-
-              // 리뷰 목록
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) => ReviewCard(
                     review: reviews[i],
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: reviews[i])),
+                      MaterialPageRoute(
+                          builder: (_) => ReviewDetailScreen(review: reviews[i])),
                     ),
                   ),
                   childCount: count,
@@ -174,7 +220,8 @@ class _AvgBar extends StatelessWidget {
         children: [
           SizedBox(
             width: 68,
-            child: Text(label, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+            child: Text(label,
+                style: const TextStyle(color: Colors.white70, fontSize: 11)),
           ),
           Expanded(
             child: ClipRRect(
@@ -182,7 +229,8 @@ class _AvgBar extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: value / 5,
                 backgroundColor: Colors.white24,
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Colors.white),
                 minHeight: 6,
               ),
             ),
