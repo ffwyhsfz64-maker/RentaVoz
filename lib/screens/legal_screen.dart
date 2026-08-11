@@ -28,7 +28,7 @@ class LegalScreen extends StatelessWidget {
 
   List<(String, String)> _privacySections(S s) => [
         (
-          'Última actualización: agosto 2025',
+          'Última actualización: agosto 2026',
           'Esta Política de Privacidad describe cómo RentaVoz ("nosotros") recopila, usa y protege tu información personal cuando utilizas nuestra aplicación móvil.',
         ),
         (
@@ -82,7 +82,7 @@ class LegalScreen extends StatelessWidget {
 
   List<(String, String)> _termsSections(S s) => [
         (
-          'Última actualización: agosto 2025',
+          'Última actualización: agosto 2026',
           'Al usar RentaVoz ("la App") aceptas estos Términos de Servicio. Si no estás de acuerdo, no uses la App.',
         ),
         (
