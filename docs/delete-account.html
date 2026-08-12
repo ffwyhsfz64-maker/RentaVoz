@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliminar cuenta – RentaVoz</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #1B5E20;
+      --green: #2E7D32;
+      --green-light: #E8F5E9;
+      --red: #C62828;
+      --red-light: #FFEBEE;
+      --text: #212121;
+      --muted: #616161;
+      --border: #E0E0E0;
+      --bg: #FAFAFA;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
+      color: #fff;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+
+    header .logo {
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      opacity: 0.85;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 0.92rem;
+      opacity: 0.75;
+    }
+
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .warning-box {
+      background: var(--red-light);
+      border-left: 4px solid var(--red);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+      color: var(--red);
+    }
+
+    .warning-box strong { display: block; margin-bottom: 6px; font-size: 1rem; }
+
+    section {
+      margin-bottom: 32px;
+    }
+
+    section h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    section p, section ul {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    section ul {
+      padding-left: 1.4em;
+    }
+
+    section ul li { margin-bottom: 6px; }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--green);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-top: 2px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    .email-card {
+      background: var(--green-light);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .email-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .email-btn {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .email-btn:hover { background: var(--green-dark); }
+
+    .email-manual {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .email-manual a { color: var(--green); }
+
+    .data-list {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .data-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      list-style: none;
+    }
+
+    .data-list li:last-child { border-bottom: none; }
+
+    .data-list .icon { font-size: 1.1rem; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--green); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">RENTAVOZ</div>
+  <h1>Eliminar cuenta</h1>
+  <p>Solicitud de eliminación de cuenta y datos personales</p>
+</header>
+
+<main>
+
+  <div class="warning-box">
+    <strong>⚠️ Esta acción es irreversible</strong>
+    Una vez eliminada tu cuenta, no podrás recuperar tus reseñas, fotos ni ningún dato asociado.
+  </div>
+
+  <section>
+    <h2>¿Qué se elimina?</h2>
+    <ul class="data-list">
+      <li><span class="icon">👤</span> Tu perfil: nombre y foto de perfil</li>
+      <li><span class="icon">📧</span> Tu dirección de correo electrónico</li>
+      <li><span class="icon">⭐</span> Todas las reseñas que hayas publicado</li>
+      <li><span class="icon">🖼️</span> Fotos y comprobantes adjuntos a tus reseñas</li>
+      <li><span class="icon">🔖</span> Reseñas guardadas y direcciones seguidas</li>
+      <li><span class="icon">🔔</span> Token de notificaciones push</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Opción 1 — Desde la app</h2>
+    <ol class="steps">
+      <li>Abre RentaVoz e inicia sesión</li>
+      <li>Ve a <strong>Perfil</strong> → toca el ícono de ajustes ⚙️</li>
+      <li>Selecciona <strong>Configuración</strong> → <strong>Eliminar cuenta</strong></li>
+      <li>Confirma la acción. Tu cuenta se eliminará de inmediato.</li>
+    </ol>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>Opción 2 — Solicitud por correo</h2>
+    <p style="margin-bottom: 16px;">Si no puedes acceder a la app, envíanos un correo desde la dirección registrada en tu cuenta con el asunto <strong>"Solicitud de eliminación de cuenta"</strong>.</p>
+
+    <div class="email-card">
+      <p>Procesamos las solicitudes en un plazo máximo de <strong>30 días hábiles</strong>.</p>
+      <a class="email-btn"
+         href="mailto:rentavozmx@gmail.com?subject=Solicitud%20de%20eliminaci%C3%B3n%20de%20cuenta&body=Hola%2C%0A%0ASolicito%20la%20eliminaci%C3%B3n%20de%20mi%20cuenta%20y%20todos%20los%20datos%20asociados%20en%20RentaVoz.%0A%0ACorreo%20registrado%3A%20(escribe%20tu%20correo%20aqu%C3%AD)%0A%0AGracias.">
+        Enviar solicitud por correo
+      </a>
+      <p class="email-manual">O escribe directamente a <a href="mailto:rentavozmx@gmail.com">rentavozmx@gmail.com</a></p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>Política de retención</h2>
+    <p>Tras confirmar la eliminación, tus datos personales se borran en un plazo de <strong>30 días</strong>. Algunos datos anonimizados (sin información personal identificable) pueden conservarse por razones estadísticas o legales.</p>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2026 RentaVoz &nbsp;·&nbsp;
+  <a href="privacy-policy.html">Política de Privacidad</a> &nbsp;·&nbsp;
+  <a href="privacy-policy-en.html">English</a> &nbsp;·&nbsp;
+  <a href="privacy-policy-ko.html">한국어</a>
+</footer>
+
+</body>
+</html>
