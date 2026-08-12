@@ -172,8 +172,8 @@ class _MapScreenState extends State<MapScreen> {
 
           // +/- 줌 버튼 — 세련된 카드 스타일
           Positioned(
-            right: 12,
-            bottom: _selected != null ? 200 : 80,
+            left: 12,
+            bottom: _selected != null ? 200 : 100,
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
