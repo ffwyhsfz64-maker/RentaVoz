@@ -383,6 +383,9 @@ class SJa extends S {
   String get filterRoom => '個室';
 
   @override
+  String get filterApartment => 'アパート';
+
+  @override
   String get sortNewest => '新着順';
 
   @override
@@ -399,6 +402,9 @@ class SJa extends S {
 
   @override
   String get rentalTypeRoom => '個室';
+
+  @override
+  String get rentalTypeApartment => 'アパート';
 
   @override
   String get sharedBathroom => 'バス共用';

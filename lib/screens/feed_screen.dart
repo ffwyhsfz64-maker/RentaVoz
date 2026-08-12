@@ -246,6 +246,8 @@ class _FeedScreenState extends State<FeedScreen> {
                           const SizedBox(width: 6),
                           _FilterChipWidget(label: '🏠 ${s.filterHouse}', selected: _typeFilter == 'house', onSelected: (_) => _applyFilter(type: 'house')),
                           const SizedBox(width: 6),
+                          _FilterChipWidget(label: '🏢 ${s.filterApartment}', selected: _typeFilter == 'apartment', onSelected: (_) => _applyFilter(type: 'apartment')),
+                          const SizedBox(width: 6),
                           _FilterChipWidget(label: '🚪 ${s.filterRoom}', selected: _typeFilter == 'room', onSelected: (_) => _applyFilter(type: 'room')),
                         ],
                       ),

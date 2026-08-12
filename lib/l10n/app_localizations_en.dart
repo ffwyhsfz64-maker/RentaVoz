@@ -389,6 +389,9 @@ class SEn extends S {
   String get filterRoom => 'Room';
 
   @override
+  String get filterApartment => 'Apartment';
+
+  @override
   String get sortNewest => 'Newest';
 
   @override
@@ -405,6 +408,9 @@ class SEn extends S {
 
   @override
   String get rentalTypeRoom => 'Room';
+
+  @override
+  String get rentalTypeApartment => 'Apartment';
 
   @override
   String get sharedBathroom => 'Shared bathroom';

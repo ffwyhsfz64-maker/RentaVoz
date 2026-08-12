@@ -829,6 +829,12 @@ abstract class S {
   /// **'Cuarto'**
   String get filterRoom;
 
+  /// No description provided for @filterApartment.
+  ///
+  /// In es, this message translates to:
+  /// **'Departamento'**
+  String get filterApartment;
+
   /// No description provided for @sortNewest.
   ///
   /// In es, this message translates to:
@@ -864,6 +870,12 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Cuarto / Habitación'**
   String get rentalTypeRoom;
+
+  /// No description provided for @rentalTypeApartment.
+  ///
+  /// In es, this message translates to:
+  /// **'Departamento'**
+  String get rentalTypeApartment;
 
   /// No description provided for @sharedBathroom.
   ///

@@ -103,12 +103,14 @@ class ReviewCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: review.rentalType == 'room'
                               ? Colors.purple.withAlpha(200)
-                              : Colors.white24,
+                              : review.rentalType == 'apartment'
+                                  ? Colors.indigo.withAlpha(200)
+                                  : Colors.white24,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white38),
                         ),
                         child: Text(
-                          review.rentalType == 'room' ? '🚪 ${s.filterRoom}' : '🏠 ${s.filterHouse}',
+                          review.rentalType == 'room' ? '🚪 ${s.filterRoom}' : review.rentalType == 'apartment' ? '🏢 ${s.filterApartment}' : '🏠 ${s.filterHouse}',
                           style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
                         ),
                       );

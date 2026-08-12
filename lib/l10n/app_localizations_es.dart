@@ -390,6 +390,9 @@ class SEs extends S {
   String get filterRoom => 'Cuarto';
 
   @override
+  String get filterApartment => 'Departamento';
+
+  @override
   String get sortNewest => 'Más recientes';
 
   @override
@@ -406,6 +409,9 @@ class SEs extends S {
 
   @override
   String get rentalTypeRoom => 'Cuarto / Habitación';
+
+  @override
+  String get rentalTypeApartment => 'Departamento';
 
   @override
   String get sharedBathroom => 'Baño compartido';

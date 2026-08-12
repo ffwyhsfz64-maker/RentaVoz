@@ -383,6 +383,9 @@ class SKo extends S {
   String get filterRoom => '방';
 
   @override
+  String get filterApartment => '아파트';
+
+  @override
   String get sortNewest => '최신순';
 
   @override
@@ -399,6 +402,9 @@ class SKo extends S {
 
   @override
   String get rentalTypeRoom => '방 하나';
+
+  @override
+  String get rentalTypeApartment => '아파트';
 
   @override
   String get sharedBathroom => '화장실 공유';

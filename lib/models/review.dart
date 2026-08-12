@@ -13,7 +13,7 @@ class Review {
   final double conditionRating;
   final double locationRating;
   final double securityRating;
-  final String rentalType; // 'house' | 'room'
+  final String rentalType; // 'house' | 'room' | 'apartment'
   final bool sharedBathroom;
   final bool sharedKitchen;
   final bool hadFormalContract;

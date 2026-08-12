@@ -379,6 +379,9 @@ class SZh extends S {
   String get filterRoom => '单间';
 
   @override
+  String get filterApartment => '公寓';
+
+  @override
   String get sortNewest => '最新';
 
   @override
@@ -395,6 +398,9 @@ class SZh extends S {
 
   @override
   String get rentalTypeRoom => '单间';
+
+  @override
+  String get rentalTypeApartment => '公寓';
 
   @override
   String get sharedBathroom => '共用卫生间';

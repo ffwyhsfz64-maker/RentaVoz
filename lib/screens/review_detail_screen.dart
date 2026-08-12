@@ -221,9 +221,9 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                   child: Row(
                     children: [
                       Icon(
-                        review.rentalType == 'room' ? Icons.door_front_door_outlined : Icons.home_outlined,
+                        review.rentalType == 'room' ? Icons.door_front_door_outlined : review.rentalType == 'apartment' ? Icons.apartment_outlined : Icons.home_outlined,
                         size: 18,
-                        color: review.rentalType == 'room' ? Colors.purple : const Color(0xFF2E7D32),
+                        color: review.rentalType == 'room' ? Colors.purple : review.rentalType == 'apartment' ? Colors.indigo : const Color(0xFF2E7D32),
                       ),
                       const SizedBox(width: 8),
                       Text(

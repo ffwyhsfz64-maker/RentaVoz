@@ -228,6 +228,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             SegmentedButton<String>(
               segments: [
                 ButtonSegment(value: 'house', label: Text(s.rentalTypeHouse), icon: const Icon(Icons.home_outlined, size: 18)),
+                ButtonSegment(value: 'apartment', label: Text(s.rentalTypeApartment), icon: const Icon(Icons.apartment_outlined, size: 18)),
                 ButtonSegment(value: 'room', label: Text(s.rentalTypeRoom), icon: const Icon(Icons.door_front_door_outlined, size: 18)),
               ],
               selected: {_rentalType},
