@@ -1,0 +1,3 @@
+// Copy this file to api_keys.dart and fill in your actual key.
+// Or build with: flutter build appbundle --dart-define=GOOGLE_API_KEY=AIzaSy...
+const String kGoogleApiKey = String.fromEnvironment('GOOGLE_API_KEY');

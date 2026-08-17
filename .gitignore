@@ -48,6 +48,9 @@ app.*.map.json
 google-services.json
 GoogleService-Info.plist
 
+# API keys (never commit real keys)
+lib/config/api_keys.dart
+
 # Android signing
 android/key.properties
 *.jks
