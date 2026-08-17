@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,25 @@ class ReviewDetailScreen extends StatefulWidget {
 }
 
 class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
+  // Keep a live copy from Firestore so edits by others are reflected
+  Review get _review => _liveReview ?? widget.review;
+  Review? _liveReview;
+  StreamSubscription<Review?>? _reviewSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _reviewSub = ReviewService.reviewStream(widget.review.id).listen((r) {
+      if (r != null && mounted) setState(() => _liveReview = r);
+    });
+  }
+
+  @override
+  void dispose() {
+    _reviewSub?.cancel();
+    super.dispose();
+  }
+
   String? _translatedPros;
   String? _translatedCons;
   bool _showTranslation = false;
@@ -34,8 +54,8 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
 
     try {
       final texts = [
-        widget.review.pros.isNotEmpty ? widget.review.pros : ' ',
-        widget.review.cons.isNotEmpty ? widget.review.cons : ' ',
+        _review.pros.isNotEmpty ? _review.pros : ' ',
+        _review.cons.isNotEmpty ? _review.cons : ' ',
       ];
       final results = await TranslationService.translate(texts, targetLang);
       setState(() {
@@ -53,7 +73,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   }
 
   void _share(S s) {
-    final review = widget.review;
+    final review = _review;
     final stars = '⭐' * review.overallRating.round();
     final buf = StringBuffer();
     buf.writeln('$stars ${review.overallRating.toStringAsFixed(1)}/5.0');
@@ -84,7 +104,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   Widget build(BuildContext context) {
     final s = S.of(context)!;
     final theme = Theme.of(context);
-    final review = widget.review;
+    final review = _review;
     final hasContent = review.pros.isNotEmpty || review.cons.isNotEmpty;
     final currentLang = Localizations.localeOf(context).languageCode;
 
@@ -376,7 +396,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             ),
           ],
 
-          // 납부 증명서
+          // 납부 증명서 (이미지 OCR 검증됨)
           if (review.isVerified) ...[
             _Section(
               title: s.comprobanteSection,
@@ -411,6 +431,29 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+
+          // 납부 증명서 (PDF 첨부 — 날짜 미검증)
+          if (review.hasPdfAttachment) ...[
+            _Section(
+              title: s.comprobanteSection,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withAlpha(20),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.withAlpha(80)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.picture_as_pdf_outlined, size: 16, color: Colors.orange),
+                    const SizedBox(width: 6),
+                    Text(s.pdfAttached, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 13)),
+                  ],
+                ),
               ),
             ),
           ],
@@ -503,7 +546,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
       ),
     );
     if (confirm != true || !mounted) return;
-    await ReviewService.deleteReview(widget.review.id);
+    await ReviewService.deleteReview(widget.review.id, photoUrls: widget.review.photoUrls, comprobanteUrl: widget.review.comprobanteUrl);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
     Navigator.of(context).pop();
@@ -512,7 +555,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
   void _showReportSheet(S s) {
     final currentUid = FirebaseAuth.instance.currentUser?.uid;
     if (currentUid == null) return;
-    if (widget.review.userId == currentUid) {
+    if (_review.userId == currentUid) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reportOwnReview)));
       return;
     }
@@ -579,13 +622,13 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
 
   Future<void> _submitReport(S s, String reason) async {
     try {
-      final already = await ReportService.hasReported(widget.review.id);
+      final already = await ReportService.hasReported(_review.id);
       if (!mounted) return;
       if (already) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reportAlready)));
         return;
       }
-      await ReportService.submit(widget.review.id, reason);
+      await ReportService.submit(_review.id, reason);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(s.reportSuccess), backgroundColor: const Color(0xFF2E7D32)),

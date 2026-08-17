@@ -374,6 +374,33 @@ class SKo extends S {
   String get forgotPasswordErrDefault => '이메일 전송에 실패했습니다. 다시 시도해주세요.';
 
   @override
+  String get continueWithGoogle => 'Google로 계속하기';
+
+  @override
+  String get pickFromGallery => '갤러리';
+
+  @override
+  String get pickFromCamera => '카메라';
+
+  @override
+  String get photoUploadFailTitle => '사진 업로드 실패';
+
+  @override
+  String get photoUploadFailBody => '사진을 업로드하지 못했습니다. 사진 없이 리뷰를 게시하시겠습니까?';
+
+  @override
+  String get publishAnyway => '그래도 게시';
+
+  @override
+  String get dateOrderError => '퇴거일은 입주일 이후여야 합니다.';
+
+  @override
+  String get signInError => '로그인 오류';
+
+  @override
+  String get googleSignInError => 'Google 로그인 오류';
+
+  @override
   String get filterAll => '전체';
 
   @override

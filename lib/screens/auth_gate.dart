@@ -3,14 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
+import 'language_select_screen.dart';
 import 'onboarding_screen.dart';
 import 'verify_email_screen.dart';
 
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
   @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  bool? _languageSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((p) {
+      setState(() => _languageSelected = p.getBool('language_selected') ?? false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_languageSelected == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (!_languageSelected!) {
+      return LanguageSelectScreen(
+        onSelected: () => setState(() => _languageSelected = true),
+      );
+    }
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snap) {

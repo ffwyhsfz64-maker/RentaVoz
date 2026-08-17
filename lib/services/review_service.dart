@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/review.dart';
 
 typedef FeedPage = ({List<Review> reviews, DocumentSnapshot? lastDoc});
@@ -72,7 +73,7 @@ class ReviewService {
 
   static Stream<List<Review>> feedStream() => _col
       .orderBy('createdAt', descending: true)
-      .limit(100)
+      .limit(500)
       .snapshots()
       .map((s) => s.docs.map((d) => Review.fromMap(d.id, d.data())).toList());
 
@@ -85,8 +86,17 @@ class ReviewService {
         return reviews;
       });
 
-  static Future<void> addReview(Review review) async {
-    await _col.doc(review.id).set(review.toMap());
+  static Stream<Review?> reviewStream(String reviewId) => _col
+      .doc(reviewId)
+      .snapshots()
+      .map((s) => s.exists ? Review.fromMap(s.id, s.data()!) : null);
+
+  static Future<void> addReview(Review review, {bool isUpdate = false}) async {
+    if (isUpdate) {
+      await _col.doc(review.id).update(review.toMap());
+    } else {
+      await _col.doc(review.id).set(review.toMap());
+    }
     await FirebaseAnalytics.instance.logEvent(
       name: 'review_published',
       parameters: {
@@ -97,6 +107,17 @@ class ReviewService {
     );
   }
 
-  static Future<void> deleteReview(String reviewId) =>
-      _col.doc(reviewId).delete();
+  static Future<void> deleteReview(String reviewId, {List<String> photoUrls = const [], String? comprobanteUrl}) async {
+    // Delete Storage files first, then Firestore document
+    final storage = FirebaseStorage.instance;
+    final deleteFutures = <Future>[];
+    for (final url in photoUrls) {
+      try { deleteFutures.add(storage.refFromURL(url).delete()); } catch (_) {}
+    }
+    if (comprobanteUrl != null) {
+      try { deleteFutures.add(storage.refFromURL(comprobanteUrl).delete()); } catch (_) {}
+    }
+    if (deleteFutures.isNotEmpty) await Future.wait(deleteFutures, eagerError: false);
+    await _col.doc(reviewId).delete();
+  }
 }

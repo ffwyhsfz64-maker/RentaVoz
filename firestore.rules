@@ -75,7 +75,7 @@ function isValidReview(data) {
     && data.conditionRating is number && data.conditionRating >= 1 && data.conditionRating <= 5
     && data.locationRating is number && data.locationRating >= 1 && data.locationRating <= 5
     && data.securityRating is number && data.securityRating >= 1 && data.securityRating <= 5
-    && data.rentalType in ['house', 'room']
+    && data.rentalType in ['house', 'room', 'apartment']
     && data.monthlyRent is number && data.monthlyRent >= 0
     && data.createdAt is timestamp;
 }

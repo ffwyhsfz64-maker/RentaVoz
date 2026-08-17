@@ -18,7 +18,6 @@ class ComprobanteValidationResult {
 class VisionService {
   static const _headers = {
     'Content-Type': 'application/json',
-    'x-ios-bundle-identifier': 'com.onuri.rentavoz',
   };
 
   static Future<ComprobanteValidationResult> validateComprobante(File image) async {

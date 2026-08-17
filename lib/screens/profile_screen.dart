@@ -53,12 +53,12 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Galería'),
+              title: Text(s.pickFromGallery),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt_outlined),
-              title: const Text('Cámara'),
+              title: Text(s.pickFromCamera),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
           ],
@@ -69,7 +69,8 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
     final picked = await picker.pickImage(source: source, imageQuality: 80, maxWidth: 512);
     if (picked == null || !mounted) return;
     try {
-      final uid = AuthService.currentUser!.uid;
+      final uid = AuthService.currentUser?.uid;
+      if (uid == null) return;
       final url = await StorageService.uploadAvatar(uid, File(picked.path));
       await AuthService.updatePhotoURL(url);
       await AuthService.reloadUser();
@@ -161,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                   ),
                 );
                 if (confirm == true) {
-                  await ReviewService.deleteReview(review.id);
+                  await ReviewService.deleteReview(review.id, photoUrls: review.photoUrls, comprobanteUrl: review.comprobanteUrl);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
                   }
@@ -311,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
                                 ),
                               ),
                               onDismissed: (_) async {
-                                await ReviewService.deleteReview(myReviews[i].id);
+                                await ReviewService.deleteReview(myReviews[i].id, photoUrls: myReviews[i].photoUrls, comprobanteUrl: myReviews[i].comprobanteUrl);
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(s.reviewDeleted)));
                                 }

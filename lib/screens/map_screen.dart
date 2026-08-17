@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../data/dummy_reviews.dart';
 import '../l10n/app_localizations.dart';
 import '../models/review.dart';
 import '../services/review_service.dart';
@@ -49,7 +48,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _sub = ReviewService.feedStream().listen((reviews) {
-      final all = reviews.isEmpty ? dummyReviews : reviews;
+      final all = reviews;
       if (!mounted) return;
       setState(() {
         _totalCount = all.where((r) => r.lat != 0 && r.lng != 0).length;

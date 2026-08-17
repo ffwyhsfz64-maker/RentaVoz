@@ -811,6 +811,60 @@ abstract class S {
   /// **'No se pudo enviar el correo. Intenta de nuevo.'**
   String get forgotPasswordErrDefault;
 
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @pickFromGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'Galería'**
+  String get pickFromGallery;
+
+  /// No description provided for @pickFromCamera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cámara'**
+  String get pickFromCamera;
+
+  /// No description provided for @photoUploadFailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al subir fotos'**
+  String get photoUploadFailTitle;
+
+  /// No description provided for @photoUploadFailBody.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron subir las fotos. ¿Deseas publicar la reseña sin ellas?'**
+  String get photoUploadFailBody;
+
+  /// No description provided for @publishAnyway.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar igual'**
+  String get publishAnyway;
+
+  /// No description provided for @dateOrderError.
+  ///
+  /// In es, this message translates to:
+  /// **'La fecha de salida debe ser posterior a la de entrada.'**
+  String get dateOrderError;
+
+  /// No description provided for @signInError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al iniciar sesión'**
+  String get signInError;
+
+  /// No description provided for @googleSignInError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al iniciar sesión con Google'**
+  String get googleSignInError;
+
   /// No description provided for @filterAll.
   ///
   /// In es, this message translates to:

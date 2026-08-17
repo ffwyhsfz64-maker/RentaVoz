@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
-import '../data/dummy_reviews.dart';
 import '../models/review.dart';
 import '../services/review_service.dart';
 import '../widgets/review_card.dart';
@@ -72,8 +71,7 @@ class _FeedScreenState extends State<FeedScreen> {
         final all = await ReviewService.fetchAll(rentalType: _rentalTypeFilter);
         if (!mounted) return;
         setState(() {
-          final base = all.isEmpty ? dummyReviews : all;
-          _reviews = _sortedReviews(base);
+          _reviews = _sortedReviews(all);
           _lastDoc = null;
           _hasMore = false;
           _loading = false;
@@ -82,7 +80,7 @@ class _FeedScreenState extends State<FeedScreen> {
         final page = await ReviewService.fetchPage(rentalType: _rentalTypeFilter);
         if (!mounted) return;
         setState(() {
-          _reviews = page.reviews.isEmpty ? dummyReviews : page.reviews;
+          _reviews = page.reviews;
           _lastDoc = page.lastDoc;
           _hasMore = page.reviews.length >= 15 && page.reviews.isNotEmpty;
           _loading = false;
@@ -90,7 +88,7 @@ class _FeedScreenState extends State<FeedScreen> {
       }
     } catch (_) {
       if (!mounted) return;
-      setState(() { _reviews = dummyReviews; _loading = false; _hasMore = false; });
+      setState(() { _reviews = []; _loading = false; _hasMore = false; });
     }
   }
 

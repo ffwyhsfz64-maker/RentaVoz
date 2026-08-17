@@ -48,7 +48,7 @@ class MyReviewsScreen extends StatelessWidget {
                   ),
                 );
                 if (confirm == true) {
-                  await ReviewService.deleteReview(review.id);
+                  await ReviewService.deleteReview(review.id, photoUrls: review.photoUrls, comprobanteUrl: review.comprobanteUrl);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(s.reviewDeleted)),
@@ -163,7 +163,7 @@ class MyReviewsScreen extends StatelessWidget {
                 );
               },
               onDismissed: (_) async {
-                await ReviewService.deleteReview(reviews[i].id);
+                await ReviewService.deleteReview(reviews[i].id, photoUrls: reviews[i].photoUrls, comprobanteUrl: reviews[i].comprobanteUrl);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(s.reviewDeleted)),

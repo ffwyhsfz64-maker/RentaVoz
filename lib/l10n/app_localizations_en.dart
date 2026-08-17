@@ -380,6 +380,34 @@ class SEn extends S {
       'Could not send email. Please try again.';
 
   @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get pickFromGallery => 'Gallery';
+
+  @override
+  String get pickFromCamera => 'Camera';
+
+  @override
+  String get photoUploadFailTitle => 'Photo upload failed';
+
+  @override
+  String get photoUploadFailBody =>
+      'Photos could not be uploaded. Do you want to publish the review without them?';
+
+  @override
+  String get publishAnyway => 'Publish anyway';
+
+  @override
+  String get dateOrderError => 'Move-out date must be after move-in date.';
+
+  @override
+  String get signInError => 'Sign-in error';
+
+  @override
+  String get googleSignInError => 'Google sign-in error';
+
+  @override
   String get filterAll => 'All';
 
   @override

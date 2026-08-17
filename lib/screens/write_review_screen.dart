@@ -157,21 +157,33 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   Future<void> _pickDate(bool isMoveIn) async {
+    final now = DateTime.now();
+    final initial = isMoveIn
+        ? (_moveInDate ?? now)
+        : (_moveOutDate ?? now);
+    // Move-out can be up to 1 month in the future (still living there)
+    final last = isMoveIn ? now : now.add(const Duration(days: 31));
+
     final picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: initial.isAfter(last) ? last : initial,
       firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      lastDate: last,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      // Show year/month selector on header tap
     );
-    if (picked != null) {
-      setState(() {
-        if (isMoveIn) {
-          _moveInDate = picked;
-        } else {
-          _moveOutDate = picked;
+    if (picked == null) return;
+    setState(() {
+      if (isMoveIn) {
+        _moveInDate = picked;
+        // Reset move-out if it's now before move-in
+        if (_moveOutDate != null && _moveOutDate!.isBefore(picked)) {
+          _moveOutDate = null;
         }
-      });
-    }
+      } else {
+        _moveOutDate = picked;
+      }
+    });
   }
 
   Widget _ratingRow(String label, double value, ValueChanged<double> onChanged) {
@@ -361,7 +373,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   const SizedBox(width: 8),
                   OutlinedButton.icon(
                     icon: const Icon(Icons.camera_alt_outlined, size: 16),
-                    label: const Text('Cámara'),
+                    label: Text(s.pickFromCamera),
                     onPressed: _pickPhotosFromCamera,
                   ),
                 ],
@@ -490,6 +502,12 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       );
       return;
     }
+    if (!_moveOutDate!.isAfter(_moveInDate!)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.dateOrderError)),
+      );
+      return;
+    }
     if (_address.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(s.selectAddress)),
@@ -501,7 +519,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     String? comprobanteUrl = _isEditing ? widget.existingReview!.comprobanteUrl : null;
     List<String> photoUrls = List<String>.from(_existingPhotoUrls);
     try {
-      if (_comprobanteFile != null && (_comprobanteValidation?.isValid ?? false)) {
+      // PDFs upload as-is (no OCR); images require passing OCR validation
+      if (_comprobanteFile != null && (_comprobanteIsPdf || (_comprobanteValidation?.isValid ?? false))) {
         comprobanteUrl = await StorageService.uploadComprobante(reviewId, _comprobanteFile!);
       }
       if (_photoFiles.isNotEmpty) {
@@ -509,14 +528,33 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
         photoUrls.addAll(newUrls);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('사진 업로드 실패: $e'), backgroundColor: Colors.orange),
-        );
+      if (!mounted) return;
+      final continueAnyway = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(s.photoUploadFailTitle),
+          content: Text(s.photoUploadFailBody),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(s.cancel)),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(s.publishAnyway)),
+          ],
+        ),
+      );
+      if (continueAnyway != true) {
+        setState(() => _uploading = false);
+        return;
       }
     }
 
-    final uid = AuthService.currentUser?.uid ?? 'anonymous';
+    final uid = AuthService.currentUser?.uid;
+    if (uid == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Debes iniciar sesión para publicar una reseña.')),
+        );
+      }
+      return;
+    }
     final review = Review(
       id: reviewId,
       userId: uid,
@@ -541,10 +579,11 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       cons: _consCtrl.text.trim(),
       photoUrls: photoUrls,
       comprobanteUrl: comprobanteUrl,
+      comprobanteIsPdf: comprobanteUrl != null ? _comprobanteIsPdf : false,
       createdAt: _isEditing ? widget.existingReview!.createdAt : DateTime.now(),
     );
     try {
-      await ReviewService.addReview(review);
+      await ReviewService.addReview(review, isUpdate: _isEditing);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(_isEditing ? s.reviewUpdated : s.reviewPublished)),

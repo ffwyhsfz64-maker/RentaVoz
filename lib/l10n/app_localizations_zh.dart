@@ -370,6 +370,33 @@ class SZh extends S {
   String get forgotPasswordErrDefault => '发送失败，请重试。';
 
   @override
+  String get continueWithGoogle => '使用Google继续';
+
+  @override
+  String get pickFromGallery => '相册';
+
+  @override
+  String get pickFromCamera => '相机';
+
+  @override
+  String get photoUploadFailTitle => '照片上传失败';
+
+  @override
+  String get photoUploadFailBody => '无法上传照片。是否在没有照片的情况下发布评价？';
+
+  @override
+  String get publishAnyway => '仍然发布';
+
+  @override
+  String get dateOrderError => '退房日期必须晚于入住日期。';
+
+  @override
+  String get signInError => '登录错误';
+
+  @override
+  String get googleSignInError => 'Google登录错误';
+
+  @override
   String get filterAll => '全部';
 
   @override

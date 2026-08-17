@@ -374,6 +374,33 @@ class SJa extends S {
   String get forgotPasswordErrDefault => 'メールの送信に失敗しました。もう一度お試しください。';
 
   @override
+  String get continueWithGoogle => 'Googleで続ける';
+
+  @override
+  String get pickFromGallery => 'ギャラリー';
+
+  @override
+  String get pickFromCamera => 'カメラ';
+
+  @override
+  String get photoUploadFailTitle => '写真のアップロード失敗';
+
+  @override
+  String get photoUploadFailBody => '写真をアップロードできませんでした。写真なしでレビューを投稿しますか？';
+
+  @override
+  String get publishAnyway => 'そのまま投稿';
+
+  @override
+  String get dateOrderError => '退去日は入居日より後でなければなりません。';
+
+  @override
+  String get signInError => 'サインインエラー';
+
+  @override
+  String get googleSignInError => 'Googleサインインエラー';
+
+  @override
   String get filterAll => 'すべて';
 
   @override

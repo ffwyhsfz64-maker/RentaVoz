@@ -24,6 +24,7 @@ class Review {
   final String cons;
   final List<String> photoUrls;
   final String? comprobanteUrl;
+  final bool comprobanteIsPdf;
   final DateTime createdAt;
 
   const Review({
@@ -50,14 +51,18 @@ class Review {
     required this.cons,
     required this.photoUrls,
     this.comprobanteUrl,
+    this.comprobanteIsPdf = false,
     required this.createdAt,
   });
 
+  // Only image-OCR-verified comprobanteUrl counts as verified (PDF bypasses OCR)
   bool get isVerified {
-    if (comprobanteUrl == null) return false;
+    if (comprobanteUrl == null || comprobanteIsPdf) return false;
     final threeMonthsAgo = DateTime.now().subtract(const Duration(days: 90));
     return moveOutDate.isAfter(threeMonthsAgo);
   }
+
+  bool get hasPdfAttachment => comprobanteUrl != null && comprobanteIsPdf;
 
   double get overallRating =>
       (landlordRating + conditionRating + locationRating + securityRating) / 4;
@@ -86,6 +91,7 @@ class Review {
         'cons': cons,
         'photoUrls': photoUrls,
         if (comprobanteUrl != null) 'comprobanteUrl': comprobanteUrl,
+        if (comprobanteUrl != null) 'comprobanteIsPdf': comprobanteIsPdf,
         'createdAt': Timestamp.fromDate(createdAt),
       };
 
@@ -113,6 +119,7 @@ class Review {
         cons: map['cons'] as String,
         photoUrls: List<String>.from(map['photoUrls'] as List),
         comprobanteUrl: map['comprobanteUrl'] as String?,
+        comprobanteIsPdf: (map['comprobanteIsPdf'] as bool?) ?? false,
         createdAt: _parseDate(map['createdAt']),
       );
 

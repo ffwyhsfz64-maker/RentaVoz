@@ -32,6 +32,17 @@ service firebase.storage {
       allow delete: if request.auth != null;
     }
 
+    // ── 프로필 사진: avatars/{uid}.{ext} ─────────────────────────
+    match /avatars/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && fileName.matches(request.auth.uid + '\\..*')
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null
+        && fileName.matches(request.auth.uid + '\\..*');
+    }
+
     // ── 그 외 경로 접근 차단 ──────────────────────────────────────
     match /{allPaths=**} {
       allow read, write: if false;

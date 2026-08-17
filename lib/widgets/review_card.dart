@@ -190,6 +190,7 @@ class ReviewCard extends StatelessWidget {
                       runSpacing: 4,
                       children: [
                         if (review.isVerified) _Badge(label: '✓ ${s.badgeVerified.replaceAll('✓ ', '')}', color: const Color(0xFF2E7D32), bold: true),
+                        if (review.hasPdfAttachment) _Badge(label: '📎 ${s.pdfAttached.split('(').first.trim()}', color: Colors.orange),
                         if (review.hadFormalContract) _Badge(label: s.badgeFormalContract, color: Colors.green),
                         if (review.avalRequired) _Badge(label: s.badgeAvalRequired, color: Colors.orange),
                         if (!review.depositReturned) _Badge(label: s.badgeDepositNotReturned, color: Colors.red),

@@ -381,6 +381,35 @@ class SEs extends S {
       'No se pudo enviar el correo. Intenta de nuevo.';
 
   @override
+  String get continueWithGoogle => 'Continuar con Google';
+
+  @override
+  String get pickFromGallery => 'Galería';
+
+  @override
+  String get pickFromCamera => 'Cámara';
+
+  @override
+  String get photoUploadFailTitle => 'Error al subir fotos';
+
+  @override
+  String get photoUploadFailBody =>
+      'No se pudieron subir las fotos. ¿Deseas publicar la reseña sin ellas?';
+
+  @override
+  String get publishAnyway => 'Publicar igual';
+
+  @override
+  String get dateOrderError =>
+      'La fecha de salida debe ser posterior a la de entrada.';
+
+  @override
+  String get signInError => 'Error al iniciar sesión';
+
+  @override
+  String get googleSignInError => 'Error al iniciar sesión con Google';
+
+  @override
   String get filterAll => 'Todos';
 
   @override

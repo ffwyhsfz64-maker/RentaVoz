@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       debugPrint('[Login] Unexpected error: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('오류: $e'), duration: const Duration(seconds: 6)),
+          SnackBar(content: Text('${S.of(context)!.signInError}: $e'), duration: const Duration(seconds: 6)),
         );
       }
     } finally {
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       if (mounted && e.toString() != 'Exception: cancelled') {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Google 로그인 실패: $e'), duration: const Duration(seconds: 4)),
+          SnackBar(content: Text('${S.of(context)!.googleSignInError}: $e'), duration: const Duration(seconds: 4)),
         );
       }
     } finally {
@@ -298,14 +298,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       OutlinedButton.icon(
                         onPressed: _loading ? null : _loginWithGoogle,
-                        icon: Image.asset(
-                          'assets/google_logo.png',
+                        icon: Container(
                           width: 20, height: 20,
-                          errorBuilder: (_, __, ___) => const Icon(Icons.g_mobiledata, size: 22),
+                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                          child: const Center(
+                            child: Text('G', style: TextStyle(color: Color(0xFF4285F4), fontWeight: FontWeight.bold, fontSize: 14)),
+                          ),
                         ),
-                        label: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          child: Text('Continuar con Google', style: TextStyle(fontSize: 15)),
+                        label: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Text(S.of(context)!.continueWithGoogle, style: const TextStyle(fontSize: 15)),
                         ),
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
