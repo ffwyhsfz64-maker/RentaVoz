@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../config/api_keys.dart';
+import '../screens/map_picker_screen.dart';
 
 class AddressResult {
   final String address;
@@ -105,10 +107,14 @@ class _AddressFieldState extends State<AddressField> {
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
         final loc = data['result']['geometry']['location'];
+        final lat = (loc['lat'] as num).toDouble();
+        final lng = (loc['lng'] as num).toDouble();
+        _lat = lat;
+        _lng = lng;
         widget.onSelected(AddressResult(
           address: prediction.description,
-          lat: (loc['lat'] as num).toDouble(),
-          lng: (loc['lng'] as num).toDouble(),
+          lat: lat,
+          lng: lng,
         ));
       }
     } catch (_) {
@@ -145,6 +151,8 @@ class _AddressFieldState extends State<AddressField> {
           if (p.administrativeArea?.isNotEmpty == true) p.administrativeArea,
         ].join(', ');
         _ctrl.text = address;
+        _lat = pos.latitude;
+        _lng = pos.longitude;
         widget.onSelected(AddressResult(address: address, lat: pos.latitude, lng: pos.longitude));
       }
     } catch (e) {
@@ -157,6 +165,29 @@ class _AddressFieldState extends State<AddressField> {
       if (mounted) setState(() => _loadingLocation = false);
     }
   }
+
+  Future<void> _openMapPicker() async {
+    final initialPos = (_lat != 0 || _lng != 0)
+        ? LatLng(_lat, _lng)
+        : null;
+    if (!mounted) return;
+    final result = await Navigator.push<AddressResult>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MapPickerScreen(initialPosition: initialPos),
+      ),
+    );
+    if (result != null) {
+      _lat = result.lat;
+      _lng = result.lng;
+      _ctrl.text = result.address;
+      setState(() { _showSuggestions = false; _predictions = []; });
+      widget.onSelected(result);
+    }
+  }
+
+  double _lat = 0;
+  double _lng = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +214,16 @@ class _AddressFieldState extends State<AddressField> {
                   ),
           ),
           validator: (v) => (v == null || v.isEmpty) ? 'Ingresa la dirección' : null,
+        ),
+        const SizedBox(height: 6),
+        OutlinedButton.icon(
+          onPressed: _openMapPicker,
+          icon: const Icon(Icons.map_outlined, size: 16),
+          label: const Text('Seleccionar en el mapa'),
+          style: OutlinedButton.styleFrom(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          ),
         ),
 
         // Autocomplete suggestions
