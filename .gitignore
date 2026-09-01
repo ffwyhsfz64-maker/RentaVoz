@@ -56,3 +56,4 @@ ios/Flutter/Secrets.xcconfig
 android/key.properties
 *.jks
 *.keystore
+fastlane/AuthKey/

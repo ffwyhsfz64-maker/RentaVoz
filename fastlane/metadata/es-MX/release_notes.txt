@@ -1,0 +1,1 @@
+Se corrige el desbordamiento de texto en el selector de tipo de arrendamiento para idiomas con textos largos. Mejoras de estabilidad.

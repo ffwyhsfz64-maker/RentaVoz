@@ -1,0 +1,15 @@
+RentaVoz es la plataforma de reseñas honestas de arrendamientos en México. Comparte tu experiencia como inquilino: califica al arrendador, reporta las condiciones del inmueble y ayuda a otros a tomar mejores decisiones.
+
+--- Funcionalidades principales ---
+- Escribe reseñas de tus arrendamientos pasados o actuales
+- Consulta el mapa para ver reseñas por zona
+- Verifica reseñas con comprobante de domicilio
+- Califica: arrendador, condición, ubicación y seguridad
+- Traduce reseñas a tu idioma con un solo toque
+- Filtra y ordena para encontrar lo que necesitas
+
+--- ¿Por qué RentaVoz? ---
+En México, los inquilinos enfrentan problemas como aval obligatorio, depósitos no devueltos y contratos informales. RentaVoz da voz a los inquilinos para que la comunidad pueda tomar decisiones informadas.
+
+--- Privacidad ---
+Solo recopilamos lo necesario para el servicio. Tu ubicación se usa únicamente cuando tú lo decides. Consulta nuestra política de privacidad para más detalles.

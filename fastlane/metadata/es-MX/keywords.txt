@@ -1,0 +1,1 @@
+renta,arrendamiento,reseñas,querétaro,inmueble,propietario,inquilino,departamento,casa,mapa

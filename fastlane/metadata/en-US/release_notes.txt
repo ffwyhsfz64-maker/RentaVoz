@@ -1,0 +1,1 @@
+Fixed text overflow in the rental type selector for languages with longer strings. Stability improvements.

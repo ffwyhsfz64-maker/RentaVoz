@@ -1,0 +1,15 @@
+RentaVoz is the platform for honest rental reviews in Mexico. Share your experience as a tenant: rate your landlord, report property conditions, and help others make better decisions.
+
+--- Key Features ---
+- Write reviews for your past or current rentals
+- Browse the map to see reviews by area
+- Verify reviews with proof of residence
+- Rate: landlord, property condition, location, and security
+- Translate reviews to your language with one tap
+- Filter and sort to find what you need
+
+--- Why RentaVoz? ---
+In Mexico, tenants often face issues like mandatory guarantors, unreturned deposits, and informal contracts. RentaVoz gives tenants a voice so the community can make informed decisions.
+
+--- Privacy ---
+We only collect what is necessary for the service. Your location is used only when you choose. See our privacy policy for details.

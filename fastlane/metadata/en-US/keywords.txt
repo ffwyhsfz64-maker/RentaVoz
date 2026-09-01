@@ -1,0 +1,1 @@
+rent,rental,reviews,mexico,landlord,tenant,apartment,house,map,queretaro
