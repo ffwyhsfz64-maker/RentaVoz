@@ -23,6 +23,12 @@ service cloud.firestore {
         && resource.data.userId == request.auth.uid;
     }
 
+    // ── users/{uid} ──────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read, write, delete: if request.auth != null
+        && request.auth.uid == uid;
+    }
+
     // ── users/{uid}/bookmarks ────────────────────────────────────────
     match /users/{uid}/bookmarks/{reviewId} {
       allow read, write, delete: if request.auth != null

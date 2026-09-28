@@ -64,6 +64,11 @@ class _AddressFieldState extends State<AddressField> {
   static const _headers = {'x-ios-bundle-identifier': 'com.onuri.rentavoz'};
 
   Future<void> _fetchPredictions(String input) async {
+    if (kGoogleApiKey.isEmpty) {
+      debugPrint('AddressField: GOOGLE_API_KEY is empty — autocomplete disabled. '
+          'Pass --dart-define=GOOGLE_API_KEY=... or set the fallback in api_keys.dart');
+      return;
+    }
     final uri = Uri.parse(
       'https://maps.googleapis.com/maps/api/place/autocomplete/json'
       '?input=${Uri.encodeComponent(input)}'
@@ -73,21 +78,32 @@ class _AddressFieldState extends State<AddressField> {
     );
     try {
       final res = await http.get(uri, headers: _headers);
-      if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
-        if (data['status'] == 'OK') {
-          setState(() {
-            _predictions = (data['predictions'] as List)
-                .map((p) => _Prediction(
-                      placeId: p['place_id'] as String,
-                      description: p['description'] as String,
-                    ))
-                .toList();
-            _showSuggestions = true;
-          });
-        }
+      if (res.statusCode != 200) {
+        debugPrint('AddressField: autocomplete HTTP ${res.statusCode}');
+        return;
       }
-    } catch (_) {}
+      final data = jsonDecode(res.body);
+      final status = data['status'];
+      if (status == 'OK') {
+        setState(() {
+          _predictions = (data['predictions'] as List)
+              .map((p) => _Prediction(
+                    placeId: p['place_id'] as String,
+                    description: p['description'] as String,
+                  ))
+              .toList();
+          _showSuggestions = true;
+        });
+      } else if (status == 'ZERO_RESULTS') {
+        setState(() { _predictions = []; _showSuggestions = false; });
+      } else {
+        // REQUEST_DENIED / OVER_QUERY_LIMIT / INVALID_REQUEST — don't fail silently
+        debugPrint('AddressField: Places status=$status '
+            'error=${data['error_message'] ?? '(none)'}');
+      }
+    } catch (e) {
+      debugPrint('AddressField: autocomplete error: $e');
+    }
   }
 
   Future<void> _selectPrediction(_Prediction prediction) async {

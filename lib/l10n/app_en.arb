@@ -253,5 +253,19 @@
   "unfollowedSuccess": "Unfollowed",
   "followedAddresses": "Followed addresses",
   "noFollowedAddresses": "You are not following any addresses yet",
-  "followedAddressesHint": "Follow an address from a review to get notified"
+  "followedAddressesHint": "Follow an address from a review to get notified",
+  "dangerZone": "Account",
+  "deleteAccount": "Delete account",
+  "deleteAccountTitle": "Delete your account?",
+  "deleteAccountBody": "This action is permanent and cannot be undone. Your account, all your reviews, and all your data will be permanently deleted.",
+  "deleteAccountConfirm": "Delete account",
+  "deleteAccountSuccess": "Your account has been deleted.",
+  "deleteAccountErrorWrongPw": "Incorrect password. Please try again.",
+  "deleteAccountErrorDefault": "Could not delete account. Please try again.",
+  "deleteAccountPasswordHint": "Enter your password to confirm",
+  "deleteAccountReauthGoogle": "You will be asked to confirm with your Google account.",
+  "deleteAccountWarning": "All your data and reviews will be permanently deleted.",
+  "continueWithApple": "Continue with Apple",
+  "appleSignInError": "Error signing in with Apple",
+  "deleteAccountReauthApple": "You will be asked to confirm with your Apple account."
 }

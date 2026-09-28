@@ -48,12 +48,71 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final s = S.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
+    final isWide = MediaQuery.sizeOf(context).width >= 600;
+
+    final content = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: _screens[_currentIndex],
+    );
+
+    if (isWide) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: _onTabChanged,
+              labelType: NavigationRailLabelType.all,
+              useIndicator: true,
+              indicatorColor: colorScheme.primaryContainer,
+              destinations: [
+                NavigationRailDestination(
+                  icon: const Icon(Icons.article_outlined),
+                  selectedIcon: Icon(Icons.article, color: colorScheme.onPrimaryContainer),
+                  label: Text(s.tabHome),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.map_outlined),
+                  selectedIcon: Icon(Icons.map_rounded, color: colorScheme.onPrimaryContainer),
+                  label: Text(s.tabMap),
+                ),
+                NavigationRailDestination(
+                  icon: const Icon(Icons.person_outline_rounded),
+                  selectedIcon: Icon(Icons.person_rounded, color: colorScheme.onPrimaryContainer),
+                  label: Text(s.tabProfile),
+                ),
+              ],
+              trailing: Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: ScaleTransition(
+                      scale: CurvedAnimation(parent: _fabController, curve: Curves.easeOutBack),
+                      child: FloatingActionButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const WriteReviewScreen()),
+                        ),
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
+                        elevation: 4,
+                        child: const Icon(Icons.rate_review_rounded),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const VerticalDivider(thickness: 1, width: 1),
+            Expanded(child: content),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: _screens[_currentIndex],
-      ),
+      body: content,
       extendBody: true,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

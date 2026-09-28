@@ -274,5 +274,19 @@
   "unfollowedSuccess": "Ya no sigues esta dirección",
   "followedAddresses": "Direcciones seguidas",
   "noFollowedAddresses": "No sigues ninguna dirección aún",
-  "followedAddressesHint": "Sigue una dirección desde las reseñas para recibir notificaciones"
+  "followedAddressesHint": "Sigue una dirección desde las reseñas para recibir notificaciones",
+  "dangerZone": "Cuenta",
+  "deleteAccount": "Eliminar cuenta",
+  "deleteAccountTitle": "¿Eliminar tu cuenta?",
+  "deleteAccountBody": "Esta acción es permanente e irreversible. Se eliminarán tu cuenta, todas tus reseñas y todos tus datos.",
+  "deleteAccountConfirm": "Eliminar cuenta",
+  "deleteAccountSuccess": "Tu cuenta ha sido eliminada.",
+  "deleteAccountErrorWrongPw": "Contraseña incorrecta. Inténtalo de nuevo.",
+  "deleteAccountErrorDefault": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
+  "deleteAccountPasswordHint": "Ingresa tu contraseña para confirmar",
+  "deleteAccountReauthGoogle": "Se solicitará confirmación con tu cuenta de Google.",
+  "deleteAccountWarning": "Todos tus datos y reseñas serán eliminados permanentemente.",
+  "continueWithApple": "Continuar con Apple",
+  "appleSignInError": "Error al iniciar sesión con Apple",
+  "deleteAccountReauthApple": "Se solicitará confirmación con tu cuenta de Apple."
 }

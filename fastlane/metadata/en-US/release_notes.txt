@@ -1,1 +1,4 @@
-Fixed text overflow in the rental type selector for languages with longer strings. Stability improvements.
+• iPad optimization: app now correctly fills the full iPad screen
+• Side navigation rail and 2-column feed grid layout on iPad
+• Sign in with Apple button is now always visible on the login screen
+• Fixed address search: suggestions now appear again as you type

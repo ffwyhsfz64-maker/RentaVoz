@@ -1356,6 +1356,90 @@ abstract class S {
   /// In es, this message translates to:
   /// **'Sigue una dirección desde las reseñas para recibir notificaciones'**
   String get followedAddressesHint;
+
+  /// No description provided for @dangerZone.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta'**
+  String get dangerZone;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar tu cuenta?'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción es permanente e irreversible. Se eliminarán tu cuenta, todas tus reseñas y todos tus datos.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta ha sido eliminada.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountErrorWrongPw.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña incorrecta. Inténtalo de nuevo.'**
+  String get deleteAccountErrorWrongPw;
+
+  /// No description provided for @deleteAccountErrorDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo eliminar la cuenta. Inténtalo de nuevo.'**
+  String get deleteAccountErrorDefault;
+
+  /// No description provided for @deleteAccountPasswordHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu contraseña para confirmar'**
+  String get deleteAccountPasswordHint;
+
+  /// No description provided for @deleteAccountReauthGoogle.
+  ///
+  /// In es, this message translates to:
+  /// **'Se solicitará confirmación con tu cuenta de Google.'**
+  String get deleteAccountReauthGoogle;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos tus datos y reseñas serán eliminados permanentemente.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @continueWithApple.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Apple'**
+  String get continueWithApple;
+
+  /// No description provided for @appleSignInError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al iniciar sesión con Apple'**
+  String get appleSignInError;
+
+  /// No description provided for @deleteAccountReauthApple.
+  ///
+  /// In es, this message translates to:
+  /// **'Se solicitará confirmación con tu cuenta de Apple.'**
+  String get deleteAccountReauthApple;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

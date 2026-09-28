@@ -653,4 +653,46 @@ class SZh extends S {
 
   @override
   String get followedAddressesHint => '从评价页面关注地址，即可获得新评价通知';
+
+  @override
+  String get dangerZone => '账户管理';
+
+  @override
+  String get deleteAccount => '删除账户';
+
+  @override
+  String get deleteAccountTitle => '删除您的账户？';
+
+  @override
+  String get deleteAccountBody => '此操作是永久性的，无法撤销。您的账户、所有评价和所有数据将被永久删除。';
+
+  @override
+  String get deleteAccountConfirm => '删除账户';
+
+  @override
+  String get deleteAccountSuccess => '您的账户已被删除。';
+
+  @override
+  String get deleteAccountErrorWrongPw => '密码错误，请重试。';
+
+  @override
+  String get deleteAccountErrorDefault => '无法删除账户，请重试。';
+
+  @override
+  String get deleteAccountPasswordHint => '请输入密码以确认';
+
+  @override
+  String get deleteAccountReauthGoogle => '将要求您通过Google账户确认。';
+
+  @override
+  String get deleteAccountWarning => '所有数据和评价将被永久删除。';
+
+  @override
+  String get continueWithApple => '使用Apple继续';
+
+  @override
+  String get appleSignInError => 'Apple登录错误';
+
+  @override
+  String get deleteAccountReauthApple => '将要求您通过Apple账户确认。';
 }

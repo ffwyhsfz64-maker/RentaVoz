@@ -669,4 +669,52 @@ class SEn extends S {
   @override
   String get followedAddressesHint =>
       'Follow an address from a review to get notified';
+
+  @override
+  String get dangerZone => 'Account';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountBody =>
+      'This action is permanent and cannot be undone. Your account, all your reviews, and all your data will be permanently deleted.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete account';
+
+  @override
+  String get deleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get deleteAccountErrorWrongPw =>
+      'Incorrect password. Please try again.';
+
+  @override
+  String get deleteAccountErrorDefault =>
+      'Could not delete account. Please try again.';
+
+  @override
+  String get deleteAccountPasswordHint => 'Enter your password to confirm';
+
+  @override
+  String get deleteAccountReauthGoogle =>
+      'You will be asked to confirm with your Google account.';
+
+  @override
+  String get deleteAccountWarning =>
+      'All your data and reviews will be permanently deleted.';
+
+  @override
+  String get continueWithApple => 'Continue with Apple';
+
+  @override
+  String get appleSignInError => 'Error signing in with Apple';
+
+  @override
+  String get deleteAccountReauthApple =>
+      'You will be asked to confirm with your Apple account.';
 }

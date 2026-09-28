@@ -657,4 +657,47 @@ class SJa extends S {
 
   @override
   String get followedAddressesHint => 'レビューから住所をフォローして通知を受け取る';
+
+  @override
+  String get dangerZone => 'アカウント管理';
+
+  @override
+  String get deleteAccount => 'アカウントを削除';
+
+  @override
+  String get deleteAccountTitle => 'アカウントを削除しますか？';
+
+  @override
+  String get deleteAccountBody =>
+      'この操作は永続的で取り消しできません。アカウント、すべてのレビュー、すべてのデータが完全に削除されます。';
+
+  @override
+  String get deleteAccountConfirm => 'アカウントを削除';
+
+  @override
+  String get deleteAccountSuccess => 'アカウントが削除されました。';
+
+  @override
+  String get deleteAccountErrorWrongPw => 'パスワードが違います。もう一度お試しください。';
+
+  @override
+  String get deleteAccountErrorDefault => 'アカウントを削除できませんでした。もう一度お試しください。';
+
+  @override
+  String get deleteAccountPasswordHint => '確認のためパスワードを入力してください';
+
+  @override
+  String get deleteAccountReauthGoogle => 'Googleアカウントで確認が求められます。';
+
+  @override
+  String get deleteAccountWarning => 'すべてのデータとレビューが完全に削除されます。';
+
+  @override
+  String get continueWithApple => 'Appleで続ける';
+
+  @override
+  String get appleSignInError => 'Appleでのサインインエラー';
+
+  @override
+  String get deleteAccountReauthApple => 'Appleアカウントで確認が求められます。';
 }

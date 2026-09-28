@@ -673,4 +673,53 @@ class SEs extends S {
   @override
   String get followedAddressesHint =>
       'Sigue una dirección desde las reseñas para recibir notificaciones';
+
+  @override
+  String get dangerZone => 'Cuenta';
+
+  @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountBody =>
+      'Esta acción es permanente e irreversible. Se eliminarán tu cuenta, todas tus reseñas y todos tus datos.';
+
+  @override
+  String get deleteAccountConfirm => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountSuccess => 'Tu cuenta ha sido eliminada.';
+
+  @override
+  String get deleteAccountErrorWrongPw =>
+      'Contraseña incorrecta. Inténtalo de nuevo.';
+
+  @override
+  String get deleteAccountErrorDefault =>
+      'No se pudo eliminar la cuenta. Inténtalo de nuevo.';
+
+  @override
+  String get deleteAccountPasswordHint =>
+      'Ingresa tu contraseña para confirmar';
+
+  @override
+  String get deleteAccountReauthGoogle =>
+      'Se solicitará confirmación con tu cuenta de Google.';
+
+  @override
+  String get deleteAccountWarning =>
+      'Todos tus datos y reseñas serán eliminados permanentemente.';
+
+  @override
+  String get continueWithApple => 'Continuar con Apple';
+
+  @override
+  String get appleSignInError => 'Error al iniciar sesión con Apple';
+
+  @override
+  String get deleteAccountReauthApple =>
+      'Se solicitará confirmación con tu cuenta de Apple.';
 }

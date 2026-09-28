@@ -277,27 +277,52 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             )
           else ...[
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              sliver: SliverList.builder(
-                itemCount: displayed.length + (_hasMore && _search.isEmpty ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == displayed.length) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  return ReviewCard(
-                    review: displayed[index],
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: displayed[index])),
-                    ),
+            Builder(builder: (context) {
+              final isWide = MediaQuery.sizeOf(context).width >= 600;
+              final itemCount = displayed.length + (_hasMore && _search.isEmpty ? 1 : 0);
+
+              Widget buildItem(BuildContext ctx, int index) {
+                if (index == displayed.length) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    child: Center(child: CircularProgressIndicator()),
                   );
-                },
-              ),
-            ),
+                }
+                return ReviewCard(
+                  review: displayed[index],
+                  onTap: () => Navigator.push(
+                    ctx,
+                    MaterialPageRoute(builder: (_) => ReviewDetailScreen(review: displayed[index])),
+                  ),
+                );
+              }
+
+              if (isWide) {
+                return SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 440,
+                      mainAxisExtent: 370,
+                      crossAxisSpacing: 4,
+                      mainAxisSpacing: 4,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      buildItem,
+                      childCount: itemCount,
+                    ),
+                  ),
+                );
+              }
+
+              return SliverPadding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                sliver: SliverList.builder(
+                  itemCount: itemCount,
+                  itemBuilder: buildItem,
+                ),
+              );
+            }),
           ],
         ],
       ),

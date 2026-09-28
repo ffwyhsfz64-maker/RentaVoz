@@ -28,7 +28,7 @@ platform :ios do
     )
 
     # Flutter 빌드 (아카이브)
-    sh("cd .. && flutter build ipa --release --dart-define=GOOGLE_API_KEY=#{ENV['GOOGLE_API_KEY'] || 'placeholder'} 2>&1")
+    sh("cd .. && flutter build ipa --release --dart-define=GOOGLE_API_KEY=AIzaSyDVIvgmjznkZs2wZ4dtYczdX5ikCCKbZ8A 2>&1")
 
     # xcodebuild export (flutter가 자동 export 실패하므로 수동)
     sh("cd .. && xcodebuild -exportArchive \
@@ -58,7 +58,7 @@ platform :ios do
       copyright:        "© 2026 GWIHO JIN",
       primary_category: "LIFESTYLE",
       submit_for_review:   true,
-      automatic_release:   false,
+      automatic_release:   true,
       force:               true,
       precheck_include_in_app_purchases: false,
       app_review_information: {
@@ -80,6 +80,45 @@ platform :ios do
     )
   end
 
+  # ── TestFlight 업로드 (내부 테스트용) ────────────────────
+  desc "빌드 + TestFlight 업로드 (심사 제출 없음)"
+  lane :beta do
+    key = api_key
+
+    get_certificates(api_key: key)
+    get_provisioning_profile(
+      api_key:           key,
+      app_identifier:    "com.onuri.rentavoz",
+      provisioning_name: "RentaVoz AppStore Distribution"
+    )
+
+    sh("cd .. && flutter build ipa --release --dart-define=GOOGLE_API_KEY=AIzaSyDVIvgmjznkZs2wZ4dtYczdX5ikCCKbZ8A 2>&1")
+
+    sh("cd .. && xcodebuild -exportArchive \
+      -archivePath build/ios/archive/Runner.xcarchive \
+      -exportPath build/ios/ipa \
+      -exportOptionsPlist fastlane/ExportOptions.plist 2>&1")
+
+    upload_to_testflight(
+      api_key:                           key,
+      ipa:                               File.expand_path("../build/ios/ipa/rentavoz.ipa", __dir__),
+      skip_waiting_for_build_processing: true,
+      distribute_external:               false
+    )
+  end
+
+  # ── TestFlight 업로드만 (빌드 완료된 IPA) ─────────────────
+  desc "이미 빌드된 IPA를 TestFlight에만 업로드"
+  lane :upload_beta do
+    key = api_key
+    upload_to_testflight(
+      api_key:                           key,
+      ipa:                               File.expand_path("../build/ios/ipa/rentavoz.ipa", __dir__),
+      skip_waiting_for_build_processing: true,
+      distribute_external:               false
+    )
+  end
+
   # ── IPA만 업로드 (빌드 완료된 경우) ──────────────────────
   desc "기존 빌드된 IPA를 메타데이터와 함께 업로드 + 제출"
   lane :upload do |options|
@@ -87,6 +126,7 @@ platform :ios do
     upload_to_app_store(
       api_key:          key,
       ipa:              options[:ipa] || "./build/ios/ipa/rentavoz.ipa",
+      skip_binary_upload: options[:skip_ipa] || false,
       metadata_path:    "./fastlane/metadata",
       screenshots_path: "./fastlane/screenshots",
       skip_screenshots: false,
@@ -106,7 +146,7 @@ platform :ios do
       copyright:        "© 2026 GWIHO JIN",
       primary_category: "LIFESTYLE",
       submit_for_review:   true,
-      automatic_release:   false,
+      automatic_release:   true,
       force:               true,
       precheck_include_in_app_purchases: false,
       submission_information: {

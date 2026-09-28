@@ -57,3 +57,16 @@ android/key.properties
 *.jks
 *.keystore
 fastlane/AuthKey/
+
+# iOS signing artifacts (certs / provisioning profiles)
+*.cer
+*.mobileprovision
+
+# Bundler / fastlane local install & reports
+/vendor/
+.bundle/
+fastlane/report.xml
+fastlane/README.md
+
+# Stray build redirect artifact
+/-

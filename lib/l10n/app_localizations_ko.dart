@@ -657,4 +657,47 @@ class SKo extends S {
 
   @override
   String get followedAddressesHint => '리뷰에서 주소를 팔로우하면 새 리뷰 알림을 받을 수 있습니다';
+
+  @override
+  String get dangerZone => '계정 관리';
+
+  @override
+  String get deleteAccount => '계정 삭제';
+
+  @override
+  String get deleteAccountTitle => '계정을 삭제하시겠습니까?';
+
+  @override
+  String get deleteAccountBody =>
+      '이 작업은 영구적이며 취소할 수 없습니다. 계정, 모든 리뷰 및 모든 데이터가 영구적으로 삭제됩니다.';
+
+  @override
+  String get deleteAccountConfirm => '계정 삭제';
+
+  @override
+  String get deleteAccountSuccess => '계정이 삭제되었습니다.';
+
+  @override
+  String get deleteAccountErrorWrongPw => '비밀번호가 올바르지 않습니다. 다시 시도해주세요.';
+
+  @override
+  String get deleteAccountErrorDefault => '계정을 삭제할 수 없습니다. 다시 시도해주세요.';
+
+  @override
+  String get deleteAccountPasswordHint => '확인을 위해 비밀번호를 입력하세요';
+
+  @override
+  String get deleteAccountReauthGoogle => 'Google 계정으로 확인이 요청됩니다.';
+
+  @override
+  String get deleteAccountWarning => '모든 데이터와 리뷰가 영구적으로 삭제됩니다.';
+
+  @override
+  String get continueWithApple => 'Apple로 계속하기';
+
+  @override
+  String get appleSignInError => 'Apple 로그인 오류';
+
+  @override
+  String get deleteAccountReauthApple => 'Apple 계정으로 확인이 요청됩니다.';
 }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/auth_service.dart';
 import '../home_screen.dart';
@@ -74,6 +75,31 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted && e.toString() != 'Exception: cancelled') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${S.of(context)!.googleSignInError}: $e'), duration: const Duration(seconds: 4)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loginWithApple() async {
+    setState(() => _loading = true);
+    try {
+      await AuthService.signInWithApple();
+      if (mounted) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+      }
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) return;
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${S.of(context)!.appleSignInError}: ${e.message}'), duration: const Duration(seconds: 4)),
+        );
+      }
+    } catch (e) {
+      if (mounted && !e.toString().contains('cancelled')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${S.of(context)!.appleSignInError}: $e'), duration: const Duration(seconds: 4)),
         );
       }
     } finally {
@@ -160,14 +186,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final s = S.of(context)!;
     final size = MediaQuery.of(context).size;
 
+    final isWide = size.width >= 600;
+    // iPad: 헤더를 낮춰 카드 공간 확보, cardTop은 헤더보다 작아 카드가 헤더 위로 올라옴
+    final headerHeight = size.height * (isWide ? 0.34 : 0.42);
+    final cardTop     = size.height * (isWide ? 0.26 : 0.36);
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
-          // ── Gradient background (top portion) ──────────────────
+          // ── Gradient background ─────────────────────────────────
           Positioned(
             top: 0, left: 0, right: 0,
-            height: size.height * 0.42,
+            height: headerHeight,
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -177,10 +208,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: SafeArea(
+                bottom: false,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.home_work_outlined, size: 64, color: Colors.white),
+                    Icon(Icons.home_work_outlined, size: isWide ? 52 : 64, color: Colors.white),
                     const SizedBox(height: 12),
                     const Text(
                       'RentaVoz',
@@ -204,9 +236,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
 
-          // ── Form card (bottom) ─────────────────────────────────
+          // ── Form card ──────────────────────────────────────────
           Positioned(
-            top: size.height * 0.36,
+            top: cardTop,
             left: 0, right: 0, bottom: 0,
             child: Container(
               decoration: BoxDecoration(
@@ -215,114 +247,129 @@ class _LoginScreenState extends State<LoginScreen> {
                 boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 16, offset: const Offset(0, -4))],
               ),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        controller: _emailCtrl,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        autocorrect: false,
-                        decoration: InputDecoration(
-                          labelText: s.emailLabel,
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          filled: true,
-                        ),
-                        validator: (v) => (v == null || !v.contains('@')) ? s.emailInvalid : null,
-                      ),
-                      const SizedBox(height: 14),
+                padding: EdgeInsets.fromLTRB(24, 28, 24, isWide ? 60 : 32),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: isWide ? 480 : double.infinity),
+                    child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextFormField(
+                              controller: _emailCtrl,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              autocorrect: false,
+                              decoration: InputDecoration(
+                                labelText: s.emailLabel,
+                                prefixIcon: const Icon(Icons.email_outlined),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                              ),
+                              validator: (v) => (v == null || !v.contains('@')) ? s.emailInvalid : null,
+                            ),
+                            const SizedBox(height: 14),
 
-                      TextFormField(
-                        controller: _passCtrl,
-                        obscureText: _obscure,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _login(),
-                        decoration: InputDecoration(
-                          labelText: s.passwordLabel,
-                          prefixIcon: const Icon(Icons.lock_outlined),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                          filled: true,
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                            onPressed: () => setState(() => _obscure = !_obscure),
-                          ),
-                        ),
-                        validator: (v) => (v == null || v.length < 6) ? s.passwordMinLength : null,
-                      ),
+                            TextFormField(
+                              controller: _passCtrl,
+                              obscureText: _obscure,
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (_) => _login(),
+                              decoration: InputDecoration(
+                                labelText: s.passwordLabel,
+                                prefixIcon: const Icon(Icons.lock_outlined),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                suffixIcon: IconButton(
+                                  icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                                  onPressed: () => setState(() => _obscure = !_obscure),
+                                ),
+                              ),
+                              validator: (v) => (v == null || v.length < 6) ? s.passwordMinLength : null,
+                            ),
 
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => _showForgotPassword(context, s),
-                          child: Text(s.forgotPassword, style: const TextStyle(fontSize: 13)),
-                        ),
-                      ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () => _showForgotPassword(context, s),
+                                child: Text(s.forgotPassword, style: const TextStyle(fontSize: 13)),
+                              ),
+                            ),
 
-                      FilledButton(
-                        onPressed: _loading ? null : _login,
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(52),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: _loading
-                            ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                            : Text(s.loginButton, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      const SizedBox(height: 10),
+                            FilledButton(
+                              onPressed: _loading ? null : _login,
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size.fromHeight(52),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: _loading
+                                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                  : Text(s.loginButton, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            ),
+                            const SizedBox(height: 10),
 
-                      OutlinedButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(52),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: Text(s.createAccount, style: const TextStyle(fontSize: 16)),
-                      ),
+                            OutlinedButton(
+                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(52),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: Text(s.createAccount, style: const TextStyle(fontSize: 16)),
+                            ),
 
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Expanded(child: Divider()),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('o continúa con', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
-                          ),
-                          const Expanded(child: Divider()),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                const Expanded(child: Divider()),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text('o continúa con', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                ),
+                                const Expanded(child: Divider()),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
 
-                      OutlinedButton.icon(
-                        onPressed: _loading ? null : _loginWithGoogle,
-                        icon: Container(
-                          width: 20, height: 20,
-                          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                          child: const Center(
-                            child: Text('G', style: TextStyle(color: Color(0xFF4285F4), fontWeight: FontWeight.bold, fontSize: 14)),
-                          ),
-                        ),
-                        label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: Text(S.of(context)!.continueWithGoogle, style: const TextStyle(fontSize: 15)),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          side: const BorderSide(color: Colors.grey),
-                          foregroundColor: Colors.black87,
+                            OutlinedButton.icon(
+                              onPressed: _loading ? null : _loginWithGoogle,
+                              icon: Container(
+                                width: 20, height: 20,
+                                decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                                child: const Center(
+                                  child: Text('G', style: TextStyle(color: Color(0xFF4285F4), fontWeight: FontWeight.bold, fontSize: 14)),
+                                ),
+                              ),
+                              label: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                child: Text(S.of(context)!.continueWithGoogle, style: const TextStyle(fontSize: 15)),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                side: const BorderSide(color: Colors.grey),
+                                foregroundColor: Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            SignInWithAppleButton(
+                              onPressed: _loading ? () {} : _loginWithApple,
+                              style: SignInWithAppleButtonStyle.black,
+                              borderRadius: BorderRadius.circular(12),
+                              text: S.of(context)!.continueWithApple,
+                            ),
+                            const SizedBox(height: 8),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
 }
+
+

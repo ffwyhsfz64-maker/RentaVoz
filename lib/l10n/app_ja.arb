@@ -253,5 +253,19 @@
   "unfollowedSuccess": "フォローを解除しました",
   "followedAddresses": "フォロー中の住所",
   "noFollowedAddresses": "フォロー中の住所はありません",
-  "followedAddressesHint": "レビューから住所をフォローして通知を受け取る"
+  "followedAddressesHint": "レビューから住所をフォローして通知を受け取る",
+  "dangerZone": "アカウント管理",
+  "deleteAccount": "アカウントを削除",
+  "deleteAccountTitle": "アカウントを削除しますか？",
+  "deleteAccountBody": "この操作は永続的で取り消しできません。アカウント、すべてのレビュー、すべてのデータが完全に削除されます。",
+  "deleteAccountConfirm": "アカウントを削除",
+  "deleteAccountSuccess": "アカウントが削除されました。",
+  "deleteAccountErrorWrongPw": "パスワードが違います。もう一度お試しください。",
+  "deleteAccountErrorDefault": "アカウントを削除できませんでした。もう一度お試しください。",
+  "deleteAccountPasswordHint": "確認のためパスワードを入力してください",
+  "deleteAccountReauthGoogle": "Googleアカウントで確認が求められます。",
+  "deleteAccountWarning": "すべてのデータとレビューが完全に削除されます。",
+  "continueWithApple": "Appleで続ける",
+  "appleSignInError": "Appleでのサインインエラー",
+  "deleteAccountReauthApple": "Appleアカウントで確認が求められます。"
 }
