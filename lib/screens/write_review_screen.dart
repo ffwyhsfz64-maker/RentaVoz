@@ -507,6 +507,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
 
   Future<void> _submit() async {
     final s = S.of(context)!;
+    final localeCode = Localizations.localeOf(context).languageCode;
     if (!_formKey.currentState!.validate()) return;
     if (_moveInDate == null || _moveOutDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -589,6 +590,9 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       utilitiesIncluded: _utilitiesIncluded,
       pros: _prosCtrl.text.trim(),
       cons: _consCtrl.text.trim(),
+      language: _isEditing
+          ? widget.existingReview!.language
+          : localeCode,
       photoUrls: photoUrls,
       comprobanteUrl: comprobanteUrl,
       comprobanteIsPdf: comprobanteUrl != null ? _comprobanteIsPdf : false,

@@ -9,6 +9,7 @@ import '../services/report_service.dart';
 import '../services/review_service.dart';
 import '../services/translation_service.dart';
 import 'address_reviews_screen.dart';
+import 'write_review_screen.dart';
 import '../widgets/bookmark_button.dart';
 
 class ReviewDetailScreen extends StatefulWidget {
@@ -41,9 +42,30 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
 
   String? _translatedPros;
   String? _translatedCons;
+  String? _translatedToLang; // 현재 캐시된 번역의 대상 언어
+  bool _sourceIsSameAsTarget = false; // 원문이 이미 현재 UI 언어인지 (감지 결과)
   bool _showTranslation = false;
   bool _translating = false;
   String? _translationError;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _maybeAutoTranslate();
+  }
+
+  // 리뷰를 열거나 언어를 바꿀 때, 원문 언어를 자동 감지해 필요하면 번역한다.
+  void _maybeAutoTranslate() {
+    final currentLang = Localizations.localeOf(context).languageCode;
+    final review = _review;
+    final hasContent = review.pros.isNotEmpty || review.cons.isNotEmpty;
+    if (!hasContent) return;
+    // 저장된 작성 언어가 현재 UI 언어와 확실히 같으면 호출 불필요 (비용 절감)
+    if (review.language != null && review.language == currentLang) return;
+    if (_translating) return;
+    if (_translatedToLang == currentLang) return; // 이미 이 언어로 번역 완료
+    _translate();
+  }
 
   Future<void> _translate() async {
     final targetLang = Localizations.localeOf(context).languageCode;
@@ -53,22 +75,30 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
     });
 
     try {
+      final review = _review;
       final texts = [
-        _review.pros.isNotEmpty ? _review.pros : ' ',
-        _review.cons.isNotEmpty ? _review.cons : ' ',
+        review.pros.isNotEmpty ? review.pros : ' ',
+        review.cons.isNotEmpty ? review.cons : ' ',
       ];
-      final results = await TranslationService.translate(texts, targetLang);
+      final result = await TranslationService.translate(texts, targetLang);
+      // 실제 내용이 있는 항목의 감지 언어만 확인
+      final detected = <String>[];
+      if (review.pros.isNotEmpty) detected.add(result.detectedSources[0]);
+      if (review.cons.isNotEmpty) detected.add(result.detectedSources[1]);
+      final sameLang = detected.isNotEmpty && detected.every((l) => l == targetLang);
       setState(() {
-        _translatedPros = results[0].trim();
-        _translatedCons = results[1].trim();
-        _showTranslation = true;
+        _translatedPros = result.translations[0].trim();
+        _translatedCons = result.translations[1].trim();
+        _translatedToLang = targetLang;
+        _sourceIsSameAsTarget = sameLang;
+        _showTranslation = !sameLang; // 이미 같은 언어면 원문 그대로 표시
       });
     } catch (e) {
       if (!mounted) return;
       final s = S.of(context)!;
       setState(() => _translationError = '${s.translationError}\n($e)');
     } finally {
-      setState(() => _translating = false);
+      if (mounted) setState(() => _translating = false);
     }
   }
 
@@ -107,6 +137,9 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
     final review = _review;
     final hasContent = review.pros.isNotEmpty || review.cons.isNotEmpty;
     final currentLang = Localizations.localeOf(context).languageCode;
+    // 저장된 언어가 현재 UI 언어와 같거나(비용 절감), 감지 결과 같으면 번역 UI 숨김
+    final knownSameLang = review.language != null && review.language == currentLang;
+    final canTranslate = !knownSameLang && !_sourceIsSameAsTarget;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,11 +156,22 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
             onSelected: (v) {
               if (v == 'report') _showReportSheet(s);
               if (v == 'delete') _confirmDelete(s);
+              if (v == 'edit') _editReview();
             },
             itemBuilder: (_) {
               final isOwner = FirebaseAuth.instance.currentUser?.uid == review.userId;
               return [
                 if (isOwner) ...[
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit_outlined, size: 18, color: Color(0xFF2E7D32)),
+                        const SizedBox(width: 10),
+                        Text(s.editReview),
+                      ],
+                    ),
+                  ),
                   PopupMenuItem(
                     value: 'delete',
                     child: Row(
@@ -330,7 +374,8 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                 ),
               ),
 
-            // 번역 버튼 (번역 중 / 에러 / 기본)
+            // 번역 버튼 (번역 중 / 에러 / 기본) — 작성 언어가 UI 언어와 다를 때만
+            if (canTranslate)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: _translating
@@ -357,7 +402,7 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
                           ? OutlinedButton.icon(
                               icon: const Icon(Icons.translate, size: 16),
                               label: Text(s.translateButton),
-                              onPressed: currentLang == 'es' ? null : _toggleTranslation,
+                              onPressed: _toggleTranslation,
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: Colors.blue,
                                 side: const BorderSide(color: Colors.blue),
@@ -526,6 +571,13 @@ class _ReviewDetailScreenState extends State<ReviewDetailScreen> {
           ), // end Padding
         ],
       ),
+    );
+  }
+
+  void _editReview() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => WriteReviewScreen(existingReview: _review)),
     );
   }
 
@@ -860,13 +912,15 @@ class _BoolRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 아이콘 모양은 실제 값(예/아니오)을 그대로 표현하고,
+    // 색상만 좋음(녹색)/나쁨(빨강)을 나타낸다. invertColor는 색상에만 영향.
     final positive = invertColor ? !value : value;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Icon(
-            positive ? Icons.check_circle_outline : Icons.cancel_outlined,
+            value ? Icons.check_circle_outline : Icons.cancel_outlined,
             size: 18,
             color: positive ? const Color(0xFF2E7D32) : Colors.red,
           ),

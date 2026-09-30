@@ -22,6 +22,7 @@ class Review {
   final bool utilitiesIncluded;
   final String pros;
   final String cons;
+  final String? language; // pros/cons 작성 언어 코드 ('es','ko','en'...). 구버전 리뷰는 null
   final List<String> photoUrls;
   final String? comprobanteUrl;
   final bool comprobanteIsPdf;
@@ -49,6 +50,7 @@ class Review {
     required this.utilitiesIncluded,
     required this.pros,
     required this.cons,
+    this.language,
     required this.photoUrls,
     this.comprobanteUrl,
     this.comprobanteIsPdf = false,
@@ -89,6 +91,7 @@ class Review {
         'utilitiesIncluded': utilitiesIncluded,
         'pros': pros,
         'cons': cons,
+        if (language != null) 'language': language,
         'photoUrls': photoUrls,
         if (comprobanteUrl != null) 'comprobanteUrl': comprobanteUrl,
         if (comprobanteUrl != null) 'comprobanteIsPdf': comprobanteIsPdf,
@@ -117,6 +120,7 @@ class Review {
         utilitiesIncluded: map['utilitiesIncluded'] as bool,
         pros: map['pros'] as String,
         cons: map['cons'] as String,
+        language: map['language'] as String?,
         photoUrls: List<String>.from(map['photoUrls'] as List),
         comprobanteUrl: map['comprobanteUrl'] as String?,
         comprobanteIsPdf: (map['comprobanteIsPdf'] as bool?) ?? false,

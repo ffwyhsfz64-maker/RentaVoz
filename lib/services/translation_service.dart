@@ -3,12 +3,23 @@ import 'dart:developer' as dev;
 import 'package:http/http.dart' as http;
 import '../config/api_keys.dart';
 
+class TranslationResult {
+  final List<String> translations;
+  final List<String> detectedSources; // 각 텍스트의 감지된 원본 언어 코드
+  const TranslationResult({required this.translations, required this.detectedSources});
+}
+
 class TranslationService {
   static const _endpoint = 'https://translation.googleapis.com/language/translate/v2';
 
-  /// [texts] 배열을 [targetLang]으로 번역해서 같은 순서의 문자열 배열 반환.
-  static Future<List<String>> translate(List<String> texts, String targetLang) async {
-    if (texts.every((t) => t.trim().isEmpty)) return texts;
+  /// [texts] 배열을 [targetLang]으로 번역. 번역문 + 감지된 원본 언어를 함께 반환.
+  static Future<TranslationResult> translate(List<String> texts, String targetLang) async {
+    if (texts.every((t) => t.trim().isEmpty)) {
+      return TranslationResult(
+        translations: texts,
+        detectedSources: List.filled(texts.length, targetLang),
+      );
+    }
 
     final body = jsonEncode({
       'q': texts,
@@ -32,10 +43,12 @@ class TranslationService {
     }
 
     final json = jsonDecode(response.body) as Map<String, dynamic>;
-    final translations = (json['data']['translations'] as List)
-        .map((t) => (t['translatedText'] as String))
+    final items = json['data']['translations'] as List;
+    final translations = items.map((t) => t['translatedText'] as String).toList();
+    final detectedSources = items
+        .map((t) => (t['detectedSourceLanguage'] as String?) ?? targetLang)
         .toList();
 
-    return translations;
+    return TranslationResult(translations: translations, detectedSources: detectedSources);
   }
 }
